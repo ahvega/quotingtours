@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% load bootstrap3 %}
+{% block extlibs %}{% endblock %}{% block content %}
+    <div style="padding: 4px">
+        <form id="laforma" method="post" class="form form-horizontal">
+            {% csrf_token %}
+            {% bootstrap_form form %}
+            <button id="submit"
+            class="ui-btn ui-btn-c ui-btn-icon-left ui-btn-inline ui-shadow ui-link ui-icon-check ui-btn-icon-left"
+            type="submit">Guardar {% block page-title %}Titulo{% endblock %}
+    </button>
+        </form>
+    </div>{% endblock %}{% block footer %}
+{% endblock %}
+{#{% block scripts2 %}#}
+{#    <script>#}
+{#    $(document).ready(function() {#}
+{#        $("#submit").click(function () {#}
+{#            $("#laforma").submit();#}
+{#        });#}
+{#    });#}
+{#    </script>{% endblock %}#}

@@ -1,0 +1,29 @@
+{% extends "_list.html" %}
+{% load humanize %}
+{% load misformatos %}
+{% block title %}Niveles de Precio{% endblock %}
+{% block page-title %}Niveles de Precio{% endblock %}{% block thead %}
+    <th class="centrado">Nivel de Precio</th>
+    <th data-priority="1" class="centrado">Tipo</th>
+    <th data-priority="2" class="centrado">Acción</th>
+    <th data-priority="3" class="centrado">Valor</th>
+    <th data-priority="4" class="centrado">Factor</th>{% endblock %}{% block tbody %}
+    {% for niveldeprecio in niveldeprecio_list %}
+        <tr>
+            <td data-search="{{ niveldeprecio.nombre }}">
+                <a class="ui-btn ui-link boton"
+                   href="{{ niveldeprecio.get_absolute_url }}">{{ niveldeprecio.nombre }}</a>
+            </td>
+            <td class="centrado">{{ niveldeprecio.get_tipo_display }}</td>
+            <td class="centrado">{{ niveldeprecio.get_accion_display }}</td>{% if niveldeprecio.tipo == "Porcentaje" %}
+            <td class="centrado">{{ niveldeprecio.valor|porciento }}</td>{% else %}
+            <td class="centrado">{{ niveldeprecio.valor }}</td>{% endif %}
+            <td class="centrado">{{ niveldeprecio.factor|floatformat:6 }}</td>
+        </tr>{% endfor %}{% endblock %}{% block footer %}
+    {% if request.user.is_superuser %}
+        <div class="fixed-action-btn">
+            <a class="btn-floating btn-large waves-effect waves-light red darken-2"
+               href="{% url "transporte_niveldeprecio_create" %}">
+                <i class="material-icons">add</i></a>
+        </div>
+    {% endif %}{% endblock %}

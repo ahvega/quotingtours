@@ -1,0 +1,32 @@
+{% extends "_list.html" %}
+{% load humanize %}
+{% block title %}Tipos de Vehículo{% endblock %}
+{% block page-title %}Tipos de Vehículo{% endblock %}
+{% block thead %}
+    <th class="center">Tipo de Vehículo</th>
+    <th data-priority="1" class="derecha">Costo/Día</th>
+    <th data-priority="2" class="derecha">Costo/Km</th>
+    <th data-priority="3" class="derecha">Km/Gal</th>
+    <th data-priority="4" class="derecha">Gals/Tanque</th>
+{% endblock %}
+{% block tbody %}
+    {% for tipodevehiculo in tipodevehiculo_list %}
+        <tr>
+            <td data-search="{{ tipodevehiculo.nombre }}"><a class="ui-btn ui-link boton"
+                                                             href="{{ tipodevehiculo.get_absolute_url }}">{{ tipodevehiculo.nombre }}</a>
+            </td>
+            <td class="derecha">{{ tipodevehiculo.costo_por_dia|intcomma }}</td>
+            <td class="derecha">{{ tipodevehiculo.costo_por_km|intcomma }}</td>
+            <td class="derecha">{{ tipodevehiculo.rendimiento }}</td>
+            <td class="derecha">{{ tipodevehiculo.galones_tanque }}</td>
+        </tr>
+    {% endfor %}
+{% endblock %}
+{% block footer %}
+    {% if request.user.is_superuser %}
+        <div class="fixed-action-btn">
+            <a class="btn-floating btn-large waves-effect waves-light red darken-2"
+               href="{% url "transporte_tipodevehiculo_create" %}">
+                <i class="material-icons">add</i></a>
+        </div>
+    {% endif %}{% endblock %}

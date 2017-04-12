@@ -1,0 +1,41 @@
+{% extends "_detail.html" %}
+{% load humanize %}
+{% block title %}Detalles de Vehículo{% endblock %}
+{% block page-title %}Detalles de Vehículo{% endblock %}
+{% block thead %}
+    <th class="derecha">Vehículo</th>
+    <th class="izquierda">{{ vehiculo.nombre }}</th>
+{% endblock %}
+{% block tbody %}
+    <tr>
+        <td class="derecha">Placa</td>
+        <td><strong>{{ vehiculo.placa|upper }}</strong></td>
+    </tr>
+    <tr>
+        <td class="derecha">Fecha Adquirido</td>
+        <td><strong>{{ vehiculo.fecha_aquirido|date:"D d/b" }}</strong></td>
+    </tr>
+    <tr>
+        <td class="derecha">Chofer Fijo?</td>
+        <td><strong>{{ vehiculo.chofer_fijo|yesno }}</strong></td>
+    </tr>
+    <tr>
+        <td class="derecha">Creado</td>
+        <td><strong>{{ vehiculo.creado|date:"D d/b" }}</strong></td>
+    </tr>
+    <tr>
+        <td class="derecha">Actualizado</td>
+        <td><strong>{{ vehiculo.actualizado|date:"D d/b" }}</strong></td>
+    </tr>
+{% endblock %}
+{% block footer %}
+    {% if request.user.is_superuser %}
+        <div class="fixed-action-btn">
+            <a class="btn-floating btn-large waves-effect waves-light red darken-2"
+               href="{{ vehiculo.get_update_url }}">
+                <i class="material-icons">edit</i></a>
+        </div>
+            <a href="{{ vehiculo.get_delete_url }}"
+       class="ui-btn ui-btn-c ui-btn-icon-left ui-btn-inline ui-shadow ui-link ui-icon-delete ui-btn-icon-left">Eliminar
+        Vehículo</a>
+    {% endif %}{% endblock %}

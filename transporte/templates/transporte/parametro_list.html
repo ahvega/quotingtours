@@ -1,0 +1,21 @@
+{% extends "_list.html" %}
+{% load humanize %}
+{% block title %}Parámetros{% endblock %}
+{% block page-title %}Parámetros{% endblock %}{% block thead %}
+    <th class="center">Parámetro</th>
+    <th data-priority="1" class="derecha">Valor</th>
+    <th data-priority="2" class="izquierda">Unidad</th>{% endblock %}{% block tbody %}{% for parametro in object_list %}
+    <tr>
+        <td data-search="{{ parametro.nombre }}">
+            <a class="ui-btn ui-link boton" href="{{ parametro.get_absolute_url }}">{{ parametro.nombre }}</a>
+        </td>
+        <td class="derecha">{{ parametro.valor }}</td>
+        <td class="izquierda">{{ parametro.unidad }}</td>
+    </tr>{% endfor %}{% endblock %}{% block footer %}
+    {% if request.user.is_superuser %}
+        <div class="fixed-action-btn">
+            <a class="btn-floating btn-large waves-effect waves-light red darken-2"
+               href="{% url "transporte_parametro_create" %}">
+                <i class="material-icons">add</i></a>
+        </div>
+    {% endif %}{% endblock %}

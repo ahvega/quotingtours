@@ -1,0 +1,19 @@
+{% extends "base.html" %}{% block content %}
+    <style>
+        body > div.site-container.ui-page.ui-page-theme-a.ui-page-active > div.ui-content > div > a {
+            display: none !important;
+        }
+    </style>
+    <div style="width: 100%">
+        <table id="table-detail" class="ui-table ui-shadow table-stripe table-stroke ui-responsive">
+            <thead>
+            <tr>{% block thead %}{% endblock %}
+            </tr>
+            </thead>
+            <tbody>{% block tbody %}{% endblock %}
+            </tbody>
+        </table>
+    </div>
+    {% block detalle %}{% endblock %}
+{% endblock %}
+{% block footer %}{% endblock %}

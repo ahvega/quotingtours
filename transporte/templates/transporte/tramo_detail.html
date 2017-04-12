@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+    <p><a class="btn btn-default" href="{% url 'transporte_tramo_list' %}">Tramo Listing</a></p>
+    <table class="table">
+        <tr>
+            <td>nombre</td>
+            <td>{{ object.nombre }}</td>
+        </tr>
+        <tr>
+            <td>slug</td>
+            <td>{{ object.slug }}</td>
+        </tr>
+        <tr>
+            <td>creado</td>
+            <td>{{ object.creado }}</td>
+        </tr>
+        <tr>
+            <td>actualizado</td>
+            <td>{{ object.actualizado }}</td>
+        </tr>
+        <tr>
+            <td>codigo</td>
+            <td>{{ object.codigo }}</td>
+        </tr>
+        <tr>
+            <td>desde_hacia</td>
+            <td>{{ object.desde_hacia }}</td>
+        </tr>
+        <tr>
+            <td>kms</td>
+            <td>{{ object.kms }}</td>
+        </tr>
+        <tr>
+            <td>hrs</td>
+            <td>{{ object.hrs }}</td>
+        </tr>
+        <tr>
+            <td>codigo_desde</td>
+            <td>{{ object.codigo_desde }}</td>
+        </tr>
+        <tr>
+            <td>codigo_hacia</td>
+            <td>{{ object.codigo_hacia }}</td>
+        </tr>
+    </table>
+{% endblock %}{% block footer %}
+    {% if request.user.is_superuser %}
+        <div class="fixed-action-btn">
+            <a class="btn-floating btn-large waves-effect waves-light red darken-2"
+               href="{{ tramo.get_update_url }}">
+                <i class="material-icons">edit</i></a>
+        </div>
+            <a href="{{ tramo.get_delete_url }}"
+       class="ui-btn ui-btn-c ui-btn-icon-left ui-btn-inline ui-shadow ui-link ui-icon-delete ui-btn-icon-left">Eliminar
+        Vehículo</a>
+    {% endif %}{% endblock %}

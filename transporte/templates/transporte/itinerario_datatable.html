@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% load humanize %}
+{% block title %}Itinerarios{% endblock %}
+{% block page-title %}Itinerarios{% endblock %}
+
+{% block extcss %}
+    {#    <link type="text/css" href="//cdn.datatables.net/1.10.11/css/jquery.dataTables.min.css">#}
+    {#    <link rel="stylesheet" type="text/css"#}
+    {#          href="https://cdn.datatables.net/u/ju-1.11.4/jqc-1.12.3,pdfmake-0.1.18,dt-1.10.12,af-2.1.2,b-1.2.1,b-colvis-1.2.1,b-html5-1.2.1,b-print-1.2.1,cr-1.3.2,fc-3.2.2,fh-3.1.2,r-2.1.0/datatables.min.css"/>#}
+    {#    <link rel="stylesheet" type="text/css"#}
+    {#          href="https://cdn.datatables.net/u/bs-3.3.6/jqc-1.12.3,dt-1.10.12,b-1.2.1,b-colvis-1.2.1,fc-3.2.2,fh-3.1.2,r-2.1.0,sc-1.4.2,se-1.2.0/datatables.min.css"/>#}
+    <link rel="stylesheet" type="text/css"
+          href="https://cdn.datatables.net/u/zf-5.5.2/jqc-1.12.3,dt-1.10.12/datatables.min.css"/>
+{% endblock %}
+{% block extlibs %}
+    {#    <script src="//cdn.datatables.net/1.10.11/js/jquery.dataTables.min.js "></script>#}
+    {#    <script type="text/javascript"#}
+    {#            src="https://cdn.datatables.net/u/ju-1.11.4/jqc-1.12.3,pdfmake-0.1.18,dt-1.10.12,af-2.1.2,b-1.2.1,b-colvis-1.2.1,b-html5-1.2.1,b-print-1.2.1,cr-1.3.2,fc-3.2.2,fh-3.1.2,r-2.1.0/datatables.min.js"></script>#}
+    {#    <script type="text/javascript"#}
+    {#            src="https://cdn.datatables.net/u/bs-3.3.6/jqc-1.12.3,dt-1.10.12,b-1.2.1,b-colvis-1.2.1,fc-3.2.2,fh-3.1.2,r-2.1.0,sc-1.4.2,se-1.2.0/datatables.min.js"></script>#}
+    <script type="text/javascript"
+            src="https://cdn.datatables.net/u/zf-5.5.2/jqc-1.12.3,dt-1.10.12/datatables.min.js"></script>
+{% endblock %}
+
+{% block content %}
+    <table id="itinerariotable" data-role="table" data-mode="columntoggle"
+           class="table-stroke ui-shadow table-stripe  ui-responsive">
+        <thead>   <!-- header row -->
+        <tr>
+            <th class="centrado">Itinerario</th>
+            <th data-priority="1" class="centrado">Inicia</th>
+            <th data-priority="2" class="centrado">Termina</th>
+            <th data-priority="3" class="centrado">Estatus</th>
+        </tr>
+        </thead>
+        <tbody>   <!-- data  -->
+        {% for itinerario in itinerario_list %}
+            <tr>
+                <td data-search="{{ itinerario.nombre }}"><a class="ui-btn ui-link boton"
+                                                             href="{{ itinerario.get_absolute_url }}">{{ itinerario.nombre }}</a>
+                </td>
+                <td class="centrado">{{ itinerario.fecha_desde|date:"D d/b" }}</td>
+                <td class="centrado">{{ itinerario.fecha_hasta|date:"D d/b" }}</td>
+                <td class="centrado">{{ itinerario.get_estatus_display }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        $(document).ready(function () {
+            $('#itinerariotable').dataTable({
+                                                "language": {
+                                                    "url": "dataTables.spanish.lang"
+                                                }
+                                            });
+        });
+    </script>
+{% endblock %}
+

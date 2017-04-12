@@ -1,0 +1,24 @@
+{% extends "_list.html" %}
+{% load humanize %}
+{% block title %}Vehículos{% endblock %}
+{% block page-title %}Vehículos{% endblock %}{% block thead %}
+    <th class="center">Vehículos</th>
+    <th data-priority="1" class="derecha">Placa</th>
+    <th data-priority="2" class="derecha">Creado</th>
+    <th data-priority="3" class="derecha">Actualizado</th>{% endblock %}{% block tbody %}
+    {% for vehiculo in vehiculo_list %}
+        <tr>
+            <td data-search="{{ vehiculo.nombre }}">
+                <a class="ui-btn ui-link boton" href="{{ vehiculo.get_absolute_url }}">{{ vehiculo.nombre }}</a>
+            </td>
+            <td class="derecha">{{ vehiculo.placa }}</td>
+            <td class="derecha">{{ vehiculo.creado|date:"D d/b" }}</td>
+            <td class="derecha">{{ vehiculo.actualizado|date:"D d/b" }}</td>
+        </tr>{% endfor %}{% endblock %}{% block footer %}
+    {% if request.user.is_superuser %}
+        <div class="fixed-action-btn">
+            <a class="btn-floating btn-large waves-effect waves-light red darken-2"
+               href="{% url "transporte_vehiculo_create" %}">
+                <i class="material-icons">add</i></a>
+        </div>
+    {% endif %}{% endblock %}

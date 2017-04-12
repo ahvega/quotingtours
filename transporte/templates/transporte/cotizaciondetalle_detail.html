@@ -1,0 +1,54 @@
+{% extends "_detail.html" %}
+{% load humanize %}
+{% load misformatos %}
+{% block title %}Detalle de Cotización{% endblock %}
+{% block page-title %}Detalle de Cotización{% endblock %}
+{% block thead %}
+    <th class="derecha">Item</th>
+    <th class="izquierda">{{ cotizaciondetalle.item }}</th>
+{% endblock %}
+{% block tbody %}
+    <tr>
+        <td class="derecha">Descripción</td>
+        <td><strong>{{ cotizaciondetalle.descripcion }}</strong></td>
+    </tr>
+    <tr>
+        <td class="derecha">Cantidad</td>
+        <td><strong>{{ cotizaciondetalle.cantidad }}</strong></td>
+    </tr>
+    <tr>
+        <td class="derecha">Costo</td>
+        <td><strong>{{ cotizaciondetalle.costo }}</strong></td>
+    </tr>
+    <tr>
+        <td class="derecha">Subtotal</td>
+        <td><strong>{{ cotizaciondetalle.monto }}</strong></td>
+    </tr>
+    <tr>
+        <td class="derecha">Margen</td>
+        <td><strong>{{ cotizaciondetalle.markup|porciento }}</strong></td>
+    </tr>
+    <tr>
+        <td class="derecha">Total</td>
+        <td><strong>{{ cotizaciondetalle.total }}</strong></td>
+    </tr>
+    <tr>
+        <td class="derecha">Creado</td>
+        <td><strong>{{ cotizaciondetalle.creado }}</strong></td>
+    </tr>
+    <tr>
+        <td class="derecha">Actualizado</td>
+        <td><strong>{{ cotizaciondetalle.actualizado }}</strong></td>
+    </tr>
+{% endblock %}
+{% block footer %}
+    {% if request.user.is_superuser %}
+        <div class="fixed-action-btn">
+            <a class="btn-floating btn-large waves-effect waves-light red darken-2"
+               href="{{ cotizaciondetalle.get_update_url }}">
+                <i class="material-icons">edit</i></a>
+        </div>
+            <a href="{{ cotizaciondetalle.get_delete_url }}"
+       class="ui-btn ui-btn-c ui-btn-icon-left ui-btn-inline ui-shadow ui-link ui-icon-delete ui-btn-icon-left">Eliminar
+        Item</a>
+    {% endif %}{% endblock %}

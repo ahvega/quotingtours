@@ -1,0 +1,57 @@
+{% extends "_detail.html" %}
+{% load humanize %}
+{% block title %}Detalle de Item{% endblock %}
+{% block page-title %}Detalle de Item{% endblock %}
+{% block thead %}
+    <th class="derecha">Item</th>
+    <th class="izquierda">{{ item.nombre }}</th>
+{% endblock %}
+{% block tbody %}
+    <tr>
+        <td class="derecha">Tipo Item</td>
+        <td><strong>{{ item.get_tipo_item_display }}</strong></td>
+    </tr>
+    <tr>
+        <td class="derecha">Unidad</td>
+        <td><strong>{{ item.unidad }}</strong></td>
+    </tr>
+    <tr>
+        <td class="derecha">Costo</td>
+        <td><strong>{{ item.costo }}</strong></td>
+    </tr>
+    <tr>
+        <td class="derecha">Precio</td>
+        <td><strong>{{ item.precio }}</strong></td>
+    </tr>
+    <tr>
+        <td class="derecha">Descripción Compra</td>
+        <td><strong>{{ item.descripcion_compra }}</td>
+    </tr>
+    <tr>
+        <td class="derecha">Descripción Venta</td>
+        <td><strong>{{ item.descripcion_venta }}</strong></td>
+    </tr>
+    <tr>
+        <td class="derecha">Slug</td>
+        <td><strong>{{ item.slug }}</strong></td>
+    </tr>
+    <tr>
+        <td class="derecha">Creado</td>
+        <td><strong>{{ item.creado }}</strong></td>
+    </tr>
+    <tr>
+        <td class="derecha">Actualizado</td>
+        <td><strong>{{ item.actualizado }}</strong></td>
+    </tr>
+{% endblock %}
+{% block footer %}
+    {% if request.user.is_superuser %}
+        <div class="fixed-action-btn">
+            <a class="btn-floating btn-large waves-effect waves-light red darken-2"
+               href="{{ item.get_update_url }}">
+                <i class="material-icons">edit</i></a>
+        </div>
+            <a href="{{ item.get_delete_url }}"
+       class="ui-btn ui-btn-c ui-btn-icon-left ui-btn-inline ui-shadow ui-link ui-icon-delete ui-btn-icon-left">Eliminar
+        Vehículo</a>
+    {% endif %}{% endblock %}

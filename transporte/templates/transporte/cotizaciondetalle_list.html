@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Detalle de Cotización{% endblock %}
+{% block page-title %}Detalle de Cotización{% endblock %}
+{% block content %}
+<p><a class="btn btn-default" href="{% url 'transporte_cotizaciondetalle_list' %}">Cotizacion_Detalle Listing</a></p>
+<table class="table">
+<tr>
+<td>ID</td><td>Link</td>
+    <td>descripcion</td>
+    <td>slug</td>
+    <td>created</td>
+    <td>last_updated</td>
+    <td>cantidad</td>
+    <td>markup</td>
+    <td>precio</td>
+    <td>monto</td>
+    <td>total</td>
+</tr>
+{% for object in object_list %}
+<tr>
+    <td>{{object.id}}</td>
+    <td><a href="{{object.get_absolute_url}}">{{object}}</a></td>
+    <td>{{ object.descripcion }}</td>
+    <td>{{ object.slug }}</td>
+    <td>{{ object.created }}</td>
+    <td>{{ object.last_updated }}</td>
+    <td>{{ object.cantidad }}</td>
+    <td>{{ object.markup }}</td>
+    <td>{{ object.precio }}</td>
+    <td>{{ object.monto }}</td>
+    <td>{{ object.total }}</td>
+</tr>
+{% endfor %}
+</table><a class="btn btn-primary" href="{% url 'transporte_cotizaciondetalle_create' %}">Create new Cotizacion_Detalle</a>
+{% endblock %}

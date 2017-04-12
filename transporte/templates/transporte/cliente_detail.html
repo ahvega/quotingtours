@@ -1,0 +1,76 @@
+{% extends "_detail.html" %}
+{% load humanize %}
+{% load bootstrap3 %}
+{% block title %}Detalle de Cliente{% endblock %}
+{% block page-title %}Detalle de Cliente{% endblock %}{% block thead %}
+    <th class="derecha">Cliente</th>
+    <th class="izquierda">{{ cliente.nombre }}</th>{% endblock %}{% block tbody %}
+    <tr>
+        <td class="derecha">Contacto</td>
+        <td><strong>{{ cliente.contacto }}</strong></td>
+    </tr>
+    <tr>
+        <td class="derecha">Tel</td>
+        <td><a title="Llamar" href="tel:{{ cliente.tel }}"
+               class="ui-btn ui-btn-c ui-btn-icon-left ui-btn-inline ui-shadow ui-link ui-icon-phone">{{ cliente.tel }}</a>
+        </td>
+    </tr>
+    <tr>
+        <td class="derecha">Email</td>
+        <td><a title="Enviar email" href="mailto:{{ cliente.email }}"
+               class="ui-btn ui-btn-c ui-btn-icon-left ui-btn-inline ui-shadow ui-link ui-icon-mail">{{ cliente.email }}</a>
+        </td>
+    </tr>
+    <tr>
+        <td class="derecha">Nivel de Precio</td>
+        <td><strong>{{ cliente.nivel_de_precio }}</strong></td>
+    </tr>
+    {#    <tr>#}
+    {#        <td class="derecha">Creado</td>#}
+    {#        <td><strong>{{ cliente.creado|date:'D d/M/Y' }}</strong></td>#}
+    {#    </tr>#}
+    {#    <tr>#}
+    {#        <td class="derecha">Actualizado</td>#}
+    {#        <td><strong>{{ cliente.actualizado|date:'D d/M/Y' }}</strong></td>#}
+    {#    </tr>#}
+{% endblock %}
+
+{% block detalle %}
+    <div class="form-group">
+        <form class="form">
+            <table data-role="table" id="table-list" data-mode="columntoggle"
+                   class="table-stroke ui-shadow table-stripe  ui-responsive">
+                <thead>
+                <tr>
+                    <th class="centrado">Itinerario</th>
+                    <th data-priority="1" class="centrado">Inicia</th>
+                    <th data-priority="2" class="centrado">Termina</th>
+                    <th data-priority="3" class="centrado">Estatus</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for itinerario in cliente.itinerario_set.all %}
+                    <tr>
+                        <td data-search="{{ itinerario.nombre }}"><a class="ui-btn ui-link boton"
+                                                                     href="{{ itinerario.get_absolute_url }}">{{ itinerario.nombre }}</a>
+                        </td>
+                        <td class="centrado">{{ itinerario.fecha_desde|date:"D d/b" }}</td>
+                        <td class="centrado">{{ itinerario.fecha_hasta|date:"D d/b" }}</td>
+                        <td class="centrado">{{ itinerario.get_estatus_display }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </form>
+    </div>
+{% endblock %}{% block footer %}
+    {% if request.user.is_superuser %}
+        <div class="fixed-action-btn">
+            <a class="btn-floating btn-large waves-effect waves-light red darken-2"
+               href="{{ cliente.get_update_url }}">
+                <i class="material-icons">edit</i></a>
+        </div>
+            <a href="{{ cliente.get_delete_url }}"
+       class="ui-btn ui-btn-c ui-btn-icon-left ui-btn-inline ui-shadow ui-link ui-icon-delete ui-btn-icon-left">Eliminar
+        Vehículo</a>
+    {% endif %}{% endblock %}

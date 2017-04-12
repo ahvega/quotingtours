@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+    <p><a class="btn btn-default" href="{% url 'transporte_tramo_list' %}">Tramo Listing</a></p>
+    <table class="table">
+        <tr>
+            <td>ID</td>
+            <td>Link</td>
+            <td>nombre</td>
+            <td>slug</td>
+            <td>creado</td>
+            <td>actualizado</td>
+            <td>codigo</td>
+            <td>desde_hacia</td>
+            <td>kms</td>
+            <td>hrs</td>
+            <td>codigo_desde</td>
+            <td>codigo_hacia</td>
+        </tr>
+        {% for object in object_list %}
+            <tr>
+                <td>{{ object.id }}</td>
+                <td><a href="{{ object.get_absolute_url }}">{{ object }}</a></td>
+                <td>{{ object.nombre }}</td>
+                <td>{{ object.slug }}</td>
+                <td>{{ object.creado }}</td>
+                <td>{{ object.actualizado }}</td>
+                <td>{{ object.codigo }}</td>
+                <td>{{ object.desde_hacia }}</td>
+                <td>{{ object.kms }}</td>
+                <td>{{ object.hrs }}</td>
+                <td>{{ object.codigo_desde }}</td>
+                <td>{{ object.codigo_hacia }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock %}{% block footer %}
+    {% if request.user.is_superuser %}
+        <div class="fixed-action-btn">
+            <a class="btn-floating btn-large waves-effect waves-light red darken-2"
+               href="{% url "transporte_tramo_create" %}">
+                <i class="material-icons">add</i></a>
+        </div>
+    {% endif %}{% endblock %}

@@ -1,0 +1,81 @@
+{% extends "_detail.html" %}
+{% load humanize %}
+{% load misformatos %}
+{% block title %}Cotización{% endblock %}
+{% block page-title %}Detalle de Cotización{% endblock %}
+{% block thead %}
+    <th class="derecha">Cotización</th>
+    <th class="izquierda">{{ cotizacion.nombre }}</th>
+{% endblock %}
+{% block tbody %}
+    <tr>
+        <td class="derecha">Vence</td>
+        <td><strong>{{ cotizacion.fecha_vence|date:"D d/b" }}</strong></td>
+    </tr>
+    <tr>
+        <td class="derecha">Subtotal</td>
+        <td><strong>{{ cotizacion.subtotal|intcomma }}</strong></td>
+    </tr>
+    <tr>
+        <td class="derecha">Markup</td>
+        <td><strong>{{ cotizacion.markup|intcomma }}</strong></td>
+    </tr>
+    <tr>
+        <td class="derecha">Total</td>
+        <td><strong>{{ cotizacion.total|intcomma }}</strong></td>
+    </tr>
+    <tr>
+        <td class="derecha">Creada</td>
+        <td><strong>{{ cotizacion.creado }}</strong></td>
+    </tr>
+    <tr>
+        <td class="derecha">Actualizada</td>
+        <td><strong>{{ cotizacion.actualizado }}</strong></td>
+    </tr>
+{% endblock %}
+{% block detalle %}
+    <div class="form-group">
+        <form class="form">
+            <table data-role="table" id="table-list" data-mode="columntoggle"
+                   class="table-stroke ui-shadow table-stripe  ui-responsive">
+                <thead>
+                <tr>
+                    <th data-priority="9" class="derecha">#</th>
+                    <th data-priority="9" class="izquierda">Item</th>
+                    <th class="izquierda">Descripción</th>
+                    <th data-priority="4" class="derecha">Cantidad</th>
+                    <th data-priority="3" class="derecha">Precio</th>
+                    <th data-priority="4" class="derecha">Subtotal</th>
+                    <th data-priority="4" class="derecha">Markup</th>
+                    <th data-priority="2" class="derecha">Total</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for linea in cotizacion.lineas.all %}
+                    <tr>
+                        <td class="izquierda">{{ linea.id }}</td>
+                        <td data-icon="edit" class="centrado"><a class="ui-btn ui-link boton"
+                               href="{{ linea.get_absolute_url }}">{{ linea.item }}</a></td>
+                        <td data-search="{{ linea.description }}">{{ linea.descripcion }}</td>
+                        <td class="centrado">{{ linea.cantidad }}</td>
+                        <td class="derecha">{{ linea.costo|intcomma }}</td>
+                        <td class="derecha">{{ linea.monto|intcomma }}</td>
+                        <td class="derecha">{{ linea.markup|porciento }}</td>
+                        <td class="derecha">{{ linea.total|intcomma }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </form>
+    </div>
+{% endblock %}
+{% block footer %}{% if request.user.is_superuser %}
+    <a href="{{ cotizacion.get_update_url }}"
+       class="ui-btn ui-btn-c ui-btn-inline ui-shadow ui-link ui-icon-edit ui-btn-icon-left">Editar Cotización</a>
+        <div class="fixed-action-btn">
+            <a class="btn-floating btn-large waves-effect waves-light red darken-2"
+               href="{% url "transporte_cotizaciondetalle_create" %}">
+                <i class="material-icons">add</i></a>
+        </div>
+    {% endif %}
+{% endblock %}

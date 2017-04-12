@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+    <div class="form-group">
+        <form class="form">
+            <table data-role="table" id="table-list" data-mode="columntoggle"
+                   class="table-stroke ui-shadow table-stripe  ui-responsive">
+                <thead>
+                <tr>{% block thead %}{% endblock %}
+                </tr>
+                </thead>
+                <tbody>{% block tbody %}{% endblock %}
+                </tbody>
+            </table>
+        </form>
+    </div>{% endblock %}

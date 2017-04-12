@@ -1,0 +1,11 @@
+{% extends "_form.html" %}{% load staticfiles %}
+{% block title %}Itinerario{% endblock %}
+{% block page-title %}Itinerario{% endblock %}
+{% block extcss %}
+    <link rel="stylesheet"
+          href="http://cdn.rawgit.com/arschmitz/jquery-mobile-datepicker-wrapper/v0.1.1/jquery.mobile.datepicker.css">{% endblock %}
+{% block extlibs %}
+    <script src="http://cdn.rawgit.com/jquery/jquery-ui/1.10.4/ui/jquery.ui.datepicker.js"></script>
+    <script src="http://cdn.rawgit.com/arschmitz/jquery-mobile-datepicker-wrapper/v0.1.1/jquery.mobile.datepicker.js"></script>{% endblock %}
+{% block scripts %}
+    <script src="{% static "js/itinerario_form.js" %}"></script>{% endblock %}

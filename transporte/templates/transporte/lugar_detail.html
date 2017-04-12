@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+    <p><a class="btn btn-default" href="{% url 'transporte_lugar_list' %}">Lugar Listing</a></p>
+    <table class="table">
+        <tr>
+            <td>codigo</td>
+            <td>{{ object.codigo }}</td>
+        </tr>
+        <tr>
+            <td>slug</td>
+            <td>{{ object.slug }}</td>
+        </tr>
+        <tr>
+            <td>creado</td>
+            <td>{{ object.creado }}</td>
+        </tr>
+        <tr>
+            <td>actualizado</td>
+            <td>{{ object.actualizado }}</td>
+        </tr>
+        <tr>
+            <td>nombre</td>
+            <td>{{ object.nombre }}</td>
+        </tr>
+        <tr>
+            <td>pais</td>
+            <td>{{ object.pais }}</td>
+        </tr>
+    </table>
+{% endblock %}{% block footer %}
+    {% if request.user.is_superuser %}
+        <div class="fixed-action-btn">
+            <a class="btn-floating btn-large waves-effect waves-light red darken-2"
+               href="{{ lugar.get_update_url }}">
+                <i class="material-icons">edit</i></a>
+        </div>
+            <a href="{{ lugar.get_delete_url }}"
+       class="ui-btn ui-btn-c ui-btn-icon-left ui-btn-inline ui-shadow ui-link ui-icon-delete ui-btn-icon-left">Eliminar
+        Vehículo</a>
+    {% endif %}{% endblock %}

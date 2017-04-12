@@ -1,0 +1,43 @@
+{% extends "_detail.html" %}
+{% load humanize %}
+{% load bootstrap3 %}
+{% block title %}Detalle de Conductor{% endblock %}
+{% block page-title %}Detalle de Conductor{% endblock %}{% block thead %}
+    <th class="derecha">Conductor</th>
+    <th class="izquierda">{{ conductor.nombre }}</th>{% endblock %}{% block tbody %}
+    <tr>
+        <td class="derecha">Empleado</td>
+        <td><strong>{{ conductor.empleado | yesno }}</strong></td>
+    </tr>
+    <tr>
+        <td class="derecha">Tel</td>
+        <td><a title="Llamar" href="tel:{{ conductor.telefono }}"
+               class="ui-btn ui-btn-c ui-btn-icon-left ui-btn-inline ui-shadow ui-link ui-icon-phone">{{ conductor.telefono }}</a>
+        </td>
+    </tr>
+    <tr>
+        <td class="derecha">Identidad</td>
+        <td><strong>{{ conductor.identidad }}</strong></td>
+    </tr>
+    <tr>
+        <td class="derecha">Incentivo por Día</td>
+        <td><strong>{{ conductor.incentivo_por_dia }}</strong></td>
+    </tr>
+    <tr>
+        <td class="derecha">Creado</td>
+        <td><strong>{{ conductor.creado|date:'D d/M/Y' }}</strong></td>
+    </tr>
+    <tr>
+        <td class="derecha">Actualizado</td>
+        <td><strong>{{ conductor.actualizado|date:'D d/M/Y' }}</strong></td>
+    </tr>{% endblock %}{% block footer %}
+    {% if request.user.is_superuser %}
+        <div class="fixed-action-btn">
+            <a class="btn-floating btn-large waves-effect waves-light red darken-2"
+               href="{{ conductor.get_update_url }}">
+                <i class="material-icons">edit</i></a>
+        </div>
+            <a href="{{ conductor.get_delete_url }}"
+       class="ui-btn ui-btn-c ui-btn-icon-left ui-btn-inline ui-shadow ui-link ui-icon-delete ui-btn-icon-left">Eliminar
+        Vehículo</a>
+    {% endif %}{% endblock %}

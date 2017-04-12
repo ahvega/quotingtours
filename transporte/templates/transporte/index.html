@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% load humanize %}
+{% block title %}Inicio{% endblock %}
+{% block page-title %}Inicio{% endblock %}
+{% block content %}
+    {% if request.user.is_authenticated %}
+        <p>Hola {{ request.user.username|title }}, ingresaste por última vez
+            hace {{ request.user.last_login|timesince }}</p>
+    {% else %}
+        <p>Bienvenido Invitado!</p>
+    {% endif %}
+    <main>
+        <h1>{{ tipos_de_vehiculo.count }} Tipos de Vehículo</h1>
+        {% for tipos_de_vehiculo in tipos_de_vehiculo %}
+            <p><strong>{{ tipos_de_vehiculo.nombre }}</strong> {{ tipos_de_vehiculo.costo_por_dia|intcomma }}</p>
+        {% endfor %}
+    </main>
+{% endblock %}
+{% block scripts %}
+    <script>
+        $(document).ready(function () {
+            $('#backbutton').hide();
+        });
+    </script>
+{% endblock %}

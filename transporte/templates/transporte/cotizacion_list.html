@@ -1,0 +1,28 @@
+{% extends "_list.html" %}
+{% load humanize %}
+{% block title %}Cotizaciones{% endblock %}
+{% block page-title %}Cotizaciones{% endblock %}{% block thead %}
+    <th data-priority="9" class="derecha">#</th>
+    <th class="izquierda">Cotización</th>
+    <th data-priority="1" class="centrado">Vence</th>
+    <th data-priority="3" class="derecha">Subtotal</th>
+    <th data-priority="4" class="derecha">Margen</th>
+    <th data-priority="2" class="derecha">Total</th>{% endblock %}{% block tbody %}
+    {% for cotizacion in cotizacion_list %}
+        <tr>
+            <td class="izquierda">{{ cotizacion.id }}</td>
+            <td data-search="{{ cotizacion.nombre }}"><a class="ui-btn ui-link boton"
+                                                         href="{{ cotizacion.get_absolute_url }}">{{ cotizacion.nombre }}</a>
+            </td>
+            <td class="centrado">{{ cotizacion.fecha_vence|date:"D d/b" }}</td>
+            <td class="derecha">{{ cotizacion.subtotal|intcomma }}</td>
+            <td class="derecha">{{ cotizacion.markup|intcomma }}</td>
+            <td class="derecha">{{ cotizacion.total|intcomma }}</td>
+        </tr>{% endfor %}{% endblock %}{% block footer %}
+    {% if request.user.is_superuser %}
+        <div class="fixed-action-btn">
+            <a class="btn-floating btn-large waves-effect waves-light red darken-2"
+               href="{% url "transporte_cotizacion_create" %}">
+                <i class="material-icons">add</i></a>
+        </div>
+    {% endif %}{% endblock %}

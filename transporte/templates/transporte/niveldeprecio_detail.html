@@ -1,0 +1,50 @@
+{% extends "_detail.html" %}
+{% load humanize %}
+{% load misformatos %}
+{% block title %}Nivel de Precio{% endblock %}
+{% block page-title %}Nivel de Precio{% endblock %}
+{% block thead %}
+    <th class="derecha">Nivel de Precio</th>
+    <th class="izquierda">{{ niveldeprecio.nombre }}</th>
+{% endblock %}
+{% block tbody %}
+    <tr>
+        <td class="derecha">Tipo</td>
+        <td><strong>{{ niveldeprecio.get_tipo_display }}</strong></td>
+    </tr>
+    <tr>
+        <td class="derecha">Acción</td>
+        <td><strong>{{ niveldeprecio.get_accion_display }}</strong></td>
+    </tr>
+    <tr>
+        <td class="derecha">Valor</td>
+        {% if niveldeprecio.tipo == "Porcentaje" %}
+            <td><strong>En un {{ niveldeprecio.valor|porciento }}</strong></td>
+        {% else %}
+            <td><strong>En {{ niveldeprecio.valor }} Lps.</strong></td>
+        {% endif %}
+    </tr>
+    <tr>
+        <td class="derecha">Factor</td>
+        <td><strong>{{ niveldeprecio.factor|floatformat:6 }}</strong></td>
+    </tr>
+    <tr>
+        <td class="derecha">Creado</td>
+        <td><strong>{{ niveldeprecio.creado|date:'D d/M/Y' }}</strong></td>
+    </tr>
+    <tr>
+        <td class="derecha">Actualizado</td>
+        <td><strong>{{ niveldeprecio.actualizado|date:'D d/M/Y' }}</strong></td>
+    </tr>
+{% endblock %}
+{% block footer %}
+    {% if request.user.is_superuser %}
+        <div class="fixed-action-btn">
+            <a class="btn-floating btn-large waves-effect waves-light red darken-2"
+               href="{{ niveldeprecio.get_update_url }}">
+                <i class="material-icons">edit</i></a>
+        </div>
+            <a href="{{ niveldeprecio.get_delete_url }}"
+       class="ui-btn ui-btn-c ui-btn-icon-left ui-btn-inline ui-shadow ui-link ui-icon-delete ui-btn-icon-left">Eliminar
+        Vehículo</a>
+    {% endif %}{% endblock %}

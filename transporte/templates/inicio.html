@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% load humanize %}
+{% block title %}Inicio{% endblock %}
+{% block page-title %}Inicio{% endblock %}
+{% block content %}
+    {% if request.user.is_authenticated %}
+        <p>Hola {{ request.user.username|title }}, ingresaste por última vez
+            hace {{ request.user.last_login|timesince }}</p>
+    {% else %}
+        <p>Bienvenido Invitado!</p>
+        <p><a href="{% url 'login' %}"><strong>Inicia</strong></a> tu sesión.</p>
+    {% endif %}
+    <main>
+        <h1>{{ restaurantes.count }} Restaurantes</h1>
+        {% for restaurantes in restaurantes %}
+            <p><strong><a href="{{ restaurantes.get_absolute_url }}">{{ restaurantes.nombre }}</a></strong></p>
+        {% endfor %}
+    </main>
+{% endblock %}
+{% block scripts %}
+    <script>
+        $(document).ready(function () {
+            $('#backbutton').hide();
+        });
+    </script>
+{% endblock %}
