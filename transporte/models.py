@@ -2,7 +2,10 @@
 # -*- coding:  utf-8 -*-
 from __future__ import unicode_literals
 
-import datetime
+import ast
+import math
+from decimal import Decimal
+from datetime import date
 
 from django.contrib.contenttypes.models import ContentType
 from django.core.urlresolvers import reverse
@@ -12,6 +15,7 @@ from django.utils.timezone import now
 from django.utils.translation import ugettext as _
 from django_extensions.db import fields as extension_fields
 from djchoices import DjangoChoices, ChoiceItem
+from django.db.models.functions import Coalesce
 
 from .directions import distancia, duracion, verbage
 
@@ -50,10 +54,10 @@ class TipoDeVehiculo(models.Model):
 
 class Parametro(models.Model):
     ANNIOS = []
-    for r in range(2016, (datetime.datetime.now().year + 2)):
+    for r in range(2016, (date.today().year + 2)):
         ANNIOS.append((r, r))
     # Fields
-    annio = IntegerField(verbose_name='Año', choices=ANNIOS, default=datetime.datetime.now().year)
+    annio = IntegerField(verbose_name='Año', choices=ANNIOS, default=date.today().year)
     nombre = CharField(max_length=25)
     valor = CharField(max_length=100)
     unidad = CharField(max_length=100)
@@ -81,6 +85,10 @@ class Parametro(models.Model):
         return reverse('transporte_parametro_update', args=(self.slug,))
 
 
+redondeo = Parametro.objects.get(slug='2017-redondeo-lps')
+redondeoLps = float(int(ast.literal_eval(redondeo.valor)))
+
+
 class Item(models.Model):
     # Choices
     class TipoItem(DjangoChoices):
@@ -99,9 +107,9 @@ class Item(models.Model):
                                  choices=TipoItem.choices,
                                  validators=[TipoItem.validator],
                                  default=TipoItem.Servicio)
-    unidad = models.CharField(max_length=50)
-    costo = models.DecimalField(max_digits=10, decimal_places=4)
-    precio = models.DecimalField(max_digits=10, decimal_places=4)
+    # unidad = models.CharField(max_length=50)
+    costo = models.DecimalField(max_digits=10, decimal_places=2)
+    precio = models.DecimalField(max_digits=10, decimal_places=2)
     descripcion_compra = models.CharField(max_length=50)
     descripcion_venta = models.CharField(max_length=50)
     creado = models.DateTimeField(auto_now_add=True, editable=False)
@@ -185,7 +193,7 @@ class Cliente(models.Model):
     tel = models.CharField(max_length=15, null=True)
     ciudad = models.CharField(max_length=50, default='San Pedro Sula')
     pais = models.CharField(max_length=50, default='Honduras')
-    rtn = models.CharField(max_length=16)
+    rtn = models.CharField(default='Consum. Final', max_length=16, verbose_name='RTN')
     creado = models.DateTimeField(auto_now_add=True, editable=False)
     actualizado = models.DateTimeField(auto_now=True, editable=False)
 
@@ -224,7 +232,7 @@ class Itinerario(models.Model):
 
     # Fields
     nombre = models.CharField(max_length=100)
-    slug = extension_fields.AutoSlugField(populate_from='nombre', blank=True)
+    slug = extension_fields.AutoSlugField(populate_from='nombre', blank=True, overwrite=True)
     fecha_desde = models.DateField(verbose_name='inicia')
     fecha_hasta = models.DateField(verbose_name='termina')
     estatus = models.CharField(max_length=10, choices=Status.choices, validators=[Status.validator],
@@ -242,6 +250,7 @@ class Itinerario(models.Model):
         ordering = ('-id',)
         verbose_name = _('Itinerario')
         verbose_name_plural = _('Itinerarios')
+        unique_together = ('cliente', 'nombre')
 
     def __str__(self):
         return self.nombre
@@ -260,18 +269,14 @@ class Cotizacion(models.Model):
     # Fields
     nombre = models.CharField(max_length=100)
     slug = extension_fields.AutoSlugField(populate_from='nombre', blank=True)
-    fecha_vence = models.DateField(default=now)
+    fecha_vence = models.DateField(default=date(now().year, 12, 31))
+    descripcion = models.CharField(default=' - ', max_length=100)
+    # _cliente = models.CharField(blank=True, max_length=100, null=True, db_column='cliente')
     _subtotal = models.DecimalField(max_digits=10,
                                     decimal_places=2,
                                     null=True,
                                     blank=True,
                                     db_column='subtotal',
-                                    default=0)
-    _utilidad = models.DecimalField(max_digits=10,
-                                    decimal_places=2,
-                                    null=True,
-                                    blank=True,
-                                    db_column='utilidad',
                                     default=0)
     _total = models.DecimalField(max_digits=10,
                                  decimal_places=2,
@@ -279,6 +284,12 @@ class Cotizacion(models.Model):
                                  blank=True,
                                  db_column='total',
                                  default=0)
+    _utilidad = models.DecimalField(max_digits=8,
+                                    decimal_places=6,
+                                    null=True,
+                                    blank=True,
+                                    db_column='utilidad',
+                                    default=0)
     # utilidad = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     # total = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     creado = models.DateTimeField(auto_now_add=True, editable=False)
@@ -296,15 +307,15 @@ class Cotizacion(models.Model):
         verbose_name_plural = _('Cotizaciones')
 
     def __str__(self):
-        return self.nombre
+        return str(self.nombre)
 
     def __unicode__(self):
         return u'%s' % self.nombre
 
     @property
     def subtotal(self):
-        agregado = self.lineas.aggregate(subtotal=Sum('monto'))
-        return agregado['subtotal']
+        subtotal_agregado = self.lineas.aggregate(subtotal=Coalesce(Sum('monto'), 0))
+        return subtotal_agregado['subtotal']
 
     @subtotal.setter
     def subtotal(self, value):
@@ -312,8 +323,8 @@ class Cotizacion(models.Model):
 
     @property
     def total(self):
-        agregado = self.lineas.aggregate(total=Sum('total'))
-        return agregado['total']
+        total_agregado = self.lineas.aggregate(total=Coalesce(Sum('total'), 0))
+        return Decimal(math.ceil(float(total_agregado['total']) / redondeoLps) * redondeoLps).quantize(Decimal("0.00"))
 
     @total.setter
     def total(self, value):
@@ -321,14 +332,27 @@ class Cotizacion(models.Model):
 
     @property
     def utilidad(self):
-        if self._total == 0:
-            return 0
+        subtotal_agregado = self.lineas.aggregate(subtotal=Coalesce(Sum('monto'), 0))
+        total_agregado = self.lineas.aggregate(total=Coalesce(Sum('total'), 0))
+        redondeado = (math.ceil(float(total_agregado['total']) / redondeoLps)) * redondeoLps
+        redondeado = Decimal(redondeado).quantize(Decimal("0.00"))
+        utilidad_porcentual = (redondeado - Decimal(subtotal_agregado['subtotal'])) / redondeado
+        if redondeado == 0.00:
+            return 0.000000
         else:
-            return round((self._total - self._subtotal) / self._total, 4)
+            return Decimal(utilidad_porcentual).quantize(Decimal("0.000000"))
 
     @utilidad.setter
     def utilidad(self, value):
         self._utilidad = value
+
+    # @property
+    # def cliente(self):
+    #     return self.itinerario.cliente
+    #
+    # @cliente.setter
+    # def cliente(self, value):
+    #     self._cliente = value
 
     def get_absolute_url(self):
         return reverse('transporte_cotizacion_detail', args=(self.slug,))
@@ -347,9 +371,12 @@ class CotizacionDetalle(models.Model):
     monto = models.DecimalField(max_digits=10,
                                 decimal_places=2,
                                 default=0, editable=False)
-    markup = models.DecimalField(max_digits=6,
-                                 decimal_places=4,
+    markup = models.DecimalField(max_digits=8,
+                                 decimal_places=6,
                                  default=0, editable=False)
+    utilidad = models.DecimalField(max_digits=6,
+                                   decimal_places=4,
+                                   default=0, editable=False)
     total = models.DecimalField(max_digits=10,
                                 decimal_places=2,
                                 default=0, editable=False)
@@ -366,8 +393,8 @@ class CotizacionDetalle(models.Model):
 
     class Meta:
         ordering = ('id',)
-        verbose_name = _('Detalle de Cotización')
-        verbose_name_plural = _('Detalles de Cotización')
+        verbose_name = _('Ítem en Cotización')
+        verbose_name_plural = _('Ítems en Cotización')
 
     @property
     def descripcion(self):
@@ -380,12 +407,13 @@ class CotizacionDetalle(models.Model):
     def save(self, *args, **kwargs):
         self.costo = self.item.costo
         self.monto = self.cantidad * self.costo
-        self.markup = round(self.nivel_de_precio.factor - 1, 4)
-        self.total = float(self.monto) * (1 + float(self.markup))
+        self.markup = Decimal(round(self.nivel_de_precio.factor - 1, 4)).quantize(Decimal("0.000000"))
+        self.utilidad = Decimal(self.nivel_de_precio.valor).quantize(Decimal("0.0000"))
+        self.total = Decimal(self.monto) * (1 + Decimal(self.markup))
         super(CotizacionDetalle, self).save(*args, **kwargs)
 
     def __str__(self):
-        return self._descripcion
+        return str(self.descripcion)
 
     def __unicode__(self):
         return u'%s' % self.slug
@@ -396,8 +424,17 @@ class CotizacionDetalle(models.Model):
     def get_update_url(self):
         return reverse('transporte_cotizaciondetalle_update', args=(self.slug,))
 
+    def get_delete_url(self):
+        return reverse('transporte_cotizaciondetalle_delete', args=(self.slug,))
+
+    def get_cotizacion_url(self):
+        return reverse('transporte_cotizacion_detail', args=(self.cotizacion.slug,))
+
         # def get_delete_url(self):
         #     return reverse('transporte_cotizaciondetalle_delete', args=(self.slug,))
+
+    def cotizacion_slug(self):
+        return self.cotizacion.slug
 
 
 class Vehiculo(models.Model):
@@ -493,6 +530,7 @@ class Tramo(models.Model):
     # Relationship Fields
     desde_lugar = models.ForeignKey(Lugar, verbose_name='origen', related_name='desde')
     hacia_lugar = models.ForeignKey(Lugar, verbose_name='destino', related_name='hacia')
+    # vehiculos = models.ManyToManyField(TramoEnVehiculo, through=TipoDeVehiculo)
 
     class Meta:
         ordering = ('-id',)
@@ -601,3 +639,27 @@ class Conductor(models.Model):
 
     def get_update_url(self):
         return reverse('transporte_conductor_update', args=(self.slug,))
+
+
+class TramoEnVehiculo(models.Model):
+    # Fields
+    _nombre = models.CharField(blank=True, db_column='nombre', max_length=25, null=True)
+    slug = extension_fields.AutoSlugField(populate_from='nombre', blank=True, overwrite=True, editable=False)
+    _costo = models.DecimalField(blank=True, db_column='costo', decimal_places=2, max_digits=8, null=True)
+    # _precio = models.DecimalField(blank=True, db_column='precio', decimal_places=2, max_digits=8, null=True)
+
+    # Relationship fields
+    tramo = models.ForeignKey(Tramo, on_delete=CASCADE, related_name='vehiculos', verbose_name='tramo')
+    vehiculo = models.ForeignKey(TipoDeVehiculo, on_delete=CASCADE)
+
+    class Meta:
+        ordering = ('tramo',)
+        verbose_name = 'Tramo en Vehículos'
+        verbose_name_plural = 'Tramos En Vehículos'
+        unique_together = ('tramo', 'vehiculo')
+
+    def get_absolute_url(self):
+        return reverse('transporte_tramoenvehiculo_detail', args=(self.id,))
+
+    def get_update_url(self):
+        return reverse('transporte_tramoenvehiculo_update', args=(self.id,))
