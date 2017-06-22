@@ -4,8 +4,16 @@
 {% block title %}Nivel de Precio{% endblock %}
 {% block page-title %}Nivel de Precio{% endblock %}
 {% block thead %}
-    <th class="derecha">Nivel de Precio</th>
-    <th class="izquierda">{{ niveldeprecio.nombre }}</th>
+    <th colspan="2" class="izquierda">{{ niveldeprecio.nombre }}{% if request.user.is_superuser %}
+        <div class="ui-nodisc-icon mininav3r">
+            <a class="ui-btn ui-btn-inline ui-btn-a ui-icon-edit ui-btn-icon-notext ui-btncito"
+               title="Editar Nivel de Precio {{ niveldeprecio.nombre }}" href="{{ niveldeprecio.get_update_url }}">edit</a>
+            <a class="ui-btn ui-btn-inline ui-btn-a ui-icon-plus ui-btn-icon-notext ui-btncito"
+               title="Agregar Nuevo Nivel de Precio"
+               href="{% url "transporte_niveldeprecio_create" %}">add</a>
+            <a class="ui-btn ui-btn-inline ui-btn-a ui-icon-delete ui-btn-icon-notext ui-btncito"
+               title="Borrar Nivel de Precio {{ niveldeprecio.nombre }}" href="{{ niveldeprecio.get_delete_url }}">delete</a></div>
+    {% endif %}</th>
 {% endblock %}
 {% block tbody %}
     <tr>
@@ -37,14 +45,9 @@
         <td><strong>{{ niveldeprecio.actualizado|date:'D d/M/Y' }}</strong></td>
     </tr>
 {% endblock %}
-{% block footer %}
-    {% if request.user.is_superuser %}
+{% block footer %}{% if request.user.is_superuser %}
         <div class="fixed-action-btn">
             <a class="btn-floating btn-large waves-effect waves-light red darken-2"
                href="{{ niveldeprecio.get_update_url }}">
                 <i class="material-icons">edit</i></a>
-        </div>
-            <a href="{{ niveldeprecio.get_delete_url }}"
-       class="ui-btn ui-btn-c ui-btn-icon-left ui-btn-inline ui-shadow ui-link ui-icon-delete ui-btn-icon-left">Eliminar
-        Vehículo</a>
-    {% endif %}{% endblock %}
+        </div> {% endif %}{% endblock %}

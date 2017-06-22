@@ -1,44 +1,42 @@
-{% extends "base.html" %}
+{% extends "_table.html" %}
 {% load static %}
-{% block content %}
-    <p><a class="btn btn-default" href="{% url 'transporte_tramo_list' %}">Tramo Listing</a></p>
-    <table class="table">
-        <tr>
-            <td>ID</td>
-            <td>Link</td>
-            <td>nombre</td>
-            <td>slug</td>
-            <td>creado</td>
-            <td>actualizado</td>
-            <td>codigo</td>
-            <td>desde_hacia</td>
-            <td>kms</td>
-            <td>hrs</td>
-            <td>codigo_desde</td>
-            <td>codigo_hacia</td>
-        </tr>
-        {% for object in object_list %}
-            <tr>
-                <td>{{ object.id }}</td>
-                <td><a href="{{ object.get_absolute_url }}">{{ object }}</a></td>
-                <td>{{ object.nombre }}</td>
-                <td>{{ object.slug }}</td>
-                <td>{{ object.creado }}</td>
-                <td>{{ object.actualizado }}</td>
-                <td>{{ object.codigo }}</td>
-                <td>{{ object.desde_hacia }}</td>
-                <td>{{ object.kms }}</td>
-                <td>{{ object.hrs }}</td>
-                <td>{{ object.codigo_desde }}</td>
-                <td>{{ object.codigo_hacia }}</td>
-            </tr>
-        {% endfor %}
-    </table>
-{% endblock %}{% block footer %}
+{% load humanize %}
+{% block title %}Tramos{% endblock %}
+{% block page-title %}Tramos{% endblock %}
+{% block theader %}
+            <th class="centrado">Tramo</th>
+            <th></th>
+            <th data-priority="5" class="centrado">Descripción</th>
+            <th data-priority="4" class="centrado">Desde</th>
+            <th data-priority="3" class="centrado">Hacia</th>
+            <th data-priority="1" class="centrado">Kms</th>
+            <th data-priority="2" class="centrado">Hrs</th>{% endblock %}
+{% block tbody %}{% for tramo in tramo_list %}
+                    <tr>
+                    <td data-search="{{ tramo.descripcion }}">
+                        <a title="Ver Tramo {{ tramo.codigo|upper }}"
+                           href="{{ tramo.get_absolute_url }}">{{ tramo.codigo }}</td>
+                    <td><div class="ui-alt-icon ui-nodisc-icon mininav3r">
+                        <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-action ui-btn-icon-notext ui-btncito"
+                           title="Ver Tramo {{ tramo.codigo|upper }}" href="{{ tramo.get_absolute_url }}">goto</a>{% if request.user.is_superuser %}
+                        <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-edit ui-btn-icon-notext ui-btncito"
+                           title="Editar Tramo {{ tramo.codigo|upper }}" href="{{ tramo.get_update_url }}"
+                           data-ajax="false" onclick="window.location.reload(false);">edit</a>
+                        <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-delete ui-btn-icon-notext ui-btncito"
+                           title="Eliminar Tramo {{ tramo.codigo|upper }}" href="{{ tramo.get_delete_url }}">delete</a>{% endif %}
+                    </div></td>
+                    <td class="izquierda">{{ tramo.descripcion }}</td>
+                    <td class="centrado">{{ tramo.desde_lugar.nombre }}</td>
+                    <td class="centrado">{{ tramo.hacia_lugar.nombre }}</td>
+                    <td class="centrado">{{ tramo.kms|intcomma }}</td>
+                    <td class="centrado">{{ tramo.hrs }}</td>
+                </tr>
+            {% endfor %}{% endblock %}{% block footer %}
     {% if request.user.is_superuser %}
         <div class="fixed-action-btn">
             <a class="btn-floating btn-large waves-effect waves-light red darken-2"
-               href="{% url "transporte_tramo_create" %}">
+               href="{% url "transporte_tramo_create" %}"
+               data-ajax="false" onclick="window.location.reload(false);">
                 <i class="material-icons">add</i></a>
         </div>
     {% endif %}{% endblock %}

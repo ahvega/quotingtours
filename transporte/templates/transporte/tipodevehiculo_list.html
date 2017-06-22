@@ -1,32 +1,41 @@
-{% extends "_list.html" %}
-{% load humanize %}
+{% extends "_table.html" %}{% load humanize %}
 {% block title %}Tipos de Vehículo{% endblock %}
 {% block page-title %}Tipos de Vehículo{% endblock %}
-{% block thead %}
-    <th class="center">Tipo de Vehículo</th>
-    <th data-priority="1" class="derecha">Costo/Día</th>
-    <th data-priority="2" class="derecha">Costo/Km</th>
-    <th data-priority="3" class="derecha">Km/Gal</th>
-    <th data-priority="4" class="derecha">Gals/Tanque</th>
-{% endblock %}
-{% block tbody %}
-    {% for tipodevehiculo in tipodevehiculo_list %}
-        <tr>
-            <td data-search="{{ tipodevehiculo.nombre }}"><a class="ui-btn ui-link boton"
-                                                             href="{{ tipodevehiculo.get_absolute_url }}">{{ tipodevehiculo.nombre }}</a>
-            </td>
-            <td class="derecha">{{ tipodevehiculo.costo_por_dia|intcomma }}</td>
-            <td class="derecha">{{ tipodevehiculo.costo_por_km|intcomma }}</td>
-            <td class="derecha">{{ tipodevehiculo.rendimiento }}</td>
-            <td class="derecha">{{ tipodevehiculo.galones_tanque }}</td>
-        </tr>
-    {% endfor %}
-{% endblock %}
-{% block footer %}
-    {% if request.user.is_superuser %}
-        <div class="fixed-action-btn">
-            <a class="btn-floating btn-large waves-effect waves-light red darken-2"
-               href="{% url "transporte_tipodevehiculo_create" %}">
-                <i class="material-icons">add</i></a>
-        </div>
-    {% endif %}{% endblock %}
+{% block theader %}
+                                <th class="center">Tipo</th>
+                                <th></th>
+                                <th data-priority="1" class="derecha">Costo por Día</th>
+                                <th data-priority="2" class="derecha">Costo por Km</th>
+                                <th data-priority="3" class="derecha">Km/Gal</th>
+                                <th data-priority="4" class="derecha">Gals/Tanque</th>{% endblock %}{% block tbody %}{% for tipodevehiculo in tipodevehiculo_list %}
+                            <tr>
+                                <td data-search="{{ tipodevehiculo.nombre }}">
+                                    <a title="Ver Tipo {{ tipodevehiculo.nombre }}"
+                                       href="{{ tipodevehiculo.get_absolute_url }}">{{ tipodevehiculo.nombre }}</a>
+                                </td>
+                                <td class="izquierda" width="1">
+                                    <div class="ui-alt-icon ui-nodisc-icon mininav3r">
+                                        <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-action ui-btn-icon-notext ui-btncito"
+                                           title="Ver Tipo {{ tipodevehiculo.nombre }}"
+                                           href="{{ tipodevehiculo.get_absolute_url }}">goto</a>{% if request.user.is_superuser %}
+                                        <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-edit ui-btn-icon-notext ui-btncito"
+                                           title="Editar Tipo {{ tipodevehiculo.nombre }}"
+                                           href="{{ tipodevehiculo.get_update_url }}"
+                                           data-ajax="false" onclick="window.location.reload(false);">edit</a>
+                                        <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-delete ui-btn-icon-notext ui-btncito"
+                                           title="Eliminar Tipo {{ tipodevehiculo.nombre }}"
+                                           href="{{ tipodevehiculo.get_delete_url }}">delete</a>{% endif %}
+                                    </div>
+                                </td>
+                                <td class="derecha">{{ tipodevehiculo.costo_por_dia|intcomma }}</td>
+                                <td class="derecha">{{ tipodevehiculo.costo_por_km|intcomma }}</td>
+                                <td class="derecha">{{ tipodevehiculo.rendimiento }}</td>
+                                <td class="derecha">{{ tipodevehiculo.galones_tanque }}</td>
+                            </tr>{% endfor %}{% endblock %}{% block footer %}{% if request.user.is_superuser %}
+                <div class="fixed-action-btn">
+                    <a class="btn-floating btn-large waves-effect waves-light red darken-2"
+                       title="Agregar Tipo de Vehículo"
+                       href="{% url "transporte_tipodevehiculo_create" %}"
+                       data-ajax="false" onclick="window.location.reload(false);">
+                        <i class="material-icons">add</i></a>
+                </div>{% endif %}{% endblock %}

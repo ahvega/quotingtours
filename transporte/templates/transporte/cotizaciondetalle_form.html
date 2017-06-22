@@ -1,5 +1,17 @@
-{% extends "_form.html" %}{% load staticfiles %}
+{% extends "base.html" %}
+{% load bootstrap3 %}
+{% block extlibs %}{% endblock %}
+{% load staticfiles %}
 {% block title %}Detalle de Cotización{% endblock %}
 {% block page-title %}Detalle de Cotización{% endblock %}
-{#{% block scripts %}#}
-{#    <script src="{% static "js/submit_form.js" %}"></script>{% endblock %}#}
+{% block content %}
+    <div class="topcontainer" style="padding: 10px;">
+        <form id="laforma" method="post" class="form form-horizontal">
+            {% csrf_token %}
+            <input type="hidden" id="id_cotizacion" name="cotizacion" value="{{ c_id }}" />
+            {% bootstrap_form form exclude=cotizacion %}
+            <button id="submit" class="ui-btn ui-btn-b ui-btn-icon-left ui-btn-inline ui-corner-all"
+                    type="submit">Guardar Línea</button>
+        </form>
+    </div>{% endblock %}{% block footer %}
+{% endblock %}

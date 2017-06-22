@@ -1,57 +1,85 @@
-{% extends "base.html" %}
-{% load static %}
-{% block content %}
-    <p><a class="btn btn-default" href="{% url 'transporte_tramo_list' %}">Tramo Listing</a></p>
-    <table class="table">
-        <tr>
-            <td>nombre</td>
-            <td>{{ object.nombre }}</td>
-        </tr>
-        <tr>
-            <td>slug</td>
-            <td>{{ object.slug }}</td>
-        </tr>
-        <tr>
-            <td>creado</td>
-            <td>{{ object.creado }}</td>
-        </tr>
-        <tr>
-            <td>actualizado</td>
-            <td>{{ object.actualizado }}</td>
-        </tr>
-        <tr>
-            <td>codigo</td>
-            <td>{{ object.codigo }}</td>
-        </tr>
-        <tr>
-            <td>desde_hacia</td>
-            <td>{{ object.desde_hacia }}</td>
-        </tr>
-        <tr>
-            <td>kms</td>
-            <td>{{ object.kms }}</td>
-        </tr>
-        <tr>
-            <td>hrs</td>
-            <td>{{ object.hrs }}</td>
-        </tr>
-        <tr>
-            <td>codigo_desde</td>
-            <td>{{ object.codigo_desde }}</td>
-        </tr>
-        <tr>
-            <td>codigo_hacia</td>
-            <td>{{ object.codigo_hacia }}</td>
-        </tr>
-    </table>
-{% endblock %}{% block footer %}
-    {% if request.user.is_superuser %}
+{% extends "_detail.html" %}
+{% load humanize %}
+{% block title %}Detalle de Tramo{% endblock %}
+{% block page-title %}Detalle de Tramo{% endblock %}
+{% block thead %}
+    <th colspan="2" class="izquierda">{{ tramo.desde_lugar }} - {{ tramo.hacia_lugar }}{% if request.user.is_superuser %}
+        <div class="ui-nodisc-icon mininav3r">
+            <a class="ui-btn ui-btn-inline ui-btn-a ui-icon-edit ui-btn-icon-notext ui-btncito"
+               title="Editar Tramo {{ tramo.desde_lugar }} - {{ tramo.hacia_lugar }}" href="{{ tramo.get_update_url }}"
+               data-ajax="false" onclick="window.location.reload(false);">edit</a>
+            <a class="ui-btn ui-btn-inline ui-btn-a ui-icon-plus ui-btn-icon-notext ui-btncito"
+               title="Agregar Nuevo Tramo"
+               href="{% url "transporte_tramo_create" %}"
+               data-ajax="false" onclick="window.location.reload(false);">add</a>
+            <a class="ui-btn ui-btn-inline ui-btn-a ui-icon-delete ui-btn-icon-notext ui-btncito"
+               title="Borrar Tramo {{ tramo.desde_lugar }} - {{ tramo.hacia_lugar }}" href="{{ tramo.get_delete_url }}">delete</a></div>
+    {% endif %}</th>
+{% endblock %}
+{% block tbody %}
+    <tr>
+        <td class="derecha">Código Tramo</td>
+        <td><strong>{{ tramo.codigo|upper }}</strong></td>
+    </tr>
+    <tr>
+        <td class="derecha">Descripión</td>
+        <td>{{ tramo.descripcion }}</td>
+    </tr>
+    <tr>
+        <td class="derecha">Desde</td>
+        <td><strong>{{ tramo.desde_lugar.nombre }}</strong></td>
+    </tr>
+    <tr>
+        <td class="derecha">Hacia</td>
+        <td><strong>{{ tramo.hacia_lugar.nombre }}</strong></td>
+    </tr>
+    <tr>
+        <td class="derecha">Kilómetros</td>
+        <td><strong>{{ tramo.kms }}</strong></td>
+    </tr>
+    <tr>
+        <td class="derecha">Horas</td>
+        <td><strong>{{ tramo.hrs }}</strong></td>
+    </tr>
+{% endblock %}
+{% block detalle %}
+    <div class="form-group topcontainer">
+        <form class="form">
+            <div id="titulodetalle">Costo por Vehículo</div>
+            <table data-role="table" id="table-list" data-mode="columntoggle"
+                   class="table-stroke ui-shadow table-stripe  ui-responsive">
+                <thead>
+                <tr>
+                    <th class="center">Vehículo</th>
+                    <th></th>
+                    <th data-priority="1" class="derecha">Costo</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for tramoenvehiculo in tramo.vehiculos.all %}
+                <tr>
+                    <td>{{ tramoenvehiculo.vehiculo }}</td>
+                        <td><div class="ui-alt-icon ui-nodisc-icon mininav3r">
+                            <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-action ui-btn-icon-notext ui-btncito"
+                               title="Ver Tramo {{ tramoenvehiculo.nombre }}" href="{{ tramoenvehiculo.get_absolute_url }}">goto</a>{% if request.user.is_superuser %}
+                            <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-edit ui-btn-icon-notext ui-btncito"
+                               title="Editar Tramo {{ tramoenvehiculo.nombre }}" href="{{ tramoenvehiculo.get_update_url }}"
+                               data-ajax="false" onclick="window.location.reload(false);">>edit</a>
+                            <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-delete ui-btn-icon-notext ui-btncito"
+                               title="Eliminar Tramo {{ tramoenvehiculo.nombre }}" href="{{ tramoenvehiculo.get_delete_url }}">delete</a>{% endif %}
+                        </div></td>
+                    <td class="derecha">{{ tramoenvehiculo.costo|intcomma }}</td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </form>
+    </div>
+{% endblock %}
+{% block footer %}{% if request.user.is_superuser %}
         <div class="fixed-action-btn">
             <a class="btn-floating btn-large waves-effect waves-light red darken-2"
-               href="{{ tramo.get_update_url }}">
-                <i class="material-icons">edit</i></a>
-        </div>
-            <a href="{{ tramo.get_delete_url }}"
-       class="ui-btn ui-btn-c ui-btn-icon-left ui-btn-inline ui-shadow ui-link ui-icon-delete ui-btn-icon-left">Eliminar
-        Vehículo</a>
-    {% endif %}{% endblock %}
+               href="{% url "transporte_tramoenvehiculo_create" tramo_id=tramo.pk %}"
+               data-ajax="false" onclick="window.location.reload(false);">
+                <i class="material-icons">add</i></a>
+        </div>{% endif %}{% endblock %}

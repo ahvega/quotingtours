@@ -1,18 +1,21 @@
-/*Font Awesome icons*/
 @import url('https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css');
 /*Ionicons*/
-@import url('http://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css');
+/*@import url('http://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css');*/
+
+/*@import url('https://fonts.googleapis.com/css?family=Fira+Sans+Condensed:300,700');*/
+@import url('https://fonts.googleapis.com/css?family=PT+Sans+Narrow:400,700');
+
 
 html, body, p, .ui-checkbox .ui-btn, .ui-radio .ui-btn, td a.boton, .ui-btn {
-    font-family: 'Roboto Condensed', 'Open Sans Condensed', 'Fira Sans', 'Segoe UI', 'sans-serif' !important;
+    font-family: 'PT Sans Narrow', 'Roboto Condensed', 'Fira Sans', 'Segoe UI', 'sans-serif' !important;
 }
 
 #resultados, table {
-    font-size: smaller !important;
+    /*font-size: smaller !important;*/
 }
 
 a.ui-table-columntoggle-btn.ui-btn.ui-btn-a.ui-corner-all.ui-shadow.ui-mini {
-    margin-bottom: 7px;
+    margin: 16px;
 }
 
 .btn, h2, h3 {
@@ -30,8 +33,8 @@ a.ui-table-columntoggle-btn.ui-btn.ui-btn-a.ui-corner-all.ui-shadow.ui-mini {
 
 ul.pagination li a, ul.pagination li button {
     border-radius: 0 !important;
-    background:    #2c3e50 !important;
-    border-color:  #2c3e50 !important;
+    background:    #204478 !important;
+    border-color:  #204478 !important;
     color:         #fff;
 }
 
@@ -46,16 +49,20 @@ ul.pagination li a:hover, ul.pagination li button:hover {
 }
 
 thead {
-    background-color: #009587;
-    border-color:     #009587;
-    color:            #fff;
+    background-color: #cbcbcb;
+    border-color:     #ECECEC;
+    color:            #333;
+    box-shadow: 0 1px 2px 1px #0000001a, 0 3px 6px #0000001a;
     /*text-shadow:      0 1px 0 #000;*/
     font-size:        1.1em;
+    text-transform: uppercase;
+    font-weight: bold;
+    height: 44px;
 }
 
 /*a.ui-btn:active,*/
 /*a.ui-btn:focus {*/
-/*background-color:   #009587 !important;*/
+/*background-color:   #ECECEC !important;*/
 /*-webkit-box-shadow: 0 0 12px #364249 !important;*/
 /*-moz-box-shadow:    0 0 12px #364249 !important;*/
 /*box-shadow:         0 0 12px #364249 !important;*/
@@ -63,7 +70,7 @@ thead {
 /*}*/
 
 /*a.ui-btn:hover, a.ui-btn:active, a.ui-btn:focus {*/
-/*background-color:   #009587 !important;*/
+/*background-color:   #ECECEC !important;*/
 /*-webkit-box-shadow: 0 0 12px #9d9d9d !important;*/
 /*-moz-box-shadow:    0 0 12px #9d9d9d !important;*/
 /*box-shadow:         0 0 12px #9d9d9d !important;*/
@@ -76,21 +83,23 @@ thead {
 /*!*text-shadow: 0 1px 0 #000 !important;*!*/
 /*}*/
 
+tr, td, thead, th {
+    vertical-align: middle !important;
+}
+
 td.centrado, th.centrado {
     text-align:     center;
-    vertical-align: middle !important;
+    padding:        8px 8px 4px 8px;
 }
 
 td.derecha, th.derecha {
     text-align:     right;
-    vertical-align: middle !important;
-    padding:        4px 10px;
+    padding:        8px 8px 4px 8px;
 }
 
 td.izquierda, th.izquierda {
     text-align:     left;
-    vertical-align: middle !important;
-    padding:        4px 10px;
+    padding:        8px 8px 4px 8px;
 }
 
 td a.boton {
@@ -103,20 +112,29 @@ td a.boton {
 }
 
 html .ui-bar-b {
-    box-shadow: 4px 4px 6px rgba(205, 205, 205, 0.87);
+    box-shadow: 1px 3px 3px #0003;
+    height: 46px;
 }
 
 div#ui-datepicker-div {
     background-color: #fff;
     padding:          10px;
     border:           #ececec 1px solid;
-    box-shadow:       4px 4px 6px rgba(205, 205, 205, 0.87);
+    box-shadow:       0 1px 2px 1px #0000001a, 0 3px 6px #0000001a;
     margin-top:       2px;
 }
 
+.ui-icon-circle-triangle-w {
+    background-position: -96px 0;
+}
+
+.ui-icon-circle-triangle-e {
+    background-position: -32px 0;
+}
+
 span.ui-icon.ui-icon-circle-triangle-w, span.ui-icon.ui-icon-circle-triangle-e {
-    padding: 0 8px;
-    border:  1px solid #9d9d9d;
+    /*padding: 0 8px;*/
+    /*border:  1px solid #9d9d9d;*/
     margin:  15px;
     cursor:  pointer;
 }
@@ -130,7 +148,7 @@ span.ui-icon.ui-icon-circle-triangle-w, span.ui-icon.ui-icon-circle-triangle-e {
 .ui-datepicker-title {
     padding:     5px;
     text-align:  center;
-    font-weight: bold;
+    font-weight: normal;
     color:       #444;
 }
 
@@ -144,7 +162,7 @@ span.ui-icon.ui-icon-circle-triangle-w, span.ui-icon.ui-icon-circle-triangle-e {
 }
 
 .ui-content {
-    padding: .5em;
+    padding: 0 0 0 0;
 }
 
 .ui-loading .ui-loader {
@@ -152,7 +170,7 @@ span.ui-icon.ui-icon-circle-triangle-w, span.ui-icon.ui-icon-circle-triangle-e {
 }
 
 .ui-btn {
-    margin: 0;
+    border: none;
 }
 
 .ui-select .ui-btn select {
@@ -190,7 +208,7 @@ table.dataTable.dtr-inline.collapsed > tbody > tr > th:first-child:before {
     color:            white;
     border:           2px solid white;
     border-radius:    16px;
-    box-shadow:       0 0 3px #444;
+    box-shadow:       0 1px 2px 1px #0000001a, 0 3px 6px #0000001a;
     box-sizing:       content-box;
     text-align:       left;
     font-family:      'Courier New', Courier, monospace;
@@ -245,7 +263,7 @@ table.dataTable.dtr-column > tbody > tr > th.control:before {
     color:            white;
     border:           2px solid white;
     border-radius:    16px;
-    box-shadow:       0 0 3px #444;
+    box-shadow:       0 1px 2px 1px #0000001a, 0 3px 6px #0000001a;
     box-sizing:       content-box;
     text-align:       left;
     font-family:      'Courier New', Courier, monospace;
@@ -292,7 +310,7 @@ table.dataTable > tbody > tr.child ul li:last-child {
 table.dataTable > tbody > tr.child span.dtr-title {
     display:     inline-block;
     min-width:   75px;
-    font-weight: bold;
+    font-weight: normal;
 }
 
 div.dtr-modal {
@@ -320,7 +338,7 @@ div.dtr-modal div.dtr-modal-display {
     background-color: #f5f5f7;
     border:           1px solid black;
     border-radius:    0.5em;
-    box-shadow:       0 12px 30px rgba(0, 0, 0, 0.6);
+    box-shadow:       0 1px 2px 1px #0000001a, 0 3px 6px #0000001a;
 }
 
 div.dtr-modal div.dtr-modal-content {
@@ -364,11 +382,11 @@ div.dtr-modal div.dtr-modal-background {
 
 .help-block {
     color:       #b4222a;
-    font-weight: bold;
+    font-weight: normal;
 }
 
 .ui-corner-all, .ui-checkbox, .ui-radio {
-    border-radius: 0 !important;
+    border-radius: 2px !important;
 }
 
 /*** Floating Action Button ***/
@@ -437,7 +455,7 @@ div.dtr-modal div.dtr-modal-background {
     height: 40px;
     line-height: 40px;
     padding: 0;
-    background-color: #26A69A;
+    background-color: #79acff;
     border-radius: 50%;
     transition: .3s;
     cursor: pointer;
@@ -447,7 +465,7 @@ div.dtr-modal div.dtr-modal-background {
 .btn, .btn-large {
     text-decoration: none;
     color: #ffffff;
-    background-color: #26A69A;
+    background-color: #79acff;
     text-align: right;
     letter-spacing: 1px;
     transition: .2s ease-out;
@@ -455,7 +473,7 @@ div.dtr-modal div.dtr-modal-background {
 }
 
 .btn-large, .btn-floating {
-    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 2px 6px #0003,0 2px 3px #0000001a;
 }
 
 .form-actions {
@@ -522,8 +540,8 @@ div.dtr-modal div.dtr-modal-background {
 
 .fixed-action-btn {
     position: fixed;
-    right: 23px;
-    bottom: 23px;
+    right: 30px;
+    bottom: 20px;
     padding-top: 15px;
     margin-bottom: 0;
     z-index: 10000;
@@ -531,5 +549,141 @@ div.dtr-modal div.dtr-modal-background {
 
 *, *::before, *::after {
     box-sizing: inherit;
+}
+
+div#titulodetalle {
+    float: left;
+    padding: 13px;
+    font-weight: normal;
+}
+
+div.mininav3r {
+    width: 90px;
+    float: right;
+    text-align: right;
+}
+div.mininav2 {
+    width: 60px;
+    margin-top: 4px;
+}
+
+.ui-table th {
+    font-weight: bold;
+}
+
+div.topcontainer {
+    margin: 12px;
+    box-shadow: 0 1px 2px 1px #0000001a, 0 3px 6px #0000001a;
+}
+
+.ui-btncito {
+    margin: 0 !important;
+    border-radius: 2px !important;
+    background-color: transparent !important;
+}
+
+.ui-btncito:hover {
+    background-color: #CBCBCB !important;
+    color: #373737 !important;
+}
+
+#table-detail thead {
+    background-color: #3367D6;
+    color: #fff;
+    text-transform: uppercase;
+}
+
+/*  Datatables icons */
+.ui-state-default .ui-icon {
+    background-image: url("../images/ui-icons_888888_256x240.png");
+}
+.ui-icon-carat-2-n-s {
+    background-position: -128px 0;
+}
+.ui-icon, .ui-widget-content .ui-icon {
+    background-image: url("../images/ui-icons_222222_256x240.png");
+}
+.ui-icon {
+    width: 16px;
+    height: 16px;
+}
+.ui-icon {
+    display: block;
+    text-indent: -99999px;
+    overflow: hidden;
+    background-repeat: no-repeat;
+}
+
+table.dataTable.no-footer {
+    border-bottom: 1px solid #ccc !important;
+}
+
+.dataTables_wrapper .ui-toolbar {
+    padding: 4px !important;
+}
+
+body, input, select, textarea {
+    font-family: 'PT Sans Narrow', sans-serif !important;
+    border:      1px solid silver !important;
+}
+
+/*table .ui-btncito {*/
+    /*border: 1px solid silver !important;*/
+/*}*/
+
+#submit {
+    display: inherit !important;
+    width: auto !important;
+    margin-right: auto !important;
+    margin-left: auto;
+    box-shadow: 0 2px 6px #0003,0 2px 3px #0000001a;
+    margin-top: 24px;
+}
+
+.mdl-button {
+    color: #777 !important;
+    min-width: 32px !important;
+    padding: 0 14px !important;
+    font-family: 'PT Sans Narrow', sans-serif !important;
+    font-weight: 700 !important;
+
+}
+
+.mdl-button--raised.mdl-button--colored,
+html .ui-page-theme-a .ui-table-columntoggle-btn {
+    background-color: #3367d6 !important;
+    color: #fff !important;
+    box-shadow: 0 2px 6px #0003,0 2px 3px #0000001a;
+    /*box-shadow: 0 0 8px #0003,0 8px 16px #0006;*/
+}
+
+.ui-controlgroup-controls .ui-corner-all {
+    border-radius: 0 !important;
+}
+
+#table-list-popup-popup,
+#tabladedatos-popup-popup {
+    box-shadow: 0 1px 2px 1px #0000001a, 0 3px 6px #0000001a;
+}
+
+#table-detail, #table-list, #tabladedatos {
+    font-size: small;
+}
+
+#tabladedatos a, #table-list a, #table-detail a {
+    color: #3367D6;
+    text-decoration: none;
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+table.dataTable thead > tr > th.sorting_asc, table.dataTable thead > tr > th.sorting_desc, table.dataTable thead > tr > th.sorting, table.dataTable thead > tr > td.sorting_asc, table.dataTable thead > tr > td.sorting_desc, table.dataTable thead > tr > td.sorting {
+    padding-right: 36px !important;
+}
+
+#tabladedatos tfoot, #table-list tfoot {
+    background-color: #dedede;
+    font-weight: bold;
+    border-top: 3px double #BCBCBC;
 }
 

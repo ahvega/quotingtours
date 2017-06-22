@@ -1,28 +1,36 @@
-{% extends "_list.html" %}
+{% extends "_table.html" %}
 {% load humanize %}
+{% load misformatos %}
 {% block title %}Cotizaciones{% endblock %}
-{% block page-title %}Cotizaciones{% endblock %}{% block thead %}
-    <th data-priority="9" class="derecha">#</th>
-    <th class="izquierda">Cotización</th>
-    <th data-priority="1" class="centrado">Vence</th>
-    <th data-priority="3" class="derecha">Subtotal</th>
-    <th data-priority="4" class="derecha">Margen</th>
-    <th data-priority="2" class="derecha">Total</th>{% endblock %}{% block tbody %}
-    {% for cotizacion in cotizacion_list %}
-        <tr>
-            <td class="izquierda">{{ cotizacion.id }}</td>
-            <td data-search="{{ cotizacion.nombre }}"><a class="ui-btn ui-link boton"
-                                                         href="{{ cotizacion.get_absolute_url }}">{{ cotizacion.nombre }}</a>
-            </td>
-            <td class="centrado">{{ cotizacion.fecha_vence|date:"D d/b" }}</td>
-            <td class="derecha">{{ cotizacion.subtotal|intcomma }}</td>
-            <td class="derecha">{{ cotizacion.markup|intcomma }}</td>
-            <td class="derecha">{{ cotizacion.total|intcomma }}</td>
-        </tr>{% endfor %}{% endblock %}{% block footer %}
-    {% if request.user.is_superuser %}
-        <div class="fixed-action-btn">
-            <a class="btn-floating btn-large waves-effect waves-light red darken-2"
-               href="{% url "transporte_cotizacion_create" %}">
-                <i class="material-icons">add</i></a>
-        </div>
-    {% endif %}{% endblock %}
+{% block page-title %}Cotizaciones{% endblock %}
+{% block theader %}
+            <th class="centrado">Cotización</th>
+            <th></th>
+            <th data-priority="6" class="izquierda">Cliente</th>
+            <th data-priority="4" class="centrado">Fecha</th>
+            <th data-priority="5" class="centrado">Vence</th>
+            <th data-priority="2" class="derecha">Subtotal</th>
+            <th data-priority="3" class="derecha">Utilidad</th>
+            <th data-priority="1" class="derecha">Total</th>{% endblock %}
+{% block tbody %}<!-- data  -->{% for cotizacion in cotizacion_list %}
+                <tr>
+                    <td data-search="{{ cotizacion.nombre }}">
+                        <a title="Ver Cotización {{ cotizacion.nombre }}"
+                           href="{{ cotizacion.get_absolute_url }}">{{ cotizacion.nombre }}</a>: {{ cotizacion.descripcion }}</td>
+                    <td><div class="ui-alt-icon ui-nodisc-icon mininav3r">
+                        <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-action ui-btn-icon-notext ui-btncito"
+                           title="Ver Cotización {{ cotizacion.nombre }}" href="{{ cotizacion.get_absolute_url }}">goto</a>{% if request.user.is_superuser %}
+                        <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-edit ui-btn-icon-notext ui-btncito"
+                           title="Editar Cotización {{ cotizacion.nombre }}" href="{{ cotizacion.get_update_url }}"
+                           data-ajax="false" onclick="window.location.reload(false);">edit</a>
+                        <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-delete ui-btn-icon-notext ui-btncito"
+                           title="Eliminar Cotización {{ cotizacion.nombre }}" href="{{ cotizacion.get_delete_url }}">delete</a>{% endif %}
+                    </div></td>
+                    <td class="izquierda">{{ cotizacion.itinerario.cliente.nombre }}</td>
+                    <td class="centrado"><a href="#" title="{{ cotizacion.creado|date:"D d/b" }}">{{ cotizacion.creado|date:"Y/m/d" }}</a></td>
+                    <td class="centrado">{{ cotizacion.fecha_vence|date:"D d/b" }}</td>
+                    <td class="derecha">{{ cotizacion.subtotal|intcomma }}</td>
+                    <td class="derecha">{{ cotizacion.utilidad|porciento }}</td>
+                    <td class="derecha">{{ cotizacion.total|intcomma }}</td>
+                </tr>
+            {% endfor %}{% endblock %}

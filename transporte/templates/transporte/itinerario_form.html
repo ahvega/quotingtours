@@ -1,11 +1,30 @@
-{% extends "_form.html" %}{% load staticfiles %}
+{% extends "base.html" %}
+{% load bootstrap3 %}{% load staticfiles %}
 {% block title %}Itinerario{% endblock %}
 {% block page-title %}Itinerario{% endblock %}
+
 {% block extcss %}
     <link rel="stylesheet"
-          href="http://cdn.rawgit.com/arschmitz/jquery-mobile-datepicker-wrapper/v0.1.1/jquery.mobile.datepicker.css">{% endblock %}
+          href="http://cdn.rawgit.com/arschmitz/jquery-mobile-datepicker-wrapper/v0.1.1/jquery.mobile.datepicker.css">
+{% endblock %}
+
 {% block extlibs %}
     <script src="http://cdn.rawgit.com/jquery/jquery-ui/1.10.4/ui/jquery.ui.datepicker.js"></script>
-    <script src="http://cdn.rawgit.com/arschmitz/jquery-mobile-datepicker-wrapper/v0.1.1/jquery.mobile.datepicker.js"></script>{% endblock %}
-{% block scripts %}
-    <script src="{% static "js/itinerario_form.js" %}"></script>{% endblock %}
+    <script src="http://cdn.rawgit.com/arschmitz/jquery-mobile-datepicker-wrapper/v0.1.1/jquery.mobile.datepicker.js"></script>
+{% endblock %}
+
+{% block content %}
+    <div class="topcontainer" style="padding: 10px;">
+        <form id="laforma" method="post" class="form form-horizontal">
+            {% csrf_token %}
+            <input type="hidden" id="id_cliente" name="cliente" value="{{ c_id }}" />
+            {% bootstrap_form form exclude=cliente %}
+            <button id="submit" class="ui-btn ui-btn-b ui-btn-icon-left ui-btn-inline ui-corner-all"
+                    type="submit">Guardar Itinerario</button>
+        </form>
+    </div>{% endblock %}{% block scripts %}
+    <script>
+        $(window).load(function () {
+            $('.datepicker').datepicker();
+        });
+    </script>{% endblock %}

@@ -3,6 +3,7 @@
 {% block title %}Inicio{% endblock %}
 {% block page-title %}Inicio{% endblock %}
 {% block content %}
+    <div class="topcontainer" style="padding: 10px;">
     {% if request.user.is_authenticated %}
         <p>Hola {{ request.user.username|title }}, ingresaste por última vez
             hace {{ request.user.last_login|timesince }}</p>
@@ -15,11 +16,6 @@
             <p><strong>{{ tipos_de_vehiculo.nombre }}</strong> {{ tipos_de_vehiculo.costo_por_dia|intcomma }}</p>
         {% endfor %}
     </main>
+    </div>
 {% endblock %}
-{% block scripts %}
-    <script>
-        $(document).ready(function () {
-            $('#backbutton').hide();
-        });
-    </script>
-{% endblock %}
+

@@ -1,17 +1,16 @@
 {% extends "base.html" %}
 {% load bootstrap3 %}
 {% block extlibs %}{% endblock %}{% block content %}
-    <div style="padding: 4px">
+    <div class="topcontainer" style="padding: 10px;">
         <form id="laforma" method="post" class="form form-horizontal">
             {% csrf_token %}
+            {% block extrafields %}{% endblock %}
             {% bootstrap_form form %}
-            <button id="submit"
-            class="ui-btn ui-btn-c ui-btn-icon-left ui-btn-inline ui-shadow ui-link ui-icon-check ui-btn-icon-left"
-            type="submit">Guardar {% block page-title %}Titulo{% endblock %}
-    </button>
+            <button id="submit" class="ui-btn ui-btn-b ui-btn-icon-left ui-btn-inline ui-corner-all"
+                    type="submit">Guardar {% block page-title %}Titulo{% endblock %}</button>
         </form>
     </div>{% endblock %}{% block footer %}
-{% endblock %}
+{% endblock %}{% block scripts %}{% endblock %}
 {#{% block scripts2 %}#}
 {#    <script>#}
 {#    $(document).ready(function() {#}

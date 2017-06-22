@@ -4,16 +4,16 @@
             display: none !important;
         }
     </style>
-    <div style="width: 100%">
-        <table id="table-detail" class="ui-table ui-shadow table-stripe table-stroke ui-responsive">
-            <thead>
-            <tr>{% block thead %}{% endblock %}
-            </tr>
-            </thead>
-            <tbody>{% block tbody %}{% endblock %}
-            </tbody>
-        </table>
+    <div class="form-group topcontainer">
+        <form class="form">
+            <table id="table-detail"
+                   class="ui-table ui-shadow table-stripe table-stroke ui-responsive">
+                <thead>{% block thead %}{% endblock %}</thead>
+                <tbody>{% block tbody %}{% endblock %}</tbody>
+            </table>
+        </form>
     </div>
     {% block detalle %}{% endblock %}
+    <br/><br/>
 {% endblock %}
 {% block footer %}{% endblock %}

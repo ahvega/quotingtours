@@ -1,21 +1,34 @@
-{% extends "_list.html" %}
-{% load humanize %}
+{% extends "_table.html" %}
 {% block title %}Parámetros{% endblock %}
-{% block page-title %}Parámetros{% endblock %}{% block thead %}
-    <th class="center">Parámetro</th>
-    <th data-priority="1" class="derecha">Valor</th>
-    <th data-priority="2" class="izquierda">Unidad</th>{% endblock %}{% block tbody %}{% for parametro in object_list %}
-    <tr>
-        <td data-search="{{ parametro.nombre }}">
-            <a class="ui-btn ui-link boton" href="{{ parametro.get_absolute_url }}">{{ parametro.nombre }}</a>
-        </td>
-        <td class="derecha">{{ parametro.valor }}</td>
-        <td class="izquierda">{{ parametro.unidad }}</td>
-    </tr>{% endfor %}{% endblock %}{% block footer %}
-    {% if request.user.is_superuser %}
-        <div class="fixed-action-btn">
-            <a class="btn-floating btn-large waves-effect waves-light red darken-2"
-               href="{% url "transporte_parametro_create" %}">
-                <i class="material-icons">add</i></a>
-        </div>
-    {% endif %}{% endblock %}
+{% block page-title %}Parámetros{% endblock %}
+{% block theader %}
+                                <th class="center">Parámetro</th>
+                                <th></th>
+                                <th data-priority="1" class="derecha">Valor</th>
+                                <th data-priority="2" class="izquierda">Unidad</th>{% endblock %}{% block tbody %}{% for parametro in object_list %}
+                            <tr>
+                                <td data-search="{{ parametro.nombre }}">
+                                    <a title="Ver Parámetro {{ paramero.nombre }}"
+                                       href="{{ parametro.get_absolute_url }}">{{ parametro.nombre }}</a>
+                                </td>
+                                <td class="izquierda" width="1"><div class="ui-alt-icon ui-nodisc-icon mininav3r">
+                                    <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-action ui-btn-icon-notext ui-btncito"
+                                       title="Ver Parámetro {{ parametro.nombre }}"
+                                       href="{{ parametro.get_absolute_url }}">goto</a>{% if request.user.is_superuser %}
+                                    <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-edit ui-btn-icon-notext ui-btncito"
+                                       title="Editar Parámetro {{ parametro.nombre }}"
+                                       href="{{ parametro.get_update_url }}"
+                                       data-ajax="false" onclick="window.location.reload(false);">edit</a>
+                                    <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-delete ui-btn-icon-notext ui-btncito"
+                                       title="Eliminar Parámetro {{ parametro.nombre }}"
+                                       href="{{ parametro.get_delete_url }}">delete</a>{% endif %}</div></td>
+                                <td class="derecha">{{ parametro.valor }}</td>
+                                <td class="izquierda">{{ parametro.unidad }}</td>
+                            </tr>{% endfor %}{% endblock %}{% block footer %}{% if request.user.is_superuser %}
+                <div class="fixed-action-btn">
+                    <a class="btn-floating btn-large waves-effect waves-light red darken-2"
+                       title="Agregar Parámetro"
+                       href="{% url "transporte_parametro_create" %}"
+                       data-ajax="false" onclick="window.location.reload(false);">
+                        <i class="material-icons">add</i></a>
+                </div>{% endif %}{% endblock %}

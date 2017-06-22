@@ -27,8 +27,8 @@ DEBUG = True
 ALLOWED_HOSTS = [
     u'*.quotingtours.com',
     u'demo.quotingtours.com',
+    u'107.180.103.216',
     u'demo.mistenants.com',
-    u'mistenants.com',
 ]
 
 # Application definition
@@ -173,7 +173,7 @@ TEMPLATES = [
         'OPTIONS':  {
             'context_processors': [
                 'django.template.context_processors.debug',
-                'django.core.context_processors.request',
+                # 'django.core.context_processors.request',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',

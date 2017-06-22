@@ -1,31 +1,30 @@
-{% extends "base.html" %}
+{% extends "_table.html" %}
 {% load static %}
-{% block content %}
-    <p><a class="btn btn-default" href="{% url 'transporte_lugar_list' %}">Lugar Listing</a></p>
-    <table class="table">
-        <tr>
-            <td>ID</td>
-            <td>Link</td>
-            <td>codigo</td>
-            <td>slug</td>
-            <td>creado</td>
-            <td>actualizado</td>
-            <td>nombre</td>
-            <td>pais</td>
-        </tr>
-        {% for object in object_list %}
-            <tr>
-                <td>{{ object.id }}</td>
-                <td><a href="{{ object.get_absolute_url }}">{{ object }}</a></td>
-                <td>{{ object.codigo }}</td>
-                <td>{{ object.slug }}</td>
-                <td>{{ object.creado }}</td>
-                <td>{{ object.actualizado }}</td>
-                <td>{{ object.nombre }}</td>
-                <td>{{ object.pais }}</td>
-            </tr>
-        {% endfor %}
-    </table>{% endblock %}{% block footer %}
+{% load humanize %}
+{% block title %}Lugares{% endblock %}
+{% block page-title %}Lugares{% endblock %}
+{% block theader %}
+            <th class="centrado">Lugar</th>
+            <th></th>
+            <th data-priority="4" class="centrado">Código</th>
+            <th data-priority="2" class="centrado">País</th>{% endblock %}
+{% block tbody %}{% for lugar in lugar_list %}
+                    <tr>
+                    <td data-search="{{ lugar.nombre }}">
+                        <a title="Ver Tramo {{ lugar.nombre }}"
+                           href="{{ lugar.get_absolute_url }}">{{ lugar.nombre }}</td>
+                    <td><div class="ui-alt-icon ui-nodisc-icon mininav3r">
+                        <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-action ui-btn-icon-notext ui-btncito"
+                           title="Ver Tramo {{ lugar.nombre }}" href="{{ lugar.get_absolute_url }}">goto</a>{% if request.user.is_superuser %}
+                        <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-edit ui-btn-icon-notext ui-btncito"
+                           title="Editar Tramo {{ lugar.nombre }}" href="{{ lugar.get_update_url }}">edit</a>
+                        <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-delete ui-btn-icon-notext ui-btncito"
+                           title="Eliminar Tramo {{ lugar.nombre }}" href="{{ lugar.get_delete_url }}">delete</a>{% endif %}
+                    </div></td>
+                    <td class="centrado">{{ lugar.codigo|upper }}</td>
+                    <td class="centrado">{{ lugar.pais }}</td>
+                </tr>
+            {% endfor %}{% endblock %}{% block footer %}
     {% if request.user.is_superuser %}
         <div class="fixed-action-btn">
             <a class="btn-floating btn-large waves-effect waves-light red darken-2"

@@ -3,8 +3,18 @@
 {% block title %}Detalle de Item{% endblock %}
 {% block page-title %}Detalle de Item{% endblock %}
 {% block thead %}
-    <th class="derecha">Item</th>
-    <th class="izquierda">{{ item.nombre }}</th>
+    <th colspan="2" class="izquierda">{{ item.nombre }}{% if request.user.is_superuser %}
+        <div class="ui-nodisc-icon mininav3r">
+            <a class="ui-btn ui-btn-inline ui-btn-a ui-icon-edit ui-btn-icon-notext ui-btncito"
+               title="Editar Ítem {{ item.nombre }}" href="{{ item.get_update_url }}"
+               data-ajax="false" onclick="window.location.reload(false);">edit</a>
+            <a class="ui-btn ui-btn-inline ui-btn-a ui-icon-plus ui-btn-icon-notext ui-btncito"
+               title="Agregar Nuevo Ítem"
+               href="{% url "transporte_item_create" %}"
+               data-ajax="false" onclick="window.location.reload(false);">add</a>
+            <a class="ui-btn ui-btn-inline ui-btn-a ui-icon-delete ui-btn-icon-notext ui-btncito"
+               title="Borrar Ítem {{ item.nombre }}" href="{{ item.get_delete_url }}">delete</a></div>
+    {% endif %}</th>
 {% endblock %}
 {% block tbody %}
     <tr>
@@ -12,16 +22,12 @@
         <td><strong>{{ item.get_tipo_item_display }}</strong></td>
     </tr>
     <tr>
-        <td class="derecha">Unidad</td>
-        <td><strong>{{ item.unidad }}</strong></td>
-    </tr>
-    <tr>
         <td class="derecha">Costo</td>
-        <td><strong>{{ item.costo }}</strong></td>
+        <td><strong>{{ item.costo|intcomma }}</strong></td>
     </tr>
     <tr>
         <td class="derecha">Precio</td>
-        <td><strong>{{ item.precio }}</strong></td>
+        <td><strong>{{ item.precio|intcomma }}</strong></td>
     </tr>
     <tr>
         <td class="derecha">Descripción Compra</td>
@@ -32,10 +38,6 @@
         <td><strong>{{ item.descripcion_venta }}</strong></td>
     </tr>
     <tr>
-        <td class="derecha">Slug</td>
-        <td><strong>{{ item.slug }}</strong></td>
-    </tr>
-    <tr>
         <td class="derecha">Creado</td>
         <td><strong>{{ item.creado }}</strong></td>
     </tr>
@@ -44,14 +46,10 @@
         <td><strong>{{ item.actualizado }}</strong></td>
     </tr>
 {% endblock %}
-{% block footer %}
-    {% if request.user.is_superuser %}
+{% block footer %}{% if request.user.is_superuser %}
         <div class="fixed-action-btn">
             <a class="btn-floating btn-large waves-effect waves-light red darken-2"
-               href="{{ item.get_update_url }}">
+               href="{{ item.get_update_url }}"
+               data-ajax="false" onclick="window.location.reload(false);">
                 <i class="material-icons">edit</i></a>
-        </div>
-            <a href="{{ item.get_delete_url }}"
-       class="ui-btn ui-btn-c ui-btn-icon-left ui-btn-inline ui-shadow ui-link ui-icon-delete ui-btn-icon-left">Eliminar
-        Vehículo</a>
-    {% endif %}{% endblock %}
+        </div>{% endif %}{% endblock %}

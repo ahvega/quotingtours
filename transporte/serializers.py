@@ -47,8 +47,7 @@ class ItemSerializer(serializers.ModelSerializer):
             'id',
             'nombre',
             'tipo_item',
-            'unidad',
-            'costo', 
+            'costo',
             'precio', 
             'descripcion_compra', 
             'descripcion_venta',
@@ -83,8 +82,9 @@ class CotizacionSerializer(serializers.ModelSerializer):
             'id',
             'nombre',
             'fecha_vence',
+            'descripcion',
             'subtotal', 
-            'markup', 
+            'utilidad',
             'total',
             'slug',
             'creado',
@@ -101,6 +101,7 @@ class ClienteSerializer(serializers.ModelSerializer):
             'nombre',
             'email',
             'tel',
+            'rtn',
             'slug',
             'creado',
             'actualizado', 
@@ -134,6 +135,7 @@ class CotizacionDetalleSerializer(serializers.ModelSerializer):
             'costo',
             'monto',
             'markup',
+            'utilidad',
             'total',
             'slug',
             'creado',
@@ -167,6 +169,24 @@ class VehiculoSerializer(serializers.ModelSerializer):
             'slug',
             'creado',
             'actualizado',
+        )
+
+
+class TramoEnVehiculoSerializer(serializers.ModelSerializer):
+    tramo = serializers.ReadOnlyField()
+    vehiculo = serializers.ReadOnlyField()
+    descripcion = serializers.ReadOnlyField()
+    costo = serializers.ReadOnlyField()
+    slug = serializers.ReadOnlyField()
+
+    class Meta:
+        model = models.TramoEnVehiculo
+        fields = (
+            'tramo',
+            'vehiculo',
+            'nombre',
+            'costo',
+            'slug',
         )
 
 

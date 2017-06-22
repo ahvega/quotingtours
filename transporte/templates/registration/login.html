@@ -1,12 +1,16 @@
 {% extends 'base.html' %}
+{% block page-title %}Ingresando{% endblock %}
 
-{% block title %}Login{% endblock %}
+{% block title %}Ingresar{% endblock %}
 
 {% block content %}
+    <div class="topcontainer" style="padding: 10px;">
     <h2>Login</h2>
     <form method="post">
         {% csrf_token %}
         {{ form.as_p }}
-        <button type="submit">Login</button>
+        <button style="width: 200px !important;margin-right: auto !important;margin-left: auto;" type="submit">Login</button>
+        <br/>
     </form>
+    </div>
 {% endblock %}

@@ -1,41 +1,40 @@
-{% extends "base.html" %}
-{% load static %}
-{% block content %}
-    <p><a class="btn btn-default" href="{% url 'transporte_lugar_list' %}">Lugar Listing</a></p>
-    <table class="table">
-        <tr>
-            <td>codigo</td>
-            <td>{{ object.codigo }}</td>
-        </tr>
-        <tr>
-            <td>slug</td>
-            <td>{{ object.slug }}</td>
-        </tr>
-        <tr>
-            <td>creado</td>
-            <td>{{ object.creado }}</td>
-        </tr>
-        <tr>
-            <td>actualizado</td>
-            <td>{{ object.actualizado }}</td>
-        </tr>
-        <tr>
-            <td>nombre</td>
-            <td>{{ object.nombre }}</td>
-        </tr>
-        <tr>
-            <td>pais</td>
-            <td>{{ object.pais }}</td>
-        </tr>
-    </table>
-{% endblock %}{% block footer %}
-    {% if request.user.is_superuser %}
+{% extends "_detail.html" %}
+{% load humanize %}
+{% block title %}Detalle de Lugar{% endblock %}
+{% block page-title %}Detalle de Lugar{% endblock %}
+{% block thead %}
+    <th colspan="2" class="izquierda">{{ lugar.nombre }}{% if request.user.is_superuser %}
+        <div class="ui-nodisc-icon mininav3r">
+            <a class="ui-btn ui-btn-inline ui-btn-a ui-icon-edit ui-btn-icon-notext ui-btncito"
+               title="Editar Lugar {{ lugar.nombre }}" href="{{ lugar.get_update_url }}">edit</a>
+            <a class="ui-btn ui-btn-inline ui-btn-a ui-icon-plus ui-btn-icon-notext ui-btncito"
+               title="Agregar Nuevo Lugar"
+               href="{% url "transporte_lugar_create" %}">add</a>
+            <a class="ui-btn ui-btn-inline ui-btn-a ui-icon-delete ui-btn-icon-notext ui-btncito"
+               title="Borrar Lugar {{ lugar.nombre }}" href="{{ lugar.get_delete_url }}">delete</a></div>
+    {% endif %}</th>
+{% endblock %}
+{% block tbody %}
+    <tr>
+        <td class="derecha">Código Lugar</td>
+        <td><strong>{{ lugar.codigo|upper }}</strong></td>
+    </tr>
+    <tr>
+        <td class="derecha">País</td>
+        <td><strong>{{ lugar.pais }}</strong></td>
+    </tr>
+    <tr>
+        <td class="derecha">Creado</td>
+        <td><strong>{{ lugar.creado }}</strong></td>
+    </tr>
+    <tr>
+        <td class="derecha">Actualizado</td>
+        <td><strong>{{ lugar.actualizado }}</strong></td>
+    </tr>
+{% endblock %}
+{% block footer %}{% if request.user.is_superuser %}
         <div class="fixed-action-btn">
             <a class="btn-floating btn-large waves-effect waves-light red darken-2"
                href="{{ lugar.get_update_url }}">
                 <i class="material-icons">edit</i></a>
-        </div>
-            <a href="{{ lugar.get_delete_url }}"
-       class="ui-btn ui-btn-c ui-btn-icon-left ui-btn-inline ui-shadow ui-link ui-icon-delete ui-btn-icon-left">Eliminar
-        Vehículo</a>
-    {% endif %}{% endblock %}
+        </div>{% endif %}{% endblock %}

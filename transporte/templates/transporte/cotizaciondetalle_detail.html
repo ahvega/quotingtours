@@ -1,28 +1,47 @@
 {% extends "_detail.html" %}
 {% load humanize %}
 {% load misformatos %}
-{% block title %}Detalle de Cotización{% endblock %}
-{% block page-title %}Detalle de Cotización{% endblock %}
+{% block title %}Ítem en Cotización{% endblock %}
+{% block page-title %}Ítem en Cotización{% endblock %}
 {% block thead %}
-    <th class="derecha">Item</th>
-    <th class="izquierda">{{ cotizaciondetalle.item }}</th>
+    <th colspan="2" class="izquierda">{{ cotizaciondetalle.item }}{% if request.user.is_superuser %}
+        <div class="ui-nodisc-icon mininav3r">
+            <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-edit ui-btn-icon-notext ui-btncito"
+               title="Editar Ítem {{ cotizaciondetalle.nombre }}" href="{{ cotizaciondetalle.get_update_url }}">edit</a>
+            <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-plus ui-btn-icon-notext ui-btncito"
+               title="Agregar Nuevo Ítem"
+               href="{% url "transporte_cotizaciondetalle_create" cotizacion_id=cotizaciondetalle.cotizacion.pk %}">add</a>
+            <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-delete ui-btn-icon-notext ui-btncito"
+               title="Borrar Ítem {{ cotizaciondetalle.nombre }}" href="{{ cotizaciondetalle.get_delete_url }}">delete</a></div>
+    {% endif %}</th>
 {% endblock %}
 {% block tbody %}
+    <tr>
+        <td class="derecha"><strong>Cotización:</strong></td>
+        <td><a title="Ver Cotización: {{ cotizaciondetalle.cotizacion }}" href="{{ cotizaciondetalle.cotizacion.get_absolute_url }}"
+               class="ui-btn ui-btn-a ui-btn-inline ui-icon-arrow-u-l ui-btncito ui-nodisc-icon ui-alt-icon ui-btn-icon-notext">call</a>
+            <a href="{{ cotizaciondetalle.cotizacion.get_absolute_url }}" title="Ver Cotización: {{ cotizaciondetalle.cotizacion }}"
+               style="text-decoration: none;font-weight: bold;text-transform: uppercase;">{{ cotizaciondetalle.cotizacion }}</a></td>
+    </tr>
     <tr>
         <td class="derecha">Descripción</td>
         <td><strong>{{ cotizaciondetalle.descripcion }}</strong></td>
     </tr>
     <tr>
         <td class="derecha">Cantidad</td>
-        <td><strong>{{ cotizaciondetalle.cantidad }}</strong></td>
+        <td><strong>{{ cotizaciondetalle.cantidad|intcomma }}</strong></td>
     </tr>
     <tr>
         <td class="derecha">Costo</td>
-        <td><strong>{{ cotizaciondetalle.costo }}</strong></td>
+        <td><strong>{{ cotizaciondetalle.costo|intcomma }}</strong></td>
     </tr>
     <tr>
         <td class="derecha">Subtotal</td>
-        <td><strong>{{ cotizaciondetalle.monto }}</strong></td>
+        <td><strong>{{ cotizaciondetalle.monto|intcomma }}</strong></td>
+    </tr>
+    <tr>
+        <td class="derecha">Utilidad</td>
+        <td><strong>{{ cotizaciondetalle.utilidad|porciento }}</strong></td>
     </tr>
     <tr>
         <td class="derecha">Margen</td>
@@ -30,7 +49,7 @@
     </tr>
     <tr>
         <td class="derecha">Total</td>
-        <td><strong>{{ cotizaciondetalle.total }}</strong></td>
+        <td><strong>{{ cotizaciondetalle.total|intcomma }}</strong></td>
     </tr>
     <tr>
         <td class="derecha">Creado</td>
@@ -45,10 +64,8 @@
     {% if request.user.is_superuser %}
         <div class="fixed-action-btn">
             <a class="btn-floating btn-large waves-effect waves-light red darken-2"
+               title="Editar Ítem {{ cotizaciondetalle.descripcion }}"
                href="{{ cotizaciondetalle.get_update_url }}">
                 <i class="material-icons">edit</i></a>
         </div>
-            <a href="{{ cotizaciondetalle.get_delete_url }}"
-       class="ui-btn ui-btn-c ui-btn-icon-left ui-btn-inline ui-shadow ui-link ui-icon-delete ui-btn-icon-left">Eliminar
-        Item</a>
     {% endif %}{% endblock %}

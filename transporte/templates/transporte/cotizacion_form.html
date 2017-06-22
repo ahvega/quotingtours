@@ -1,4 +1,6 @@
-{% extends "_form.html" %}{% load staticfiles %}
+{% extends "base.html" %}{% load staticfiles %}
+{% load bootstrap3 %}
+{% load staticfiles %}
 {% block title %}Cotización{% endblock %}
 {% block page-title %}Cotización{% endblock %}
 
@@ -12,12 +14,19 @@
     <script src="http://cdn.rawgit.com/arschmitz/jquery-mobile-datepicker-wrapper/v0.1.1/jquery.mobile.datepicker.js"></script>
 {% endblock %}
 
+{% block content %}
+    <div class="topcontainer" style="padding: 10px;">
+        <form id="laforma" method="post" class="form form-horizontal">
+            {% csrf_token %}
+            <input type="hidden" id="id_itinerario" name="itinerario" value="{{ i_id }}" />
+            {% bootstrap_form form exclude=itinerario %}
+            <button id="submit" class="ui-btn ui-btn-b ui-btn-icon-left ui-btn-inline ui-corner-all"
+                    type="submit">Guardar Cotización</button>
+        </form>
+    </div>{% endblock %}
 {% block scripts %}
     <script>
-        $(document).ready(function () {
-            $('#id_fecha_vence').datepicker();
+        $(window).load(function () {
+            $('.datepicker').datepicker();
         });
-    </script>
-{% endblock %}
-{#{% block scripts %}#}
-{#    <script src="{% static "js/submit_form.js" %}"></script>{% endblock %}#}
+    </script>{% endblock %}

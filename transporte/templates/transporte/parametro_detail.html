@@ -1,9 +1,19 @@
 {% extends "_detail.html" %}
 {% load humanize %}
 {% block title %}Detalle de Parámetro{% endblock %}
-{% block page-title %}Detalles de Parámetro{% endblock %}{% block thead %}
-    <th class="derecha">Parámetro</th>
-    <th>{{ parametro.nombre }}</th>{% endblock %}{% block tbody %}
+{% block page-title %}Parámetro{% endblock %}{% block thead %}
+    <th colspan="2" class="izquierda">{{ parametro.nombre }}{% if request.user.is_superuser %}
+        <div class="ui-nodisc-icon mininav3r">
+            <a class="ui-btn ui-btn-inline ui-btn-a ui-icon-edit ui-btn-icon-notext ui-btncito"
+               title="Editar Parámetro {{ parametro.nombre }}" href="{{ parametro.get_update_url }}"
+               data-ajax="false" onclick="window.location.reload(false);">edit</a>
+            <a class="ui-btn ui-btn-inline ui-btn-a ui-icon-plus ui-btn-icon-notext ui-btncito"
+               title="Agregar Nuevo Parámetro"
+               href="{% url "transporte_parametro_create" %}"
+               data-ajax="false" onclick="window.location.reload(false);">add</a>
+            <a class="ui-btn ui-btn-inline ui-btn-a ui-icon-delete ui-btn-icon-notext ui-btncito"
+               title="Borrar Parámetro {{ parametro.nombre }}" href="{{ parametro.get_delete_url }}">delete</a></div>
+    {% endif %}</th>{% endblock %}{% block tbody %}
     <tr>
         <td class="derecha">Valor</td>
         <td><strong>{{ parametro.valor }}</strong></td>
@@ -23,14 +33,10 @@
     <tr>
         <td class="derecha">Actualizado</td>
         <td><strong>{{ parametro.ultima_actualizacion|date:'D d/M/Y' }}</strong></td>
-    </tr>{% endblock %}{% block footer %}
-    {% if request.user.is_superuser %}
+    </tr>{% endblock %}{% block footer %}{% if request.user.is_superuser %}
         <div class="fixed-action-btn">
             <a class="btn-floating btn-large waves-effect waves-light red darken-2"
-               href="{{ parametro.get_update_url }}">
+               href="{{ parametro.get_update_url }}"
+               data-ajax="false" onclick="window.location.reload(false);">
                 <i class="material-icons">edit</i></a>
-        </div>
-            <a href="{{ parametro.get_delete_url }}"
-       class="ui-btn ui-btn-c ui-btn-icon-left ui-btn-inline ui-shadow ui-link ui-icon-delete ui-btn-icon-left">Eliminar
-        Vehículo</a>
-    {% endif %}{% endblock %}
+        </div>{% endif %}{% endblock %}

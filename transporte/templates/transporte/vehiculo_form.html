@@ -1,5 +1,17 @@
 {% extends "_form.html" %}{% load staticfiles %}
 {% block title %}Vehículo{% endblock %}
 {% block page-title %}Vehículo{% endblock %}
+{% block extcss %}
+    <link rel="stylesheet"
+          href="http://cdn.rawgit.com/arschmitz/jquery-mobile-datepicker-wrapper/v0.1.1/jquery.mobile.datepicker.css">
+{% endblock %}
+{% block extlibs %}
+    <script src="http://cdn.rawgit.com/jquery/jquery-ui/1.10.4/ui/jquery.ui.datepicker.js"></script>
+    <script src="http://cdn.rawgit.com/arschmitz/jquery-mobile-datepicker-wrapper/v0.1.1/jquery.mobile.datepicker.js"></script>
+{% endblock %}
 {% block scripts %}
-    <script src="{% static "js/submit_form.js" %}"></script>{% endblock %}
+    <script>
+        $(window).load(function () {
+            $('.datepicker').datepicker();
+        });
+    </script>{% endblock %}

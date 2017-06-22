@@ -3,6 +3,7 @@
 {% block title %}Inicio{% endblock %}
 {% block page-title %}Inicio{% endblock %}
 {% block content %}
+    <div class="topcontainer" style="padding: 10px;">
     {% if request.user.is_authenticated %}
         <p>Hola {{ request.user.username|title }}, ingresaste por última vez
             hace {{ request.user.last_login|timesince }}</p>
@@ -16,6 +17,7 @@
             <p><strong><a href="{{ restaurantes.get_absolute_url }}">{{ restaurantes.nombre }}</a></strong></p>
         {% endfor %}
     </main>
+    </div>
 {% endblock %}
 {% block scripts %}
     <script>

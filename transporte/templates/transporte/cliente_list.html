@@ -1,32 +1,42 @@
-{% extends "_list.html" %}
-{% load humanize %}
-{% load misformatos %}
+{% extends "_table.html" %}{% load humanize %}
 {% block title %}Clientes{% endblock %}
-{% block page-title %}Clientes{% endblock %}
-{% block thead %}
-    <th class="centrado">Cliente</th>
-    <th data-priority="1" class="centrado">Contacto</th>
-    <th data-priority="2" class="centrado">Tel</th>
-    <th data-priority="3" class="centrado">Email</th>{% endblock %}{% block tbody %}{% for cliente in cliente_list %}
-    <tr>
-        <td data-search="{{ cliente.nombre }}">
-            <a title="Ver Detalles" class="ui-btn ui-link boton"
-               href="{{ cliente.get_absolute_url }}">{{ cliente.nombre }}</a>
-        </td>
-        <td class="centrado">{{ cliente.contacto }}</td>
-        <td class="centrado">
-            <a title="Llamar" href="tel:{{ cliente.tel }}"
-               class="ui-btn ui-btn-c ui-btn-icon-left ui-btn-inline ui-shadow ui-link ui-icon-phone ui-icon-phone ui-btn-icon-left">{{ cliente.tel }}</a>
-        </td>
-        <td class="izquierda">
-            <a title="Enviar email" href="mailto:{{ cliente.email }}"
-               class="ui-btn ui-btn-c ui-btn-icon-left ui-btn-inline ui-shadow ui-link ui-icon-mail ui-btn-icon-left">{{ cliente.email }}</a>
-        </td>
-    </tr>{% endfor %}{% endblock %}{% block footer %}
-    {% if request.user.is_superuser %}
-        <div class="fixed-action-btn">
-            <a class="btn-floating btn-large waves-effect waves-light red darken-2"
-               href="{% url "transporte_cliente_create" %}">
-                <i class="material-icons">add</i></a>
-        </div>
-    {% endif %}{% endblock %}
+{% block page-title %}Clientes{% endblock %}{% block theader %}
+                                <th class="centrado">Cliente</th>
+                                <th></th>
+                                <th data-priority="1" class="centrado">Contacto</th>
+                                <th data-priority="2" class="centrado">Tel</th>
+                                <th data-priority="3" class="centrado">Email</th>
+                                <th data-priority="4" class="centrado">RTN</th>{% endblock %}{% block tbody %}{% for cliente in cliente_list %}
+                            <tr>
+                                <td class="izquierda" data-search="{{ cliente.nombre }}">
+                                    <a title="Ver Cliente {{ cliente.nombre }}"
+                                       href="{{ cliente.get_absolute_url }}">{{ cliente.nombre }}</a></td>
+                                <td class="izquierda" width="1">
+                                    <div class="ui-alt-icon ui-nodisc-icon mininav3r">
+                                        <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-action ui-btn-icon-notext ui-btncito"
+                                           title="Ver Cliente {{ cliente.nombre }}"
+                                           href="{{ cliente.get_absolute_url }}">goto</a>{% if request.user.is_superuser %}
+                                        <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-edit ui-btn-icon-notext ui-btncito"
+                                           title="Editar Cliente {{ cliente.nombre }}"
+                                           href="{{ cliente.get_update_url }}">edit</a>
+                                        <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-delete ui-btn-icon-notext ui-btncito"
+                                           title="Eliminar Cliente {{ cliente.nombre }}"
+                                           href="{{ cliente.get_delete_url }}">delete</a>{% endif %}
+                                    </div>
+                                </td>
+                                <td class="izquierda">{{ cliente.contacto }}</td>
+                                <td class="centrado">
+                                    <a class="ui-alt-icon ui-nodisc-icon ui-btn ui-btn-inline ui-btn-c ui-icon-phone ui-btn-icon-notext ui-btncito"
+                                       title="Llamar a {{ cliente.nombre }}" href="tel:{{ cliente.tel }}">phone</a>{{ cliente.tel }}
+                                </td>
+                                <td class="centrado">
+                                    <a title="Enviar email a {{ cliente.nombre }} <{{ cliente.email }}>" href="mailto:{{ cliente.email }}"
+                                       class="ui-alt-icon ui-nodisc-icon ui-btn ui-btn-inline ui-btn-c ui-icon-mail ui-btn-icon-notext ui-btncito"></a>
+                                </td>
+                                <td class="centrado">{{ cliente.rtn }}</td>
+                            </tr>{% endfor %}{% endblock %}{% block footer %}{% if request.user.is_superuser %}
+                <div class="fixed-action-btn">
+                    <a class="btn-floating btn-large waves-effect waves-light red darken-2"
+                       title="Agregar Cliente"
+                       href="{% url "transporte_cliente_create" %}"><i class="material-icons">add</i></a>
+                </div>{% endif %}{% endblock %}

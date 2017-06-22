@@ -1,7 +1,7 @@
 from rest_framework import viewsets, permissions, filters
 
 from .models import TipoDeVehiculo, Parametro, Item, NivelDePrecio, Cotizacion, Cliente, Itinerario, \
-    CotizacionDetalle, Vehiculo, Tramo, Lugar, Conductor
+    CotizacionDetalle, Vehiculo, TramoEnVehiculo, Tramo, Lugar, Conductor
 from . import serializers
 
 
@@ -20,14 +20,7 @@ class ParametroViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.ParametroSerializer
     permission_classes = (permissions.IsAuthenticated,)
     filter_backends = (filters.DjangoFilterBackend,)
-    filter_fields = ('annio','slug')
-
-# class ParametroList(generics.ListAPIView):
-#     queryset = Parametro.objects.all()
-#     serializer_class = serializers.ParametroSerializer
-#     # permission_classes = [permissions.IsAuthenticated]
-#     filter_backends = filters.DjangoFilterBackend
-#     filter_fields = ['annio']
+    filter_fields = ('annio', 'slug')
 
 
 class ItemViewSet(viewsets.ModelViewSet):
@@ -83,6 +76,13 @@ class VehiculoViewSet(viewsets.ModelViewSet):
 
     queryset = Vehiculo.objects.all()
     serializer_class = serializers.VehiculoSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+
+class TramoEnVehiculoViewSet(viewsets.ModelViewSet):
+
+    queryset = TramoEnVehiculo.objects.all()
+    serializer_class = serializers.TramoEnVehiculoSerializer
     permission_classes = [permissions.IsAuthenticated]
 
 

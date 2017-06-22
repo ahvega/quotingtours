@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.forms.utils import ErrorList
 from django import forms
+from .filters import DropdownFilterValues, DropdownFilterRelated
 
 from .models import *
 
@@ -63,7 +64,6 @@ class ItemAdmin(admin.ModelAdmin):
     list_display = [
         'nombre',
         'tipo_item',
-        'unidad',
         'costo',
         'precio',
         'descripcion_venta'
@@ -94,15 +94,21 @@ admin.site.register(NivelDePrecio, NivelDePrecioAdmin)
 class CotizacionAdminForm(forms.ModelForm):
     class Meta:
         model = Cotizacion
-        fields = ['itinerario', 'nombre', 'nivel_de_precio', 'fecha_vence']
+        fields = ['itinerario', 'nombre', 'descripcion', 'nivel_de_precio', 'fecha_vence']
 
 
 class CotizacionAdmin(admin.ModelAdmin):
+    def formfield_for_dbfield(self, db_field, **kwargs):
+        formfield = super(CotizacionAdmin, self).formfield_for_dbfield(db_field, **kwargs)
+        if db_field.name == 'descripcion':
+            formfield.widget = forms.Textarea(attrs=formfield.widget.attrs)
+        return formfield
+
     form = CotizacionAdminForm
-    list_display = ['nombre', 'fecha_vence', 'subtotal', 'utilidad', 'total']
+    list_display = ['nombre', 'fecha_vence', 'descripcion', 'subtotal', 'utilidad', 'total']
     readonly_fields = ['subtotal', 'utilidad', 'total', 'slug', 'creado', 'actualizado']
-    search_fields = ['nombre']
-    list_filter = ['fecha_vence']
+    search_fields = ['nombre', 'descripcion']
+    list_filter = (('itinerario', DropdownFilterRelated), 'fecha_vence')
     date_hierarchy = 'fecha_vence'
 
 
@@ -117,7 +123,7 @@ class ClienteAdminForm(forms.ModelForm):
 
 class ClienteAdmin(admin.ModelAdmin):
     form = ClienteAdminForm
-    list_display = ['nombre', 'contacto', 'email', 'tel', 'nivel_de_precio']
+    list_display = ['nombre', 'contacto', 'email', 'tel', 'rtn', 'nivel_de_precio']
     readonly_fields = ['slug', 'creado', 'actualizado']
     search_fields = ['nombre', 'contacto', 'email', 'tel']
 
@@ -141,10 +147,10 @@ class ItinerarioAdminForm(forms.ModelForm):
 
 class ItinerarioAdmin(admin.ModelAdmin):
     form = ItinerarioAdminForm
-    list_display = ['cliente', 'nombre', 'fecha_desde', 'fecha_hasta', 'estatus']
+    list_display = ['nombre', 'cliente', 'fecha_desde', 'fecha_hasta', 'estatus']
     readonly_fields = ['slug', 'creado', 'actualizado']
     search_fields = ['cliente', 'nombre', 'fecha_desde']
-    list_filter = ['fecha_desde', 'fecha_hasta', 'estatus']
+    list_filter = (('cliente', DropdownFilterRelated),)
     ordering = ['cliente', 'fecha_desde']
     date_hierarchy = 'fecha_desde'
 
@@ -155,14 +161,16 @@ admin.site.register(Itinerario, ItinerarioAdmin)
 class CotizacionDetalleAdminForm(forms.ModelForm):
     class Meta:
         model = CotizacionDetalle
-        fields = ['cotizacion', 'item', 'cantidad', 'nivel_de_precio']
+        fields = ['item', 'cotizacion', 'cantidad', 'nivel_de_precio']
 
 
 class CotizacionDetalleAdmin(admin.ModelAdmin):
     form = CotizacionDetalleAdminForm
-    list_display = ['cotizacion', 'descripcion', 'cantidad', 'costo', 'monto', 'markup', 'total']
+    list_display = ['descripcion', 'cotizacion', 'cantidad', 'costo', 'monto', 'markup', 'total']
     readonly_fields = ['descripcion', 'costo', 'monto', 'markup', 'total', 'slug', 'creado', 'actualizado']
     search_fields = ['descripcion']
+    list_filter = (('cotizacion', DropdownFilterRelated),)
+    ordering = ['creado']
 
 
 admin.site.register(CotizacionDetalle, CotizacionDetalleAdmin)
@@ -216,6 +224,33 @@ class TramoAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Tramo, TramoAdmin)
+
+
+class TramoEnVehiculoAdminForm(forms.ModelForm):
+    class Meta:
+        model = TramoEnVehiculo
+        fields = [
+            'tramo',
+            'vehiculo',
+        ]
+
+
+class TramoEnVehiculoAdmin(admin.ModelAdmin):
+    form = TramoEnVehiculoAdminForm
+    list_display = [
+        'nombre',
+        'tramo',
+        'vehiculo',
+        'costo',
+        'slug',
+    ]
+    readonly_fields = [
+        'nombre',
+        'costo',
+        'slug',
+    ]
+
+admin.site.register(TramoEnVehiculo, TramoEnVehiculoAdmin)
 
 
 class LugarAdminForm(forms.ModelForm):
