@@ -19,10 +19,12 @@ def tasa(pais, tipo):
     print(country)
 
     if tipo == 'compra':
-        print("Tasa Compra ", compra)
+        print 'Tasa Compra'
+        print compra
         return compra
     elif tipo == 'venta':
-        print("Tasa Venta ", venta)
+        print "Tasa Venta "
+        print venta
         return venta
 
 tasa('hn','compra')

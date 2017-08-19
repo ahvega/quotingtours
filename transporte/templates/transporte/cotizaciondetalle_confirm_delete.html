@@ -1,0 +1,57 @@
+{% extends "_detail.html" %}
+{% load humanize %}
+{% load misformatos %}
+{% block title %}Detalle de Cotización{% endblock %}
+{% block page-title %}Detalle de Cotización{% endblock %}
+{% block thead %}
+    <th class="derecha">Item</th>
+    <th class="izquierda">{{ cotizaciondetalle.item }}</th>
+{% endblock %}
+{% block tbody %}
+    <tr>
+        <td class="derecha">Cotización</td>
+        <td><a href="{{ cotizaciondetalle.get_cotizacion_url }}"><strong>{{ cotizaciondetalle.cotizacion }}</strong></a></td>
+    </tr>
+    <tr>
+        <td class="derecha">Descripción</td>
+        <td><strong>{{ cotizaciondetalle.descripcion }}</strong></td>
+    </tr>
+    <tr>
+        <td class="derecha">Cantidad</td>
+        <td><strong>{{ cotizaciondetalle.cantidad }}</strong></td>
+    </tr>
+    <tr>
+        <td class="derecha">Costo</td>
+        <td><strong>{{ cotizaciondetalle.costo }}</strong></td>
+    </tr>
+    <tr>
+        <td class="derecha">Subtotal</td>
+        <td><strong>{{ cotizaciondetalle.monto }}</strong></td>
+    </tr>
+    <tr>
+        <td class="derecha">Margen</td>
+        <td><strong>{{ cotizaciondetalle.markup|porciento }}</strong></td>
+    </tr>
+    <tr>
+        <td class="derecha">Total</td>
+        <td><strong>{{ cotizaciondetalle.total }}</strong></td>
+    </tr>
+    <tr>
+        <td class="derecha">Creado</td>
+        <td><strong>{{ cotizaciondetalle.creado }}</strong></td>
+    </tr>
+    <tr>
+        <td class="derecha">Actualizado</td>
+        <td><strong>{{ cotizaciondetalle.actualizado }}</strong></td>
+    </tr>
+{% endblock %}
+{% block footer %}
+    {% if request.user.is_superuser %}
+    <form action="" method="post">
+        {% csrf_token %}
+        <input type="hidden" name="after" value="{{ cotizaciondetalle.get_cotizacion_url }}" />
+        <input type="submit" value="CONFIRMAR ELIMINACION DE ÍTEM" name="DeleteAndShowParent"
+               class="ui-btn ui-btn-b ui-btn-icon-left ui-btn-inline ui-shadow ui-link ui-icon-delete ui-btn-icon-left"/>
+    </form>
+    {% endif %}
+{% endblock %}

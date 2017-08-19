@@ -1,0 +1,45 @@
+{% extends "_detail.html" %}
+{% load humanize %}
+{% load misformatos %}
+{% block title %}Cotización{% endblock %}
+{% block page-title %}Detalle de Cotización{% endblock %}
+{% block thead %}
+    <th class="derecha">Cotización</th>
+    <th class="izquierda">{{ cotizacion.nombre }}</th>
+{% endblock %}
+{% block tbody %}
+    <tr>
+        <td class="derecha">Vence</td>
+        <td><strong>{{ cotizacion.fecha_vence|date:"D d/b" }}</strong></td>
+    </tr>
+    <tr>
+        <td class="derecha">Costo</td>
+        <td><strong>{{ cotizacion.subtotal|intcomma }}</strong></td>
+    </tr>
+    <tr>
+        <td class="derecha">Utilidad</td>
+        <td><strong>{{ cotizacion.utilidad|porciento }}</strong></td>
+    </tr>
+    <tr>
+        <td class="derecha">Precio</td>
+        <td><strong>{{ cotizacion.total|intcomma }}</strong></td>
+    </tr>
+    <tr>
+        <td class="derecha">Creada</td>
+        <td><strong>{{ cotizacion.creado }}</strong></td>
+    </tr>
+    <tr>
+        <td class="derecha">Actualizada</td>
+        <td><strong>{{ cotizacion.actualizado }}</strong></td>
+    </tr>
+{% endblock %}
+{% block detalle %}{% endblock %}
+{% block footer %}{% if request.user.is_superuser %}
+    <form action="" method="post">
+        {% csrf_token %}
+        <input type="hidden" name="after" value="{{ cotizacion.get_itinerario_url }}" />
+        <input type="submit" value="CONFIRMAR ELIMINACION DE COTIZACIÓN" name="DeleteAndShowParent"
+               class="ui-btn ui-btn-a ui-btn-icon-left ui-btn-inline ui-shadow ui-link ui-icon-delete ui-btn-icon-left"/>
+    </form>
+    {% endif %}
+{% endblock %}

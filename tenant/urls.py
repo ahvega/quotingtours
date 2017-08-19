@@ -1,16 +1,18 @@
 from django.conf.urls import url, include
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
+from django_filters.views import FilterView
 from rest_framework import routers
 from rest_framework.authtoken import views as authviews
 from rest_framework_jwt.views import obtain_jwt_token, refresh_jwt_token
 
 from transporte import api
+from transporte.filters import UserFilter
 from transporte.views import TipoDeVehiculoListView, TipoDeVehiculoCreateView, \
     TipoDeVehiculoDetailView, TipoDeVehiculoUpdateView, ParametroList, ParametroCreate, ParametroDetail, \
     ParametroUpdate, ItemListView, ItemCreateView, ItemDetailView, ItemUpdateView, NivelDePrecioListView, \
-    NivelDePrecioCreateView, NivelDePrecioDetailView, NivelDePrecioUpdateView, CotizacionListView, \
-    CotizacionCreate, CotizacionDetail, CotizacionUpdate, CotizacionDelete, ClienteListView, \
+    NivelDePrecioCreateView, NivelDePrecioDetailView, NivelDePrecioUpdateView, CotizacionCreate, CotizacionDetail, \
+    CotizacionUpdate, CotizacionDelete, ClienteListView, \
     ClienteCreateView, ClienteDetailView, ClienteUpdateView, ItinerarioListView, ItinerarioCreate, \
     ItinerarioDetailView, ItinerarioUpdateView, ItinerarioDeleteView, CotizacionDetalleListView, \
     CotizacionDetalleCreateView, CotizacionDetalleDetailView, CotizacionDetalleUpdateView, \
@@ -19,10 +21,6 @@ from transporte.views import TipoDeVehiculoListView, TipoDeVehiculoCreateView, \
     LugarDetailView, LugarUpdateView, ConductorListView, ConductorCreateView, \
     ConductorDetailView, ConductorUpdateView, indice, CotizacionTable, TramoEnVehiculoUpdate, TramoEnVehiculoDetail, \
     TramoEnVehiculoCreate, TramoEnVehiculoList, TramoEnVehiculoDelete
-
-from transporte import views
-from django_filters.views import FilterView
-from transporte.filters import UserFilter
 
 admin.autodiscover()
 router = routers.DefaultRouter()

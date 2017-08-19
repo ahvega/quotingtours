@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404
 from django.views.generic import DetailView, ListView, UpdateView, CreateView, DeleteView
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
-from django.shortcuts import render
+# from django.shortcuts import render
 from .filters import UserFilter
 
 from .forms import TipoDeVehiculoForm, ParametroForm, ItemForm, NivelDePrecioForm, CotizacionForm, ClienteForm, \

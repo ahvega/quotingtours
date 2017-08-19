@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% load bootstrap3 %}{% load staticfiles %}
+{% block title %}Tramo en Vehículo{% endblock %}
+{% block page-title %}Tramo en Vehículo{% endblock %}
+
+{% block content %}
+    <div class="topcontainer" style="padding: 10px;">
+        <form id="laforma" method="post" class="form form-horizontal">
+            {% csrf_token %}
+            <input type="hidden" id="id_tramo" name="tramo" value="{{ t_id }}" />
+            {% bootstrap_form form exclude=tramo %}
+            <button id="submit" class="ui-btn ui-btn-b ui-btn-icon-left ui-btn-inline ui-corner-all"
+                    type="submit">Guardar Tramo en Vehículo</button>
+        </form>
+    </div>{% endblock %}

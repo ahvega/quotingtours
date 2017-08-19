@@ -232,16 +232,19 @@ class Itinerario(models.Model):
 
     # Fields
     nombre = models.CharField(max_length=100)
-    slug = extension_fields.AutoSlugField(populate_from='nombre', blank=True, overwrite=True)
+    slug = extension_fields.AutoSlugField(populate_from='nombre',
+                                          blank=True, overwrite=True)
     fecha_desde = models.DateField(verbose_name='inicia')
     fecha_hasta = models.DateField(verbose_name='termina')
-    estatus = models.CharField(max_length=10, choices=Status.choices, validators=[Status.validator],
+    estatus = models.CharField(max_length=10, choices=Status.choices,
+                               validators=[Status.validator],
                                default=Status.Solicitado)
     creado = models.DateTimeField(auto_now_add=True, editable=False)
     actualizado = models.DateTimeField(auto_now=True, editable=False)
 
     # Relationship Fields
-    cliente = models.ForeignKey(Cliente, on_delete=CASCADE, verbose_name='cliente')
+    cliente = models.ForeignKey(Cliente, on_delete=CASCADE,
+                                verbose_name='cliente')
     nivel_de_precio = models.ForeignKey(NivelDePrecio,
                                         verbose_name='nivel de precio',
                                         on_delete=models.PROTECT, null=True)
@@ -284,8 +287,8 @@ class Cotizacion(models.Model):
                                  blank=True,
                                  db_column='total',
                                  default=0)
-    _utilidad = models.DecimalField(max_digits=8,
-                                    decimal_places=6,
+    _utilidad = models.DecimalField(max_digits=5,
+                                    decimal_places=2,
                                     null=True,
                                     blank=True,
                                     db_column='utilidad',
@@ -336,10 +339,10 @@ class Cotizacion(models.Model):
         total_agregado = self.lineas.aggregate(total=Coalesce(Sum('total'), 0))
         redondeado = (math.ceil(float(total_agregado['total']) / redondeoLps)) * redondeoLps
         redondeado = Decimal(redondeado).quantize(Decimal("0.00"))
-        utilidad_porcentual = (redondeado - Decimal(subtotal_agregado['subtotal'])) / redondeado
         if redondeado == 0.00:
             return 0.000000
         else:
+            utilidad_porcentual = (redondeado - Decimal(subtotal_agregado['subtotal'])) / redondeado
             return Decimal(utilidad_porcentual).quantize(Decimal("0.000000"))
 
     @utilidad.setter
@@ -375,7 +378,7 @@ class CotizacionDetalle(models.Model):
                                  decimal_places=6,
                                  default=0, editable=False)
     utilidad = models.DecimalField(max_digits=6,
-                                   decimal_places=4,
+                                   decimal_places=2,
                                    default=0, editable=False)
     total = models.DecimalField(max_digits=10,
                                 decimal_places=2,
@@ -657,6 +660,22 @@ class TramoEnVehiculo(models.Model):
         verbose_name = 'Tramo en Vehículos'
         verbose_name_plural = 'Tramos En Vehículos'
         unique_together = ('tramo', 'vehiculo')
+
+    @property
+    def nombre(self):
+        return self.tramo.codigo+' en '+self.vehiculo.nombre
+
+    @nombre.setter
+    def nombre(self, value):
+        self._nombre = value
+
+    @property
+    def costo(self):
+        return self.vehiculo.costo_por_km * Decimal(self.tramo.kms)
+
+    @costo.setter
+    def costo(self, value):
+        self._costo = value
 
     def get_absolute_url(self):
         return reverse('transporte_tramoenvehiculo_detail', args=(self.id,))

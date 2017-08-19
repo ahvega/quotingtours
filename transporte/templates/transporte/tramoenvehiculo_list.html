@@ -1,0 +1,41 @@
+{% extends "_table.html" %}
+{% load static %}
+{% load humanize %}
+{% block title %}Tramos En Vehículos{% endblock %}
+{% block page-title %}Tramos En Vehículos{% endblock %}
+{% block theader %}
+            <th class="centrado">Tramo</th>
+            <th></th>
+            <th data-priority="1" class="centrado">Vehículo</th>
+            <th data-priority="5" class="centrado">Descripcion</th>
+            <th data-priority="2" class="centrado">Costo</th>
+            <th data-priority="3" class="centrado">Kms</th>
+            <th data-priority="4" class="centrado">Hrs</th>{% endblock %}
+{% block tbody %}{% for tramoenvehiculo in tramoenvehiculo_list %}
+                    <tr>
+                    <td data-search="{{ tramoenvehiculo.nombre }}">
+                        <a title="Ver Tramo {{ tramoenvehiculo.nombre }}"
+                           href="{{ tramoenvehiculo.get_absolute_url }}">{{ tramoenvehiculo.tramo|upper }}</td>
+                    <td><div class="ui-alt-icon ui-nodisc-icon mininav3r">
+                        <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-action ui-btn-icon-notext ui-btncito"
+                           title="Ver Tramo {{ tramoenvehiculo.nombre }}" href="{{ tramoenvehiculo.get_absolute_url }}">goto</a>{% if request.user.is_superuser %}
+                        <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-edit ui-btn-icon-notext ui-btncito"
+                           title="Editar Tramo {{ tramoenvehiculo.nombre }}" href="{{ tramoenvehiculo.get_update_url }}"
+                           data-ajax="false" onclick="window.location.reload(false);">edit</a>
+                        <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-delete ui-btn-icon-notext ui-btncito"
+                           title="Eliminar Tramo {{ tramoenvehiculo.nombre }}" href="{{ tramoenvehiculo.get_delete_url }}">delete</a>{% endif %}
+                    </div></td>
+                    <td class="izquierda">{{ tramoenvehiculo.nombre }}</td>
+                    <td class="centrado">{{ tramoenvehiculo.costo|intcomma }}</td>
+                    <td class="centrado">{{ tramo.kms|intcomma }}</td>
+                    <td class="centrado">{{ tramo.hrs }}</td>
+                </tr>
+            {% endfor %}{% endblock %}{% block footer %}
+    {% if request.user.is_superuser %}
+        <div class="fixed-action-btn">
+            <a class="btn-floating btn-large waves-effect waves-light red darken-2"
+               href="{% url "transporte_tramoenvehiculo_create" %}"
+               data-ajax="false" onclick="window.location.reload(false);">
+                <i class="material-icons">add</i></a>
+        </div>
+    {% endif %}{% endblock %}

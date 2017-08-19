@@ -687,3 +687,6 @@ table.dataTable thead > tr > th.sorting_asc, table.dataTable thead > tr > th.sor
     border-top: 3px double #BCBCBC;
 }
 
+#table-list {
+    margin-bottom: 40px;
+}

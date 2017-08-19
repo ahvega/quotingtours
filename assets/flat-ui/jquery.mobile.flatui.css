@@ -753,7 +753,7 @@ div.ui-mobile-viewport {
 }
 
 .ui-mini {
-    font-size: 12.5px;
+    font-size: 13px;
 }
 
 .ui-mini .ui-btn {
@@ -763,7 +763,7 @@ div.ui-mobile-viewport {
 /* Make buttons in toolbars default to mini and inline. */
 .ui-header .ui-btn,
 .ui-footer .ui-btn {
-    font-size:      12.5px;
+    font-size:      13px;
     display:        inline-block;
     vertical-align: middle;
 }
@@ -771,7 +771,7 @@ div.ui-mobile-viewport {
 /* To ensure same top and left/right position when ui-btn-left/right are added to something other than buttons. */
 .ui-header .ui-btn-left,
 .ui-header .ui-btn-right {
-    font-size: 12.5px;
+    font-size: 13px;
 }
 
 .ui-mini.ui-btn-icon-notext,
@@ -1454,6 +1454,7 @@ button.ui-btn-icon-notext,
  * the viewer from the z-plane. According to the CSS3 spec, 1000 is a moderate
  * value.
  */
+/*noinspection ALL*/
 .viewport-flip {
     -webkit-perspective: 1000;
     -moz-perspective:    1000;
@@ -1707,6 +1708,7 @@ button.ui-btn-icon-notext,
     box-shadow:               none;
 }
 
+/*noinspection ALL*/
 .flow.out {
     -webkit-transform:                 translateX(-100%) scale(.7);
     -webkit-animation-name:            flowouttoleft;
@@ -2132,7 +2134,7 @@ li.ui-block-e {
 }
 
 .ui-navbar li .ui-btn {
-    font-size:          12.5px;
+    font-size:          13px;
     display:            block;
     margin:             0;
     border-right-width: 0;
@@ -2293,11 +2295,7 @@ li.ui-block-e {
 }
 
 .ui-collapsible-themed-content .ui-collapsible-content {
-    border-left-width:   0;
-    border-right-width:  0;
-    border-top-width:    0;
-    border-bottom-width: 1px;
-    border-style:        solid;
+    border: 0 solid; border-bottom-width: 1px;
 }
 
 .ui-collapsible-inset.ui-collapsible-themed-content .ui-collapsible-content {
@@ -2792,10 +2790,9 @@ fieldset.ui-controlgroup {
  **/
 .ui-popup-arrow-container .ui-popup-arrow {
     /* (4*desired triangle height)/sqrt(2) - does not account for border - centred within the outer rectangle */
-    width:        28.284271247px;
-    height:       28.284271247px;
-    border-width: 1px;
-    border-style: solid;
+    width:  28.284271247px;
+    height: 28.284271247px;
+    border: 1px solid;
 }
 
 .ui-popup-arrow-container.ui-popup-arrow-t .ui-popup-arrow {
@@ -3292,7 +3289,7 @@ fieldset.ui-controlgroup {
 .ui-listview > .ui-li-divider {
     padding:     .5em 1.143em;
     font-size:   14px;
-    font-weight: bold;
+    font-weight: normal;
     cursor:      default;
     outline:     0; /* Dividers in custom selectmenus have tabindex */
 }
@@ -3324,7 +3321,7 @@ fieldset.ui-controlgroup {
 .ui-li-count {
     position:     absolute;
     font-size:    12.5px;
-    font-weight:  bold;
+    font-weight:  normal;
     text-align:   center;
     border-width: 1px;
     border-style: solid;
@@ -3368,7 +3365,7 @@ fieldset.ui-controlgroup {
 .ui-listview > li h5,
 .ui-listview > li h6 {
     font-size:     1em;
-    font-weight:   bold;
+    font-weight:   normal;
     display:       block;
     margin:        .45em 0;
     text-overflow: ellipsis;
@@ -3518,7 +3515,7 @@ input.ui-slider-input {
     display:            block;
     float:              left;
     font-size:          14px;
-    font-weight:        bold;
+    font-weight:        normal;
     margin:             0;
     padding:            4px;
     width:              40px;
@@ -4037,7 +4034,7 @@ for Android 4.1 */
 }
 
 .ui-table th {
-    font-weight: bold;
+    font-weight: normal;
 }
 
 .ui-table caption {
@@ -4511,7 +4508,7 @@ for Android 4.1 */
 }
 
 .ui-btn-icon-notext:after {
-    text-indent: 0px;
+    text-indent: 0;
 }
 
 .ui-input-text {
@@ -4548,7 +4545,7 @@ button,
 .ui-btn {
     font-size:   1em;
     line-height: 1.3;
-    font-family: 'Open Sans Condensed', sans-serif;
+    font-family: 'PT Sans Narrow', sans-serif;
 }
 
 legend,
@@ -4562,7 +4559,7 @@ h3 {
     font-weight: normal;
 }
 
-/* Form labels (overrides font-weight bold in bars, and mini font-size) */
+/* Form labels (overrides font-weight normal in bars, and mini font-size) */
 .ui-mobile label,
 div.ui-controlgroup-label {
     font-weight: normal;
@@ -4611,9 +4608,8 @@ div.ui-controlgroup-label {
 -----------------------------------------------------------------------------------------------------------*/
 .ui-btn,
 label.ui-btn {
-    font-weight:  bold;
-    border-width: 1px;
-    border-style: solid;
+    font-weight: normal !important;
+    /*border:      1px solid;*/
 }
 
 .ui-btn:link {
@@ -4731,12 +4727,10 @@ html .ui-alt-icon .ui-radio-off:after {
 }
 
 .ui-radio .ui-btn.ui-radio-on:after {
-    background-image: none;
-    background-color: #fff;
-    width:            8px;
-    height:           8px;
-    border-width:     5px;
-    border-style:     solid;
+    background: #fff none;
+    width:      8px;
+    height:     8px;
+    border:     5px solid;
 }
 
 .ui-alt-icon.ui-btn.ui-radio-on:after,
@@ -4787,12 +4781,11 @@ button[disabled],
 
 .ui-noboxshadow .ui-btn:focus,
 .ui-noboxshadow .ui-focus {
-    outline-width: 1px;
-    outline-style: auto;
+    outline: auto 1px;
 }
 
 .ui-slider, .ui-slider-track {
-    border: 0px;
+    border: 0;
 }
 
 .ui-slider-handle {
@@ -4800,77 +4793,77 @@ button[disabled],
     border-radius:         14px;
 }
 
-html .ui-bar-a, html .ui-page-theme-a .ui-bar-inherit, html .ui-bar-a .ui-bar-inherit, html .ui-body-a .ui-bar-inherit, html body .ui-group-theme-a .ui-bar-inherit { background: #2c3e50; border-color: #2c3e50; color: #fff; font-weight: bold }
+html .ui-bar-a, html .ui-page-theme-a .ui-bar-inherit, html .ui-bar-a .ui-bar-inherit, html .ui-body-a .ui-bar-inherit, html body .ui-group-theme-a .ui-bar-inherit { background: #204478; border-color: #204478; color: #fff; font-weight: normal }
 
-html .ui-bar-a { border-width: 1px; border-style: solid }
+html .ui-bar-a { border: 1px solid; }
 
 html .ui-overlay-a, html .ui-page-theme-a, html .ui-page-theme-a .ui-panel-wrapper { background: #f9f9f9; border-color: #bbb; color: #333 }
 
-html .ui-body-a, html .ui-page-theme-a .ui-body-inherit, html .ui-bar-a .ui-body-inherit, html .ui-body-a .ui-body-inherit, html body .ui-group-theme-a .ui-body-inherit, html .ui-panel-page-container-a { background: #fff; border-color: #2c3e50; color: #333 }
+html .ui-body-a, html .ui-page-theme-a .ui-body-inherit, html .ui-bar-a .ui-body-inherit, html .ui-body-a .ui-body-inherit, html body .ui-group-theme-a .ui-body-inherit, html .ui-panel-page-container-a { background: #fff; border-color: #204478; color: #333 }
 
-html .ui-body-a { border-width: 1px; border-style: solid }
+html .ui-body-a { border: 1px solid; }
 
-html .ui-page-theme-a a, html .ui-bar-a a, html .ui-body-a a, html body .ui-group-theme-a a { color: #4e6d8d; font-weight: bold }
+html .ui-page-theme-a a, html .ui-bar-a a, html .ui-body-a a, html body .ui-group-theme-a a { color: #79acff; font-weight: normal }
 
-html .ui-page-theme-a a:visited, html .ui-bar-a a:visited, html .ui-body-a a:visited, html body .ui-group-theme-a a:visited { color: #4e6d8d }
+html .ui-page-theme-a a:visited, html .ui-bar-a a:visited, html .ui-body-a a:visited, html body .ui-group-theme-a a:visited { color: #79acff }
 
-html .ui-page-theme-a a:hover, html .ui-bar-a a:hover, html .ui-body-a a:hover, html body .ui-group-theme-a a:hover { color: #4e6d8d }
+html .ui-page-theme-a a:hover, html .ui-bar-a a:hover, html .ui-body-a a:hover, html body .ui-group-theme-a a:hover { color: #79acff }
 
-html .ui-page-theme-a a:active, html .ui-bar-a a:active, html .ui-body-a a:active, html body .ui-group-theme-a a:active { color: #4e6d8d }
+html .ui-page-theme-a a:active, html .ui-bar-a a:active, html .ui-body-a a:active, html body .ui-group-theme-a a:active { color: #79acff }
 
-html .ui-page-theme-a .ui-btn, html .ui-bar-a .ui-btn, html .ui-body-a .ui-btn, html body .ui-group-theme-a .ui-btn, html body .ui-btn.ui-btn-a, html .ui-page-theme-a .ui-btn:visited, html .ui-bar-a .ui-btn:visited, html .ui-body-a .ui-btn:visited, html body .ui-group-theme-a .ui-btn:visited, html body .ui-btn.ui-btn-a:visited { background: #2c3e50; border-color: #2c3e50; color: #fff }
+html .ui-page-theme-a .ui-btn, html .ui-bar-a .ui-btn, html .ui-body-a .ui-btn, html body .ui-group-theme-a .ui-btn, html body .ui-btn.ui-btn-a, html .ui-page-theme-a .ui-btn:visited, html .ui-bar-a .ui-btn:visited, html .ui-body-a .ui-btn:visited, html body .ui-group-theme-a .ui-btn:visited, html body .ui-btn.ui-btn-a:visited { background: #204478; border-color: #204478; color: #fff;  text-transform: uppercase; }
 
-html .ui-page-theme-a .ui-btn:hover, html .ui-bar-a .ui-btn:hover, html .ui-body-a .ui-btn:hover, html body .ui-group-theme-a .ui-btn:hover, html body .ui-btn.ui-btn-a:hover { background: #4e6d8d; border-color: #4e6d8d; color: #fff }
+html .ui-page-theme-a .ui-btn:hover, html .ui-bar-a .ui-btn:hover, html .ui-body-a .ui-btn:hover, html body .ui-group-theme-a .ui-btn:hover, html body .ui-btn.ui-btn-a:hover { background: #79acff; border-color: #79acff; color: #fff }
 
-html .ui-page-theme-a .ui-btn:active, html .ui-bar-a .ui-btn:active, html .ui-body-a .ui-btn:active, html body .ui-group-theme-a .ui-btn:active, html body .ui-btn.ui-btn-a:active { background: #4e6d8d; border-color: #4e6d8d; color: #fff }
+html .ui-page-theme-a .ui-btn:active, html .ui-bar-a .ui-btn:active, html .ui-body-a .ui-btn:active, html body .ui-group-theme-a .ui-btn:active, html body .ui-btn.ui-btn-a:active { background: #79acff; border-color: #79acff; color: #fff }
 
-html .ui-page-theme-a .ui-btn.ui-btn-active, html .ui-bar-a .ui-btn.ui-btn-active, html .ui-body-a .ui-btn.ui-btn-active, html body .ui-group-theme-a .ui-btn.ui-btn-active, html body .ui-btn.ui-btn-a.ui-btn-active, html .ui-page-theme-a .ui-flipswitch-active, html .ui-bar-a .ui-flipswitch-active, html .ui-body-a .ui-flipswitch-active, html body .ui-group-theme-a .ui-flipswitch-active, html body .ui-flipswitch.ui-bar-a.ui-flipswitch-active, html .ui-page-theme-a .ui-slider-track .ui-btn-active, html .ui-bar-a .ui-slider-track .ui-btn-active, html .ui-body-a .ui-slider-track .ui-btn-active, html body .ui-group-theme-a .ui-slider-track .ui-btn-active, html body div.ui-slider-track.ui-body-a .ui-btn-active { background-color: #4e6d8d; border-color: #4e6d8d; color: #fff }
+html .ui-page-theme-a .ui-btn.ui-btn-active, html .ui-bar-a .ui-btn.ui-btn-active, html .ui-body-a .ui-btn.ui-btn-active, html body .ui-group-theme-a .ui-btn.ui-btn-active, html body .ui-btn.ui-btn-a.ui-btn-active, html .ui-page-theme-a .ui-flipswitch-active, html .ui-bar-a .ui-flipswitch-active, html .ui-body-a .ui-flipswitch-active, html body .ui-group-theme-a .ui-flipswitch-active, html body .ui-flipswitch.ui-bar-a.ui-flipswitch-active, html .ui-page-theme-a .ui-slider-track .ui-btn-active, html .ui-bar-a .ui-slider-track .ui-btn-active, html .ui-body-a .ui-slider-track .ui-btn-active, html body .ui-group-theme-a .ui-slider-track .ui-btn-active, html body div.ui-slider-track.ui-body-a .ui-btn-active { background-color: #79acff; border-color: #79acff; color: #fff }
 
-html .ui-page-theme-a .ui-checkbox-on:after, html .ui-bar-a .ui-checkbox-on:after, html .ui-body-a .ui-checkbox-on:after, html body .ui-group-theme-a .ui-checkbox-on:after, html .ui-btn.ui-checkbox-on.ui-btn-a:after, html background-color: primary_color { border-color: #2c3e50; color: #fff }
+html .ui-page-theme-a .ui-checkbox-on:after, html .ui-bar-a .ui-checkbox-on:after, html .ui-body-a .ui-checkbox-on:after, html body .ui-group-theme-a .ui-checkbox-on:after, html .ui-btn.ui-checkbox-on.ui-btn-a:after, html background-color: primary_color { border-color: #204478; color: #fff }
 
-html .ui-page-theme-a .ui-radio-on:after, html .ui-bar-a .ui-radio-on:after, html .ui-body-a .ui-radio-on:after, html body .ui-group-theme-a .ui-radio-on:after, html .ui-btn.ui-radio-on.ui-btn-a:after { background-color: #2c3e50; color: #fff }
+html .ui-page-theme-a .ui-radio-on:after, html .ui-bar-a .ui-radio-on:after, html .ui-body-a .ui-radio-on:after, html body .ui-group-theme-a .ui-radio-on:after, html .ui-btn.ui-radio-on.ui-btn-a:after { background-color: #204478; color: #fff }
 
-html .ui-bar-b, html .ui-page-theme-b .ui-bar-inherit, html .ui-bar-b .ui-bar-inherit, html .ui-body-b .ui-bar-inherit, html body .ui-group-theme-b .ui-bar-inherit { background: #16a085; border-color: #16a085; color: #fff; font-weight: bold }
+html .ui-bar-b, html .ui-page-theme-b .ui-bar-inherit, html .ui-bar-b .ui-bar-inherit, html .ui-body-b .ui-bar-inherit, html body .ui-group-theme-b .ui-bar-inherit { background: #4385f5; border-color: #4385f5; color: #fff; font-weight: normal }
 
-html .ui-bar-b { border-width: 1px; border-style: solid }
+/*html .ui-bar-b { border: 1px solid; }*/
 
 html .ui-overlay-b, html .ui-page-theme-b, html .ui-page-theme-b .ui-panel-wrapper { background: #f9f9f9; border-color: #bbb; color: #333 }
 
-html .ui-body-b, html .ui-page-theme-b .ui-body-inherit, html .ui-bar-b .ui-body-inherit, html .ui-body-b .ui-body-inherit, html body .ui-group-theme-b .ui-body-inherit, html .ui-panel-page-container-b { background: #fff; border-color: #16a085; color: #333 }
+html .ui-body-b, html .ui-page-theme-b .ui-body-inherit, html .ui-bar-b .ui-body-inherit, html .ui-body-b .ui-body-inherit, html body .ui-group-theme-b .ui-body-inherit, html .ui-panel-page-container-b { background: #fff; border-color: #4385f5; color: #333 }
 
-html .ui-body-b { border-width: 1px; border-style: solid }
+html .ui-body-b { border: 1px solid; }
 
-html .ui-page-theme-b a, html .ui-bar-b a, html .ui-body-b a, html body .ui-group-theme-b a { color: #1abc9c; font-weight: bold }
+html .ui-page-theme-b a, html .ui-bar-b a, html .ui-body-b a, html body .ui-group-theme-b a { color: #4385f5; font-weight: normal }
 
-html .ui-page-theme-b a:visited, html .ui-bar-b a:visited, html .ui-body-b a:visited, html body .ui-group-theme-b a:visited { color: #1abc9c }
+html .ui-page-theme-b a:visited, html .ui-bar-b a:visited, html .ui-body-b a:visited, html body .ui-group-theme-b a:visited { color: #4385f5 }
 
-html .ui-page-theme-b a:hover, html .ui-bar-b a:hover, html .ui-body-b a:hover, html body .ui-group-theme-b a:hover { color: #1abc9c }
+html .ui-page-theme-b a:hover, html .ui-bar-b a:hover, html .ui-body-b a:hover, html body .ui-group-theme-b a:hover { color: #79acff }
 
-html .ui-page-theme-b a:active, html .ui-bar-b a:active, html .ui-body-b a:active, html body .ui-group-theme-b a:active { color: #1abc9c }
+html .ui-page-theme-b a:active, html .ui-bar-b a:active, html .ui-body-b a:active, html body .ui-group-theme-b a:active { color: #79acff }
 
-html .ui-page-theme-b .ui-btn, html .ui-bar-b .ui-btn, html .ui-body-b .ui-btn, html body .ui-group-theme-b .ui-btn, html body .ui-btn.ui-btn-b, html .ui-page-theme-b .ui-btn:visited, html .ui-bar-b .ui-btn:visited, html .ui-body-b .ui-btn:visited, html body .ui-group-theme-b .ui-btn:visited, html body .ui-btn.ui-btn-b:visited { background: #16a085; border-color: #16a085; color: #fff }
+html .ui-page-theme-b .ui-btn, html .ui-bar-b .ui-btn, html .ui-body-b .ui-btn, html body .ui-group-theme-b .ui-btn, html body .ui-btn.ui-btn-b, html .ui-page-theme-b .ui-btn:visited, html .ui-bar-b .ui-btn:visited, html .ui-body-b .ui-btn:visited, html body .ui-group-theme-b .ui-btn:visited, html body .ui-btn.ui-btn-b:visited { background: #4385f5; border-color: #4385f5; color: #fff; text-transform: uppercase; }
 
-html .ui-page-theme-b .ui-btn:hover, html .ui-bar-b .ui-btn:hover, html .ui-body-b .ui-btn:hover, html body .ui-group-theme-b .ui-btn:hover, html body .ui-btn.ui-btn-b:hover { background: #1abc9c; border-color: #1abc9c; color: #fff }
+html .ui-page-theme-b .ui-btn:hover, html .ui-bar-b .ui-btn:hover, html .ui-body-b .ui-btn:hover, html body .ui-group-theme-b .ui-btn:hover, html body .ui-btn.ui-btn-b:hover { background: #79acff; border-color: #4385f5; color: #fff }
 
-html .ui-page-theme-b .ui-btn:active, html .ui-bar-b .ui-btn:active, html .ui-body-b .ui-btn:active, html body .ui-group-theme-b .ui-btn:active, html body .ui-btn.ui-btn-b:active { background: #1abc9c; border-color: #1abc9c; color: #fff }
+html .ui-page-theme-b .ui-btn:active, html .ui-bar-b .ui-btn:active, html .ui-body-b .ui-btn:active, html body .ui-group-theme-b .ui-btn:active, html body .ui-btn.ui-btn-b:active { background: #79acff; border-color: #4385f5; color: #fff }
 
-html .ui-page-theme-b .ui-btn.ui-btn-active, html .ui-bar-b .ui-btn.ui-btn-active, html .ui-body-b .ui-btn.ui-btn-active, html body .ui-group-theme-b .ui-btn.ui-btn-active, html body .ui-btn.ui-btn-b.ui-btn-active, html .ui-page-theme-b .ui-flipswitch-active, html .ui-bar-b .ui-flipswitch-active, html .ui-body-b .ui-flipswitch-active, html body .ui-group-theme-b .ui-flipswitch-active, html body .ui-flipswitch.ui-bar-b.ui-flipswitch-active, html .ui-page-theme-b .ui-slider-track .ui-btn-active, html .ui-bar-b .ui-slider-track .ui-btn-active, html .ui-body-b .ui-slider-track .ui-btn-active, html body .ui-group-theme-b .ui-slider-track .ui-btn-active, html body div.ui-slider-track.ui-body-b .ui-btn-active { background-color: #1abc9c; border-color: #1abc9c; color: #fff }
+html .ui-page-theme-b .ui-btn.ui-btn-active, html .ui-bar-b .ui-btn.ui-btn-active, html .ui-body-b .ui-btn.ui-btn-active, html body .ui-group-theme-b .ui-btn.ui-btn-active, html body .ui-btn.ui-btn-b.ui-btn-active, html .ui-page-theme-b .ui-flipswitch-active, html .ui-bar-b .ui-flipswitch-active, html .ui-body-b .ui-flipswitch-active, html body .ui-group-theme-b .ui-flipswitch-active, html body .ui-flipswitch.ui-bar-b.ui-flipswitch-active, html .ui-page-theme-b .ui-slider-track .ui-btn-active, html .ui-bar-b .ui-slider-track .ui-btn-active, html .ui-body-b .ui-slider-track .ui-btn-active, html body .ui-group-theme-b .ui-slider-track .ui-btn-active, html body div.ui-slider-track.ui-body-b .ui-btn-active { background-color: #79acff; border-color: #4385f5; color: #fff }
 
-html .ui-page-theme-b .ui-checkbox-on:after, html .ui-bar-b .ui-checkbox-on:after, html .ui-body-b .ui-checkbox-on:after, html body .ui-group-theme-b .ui-checkbox-on:after, html .ui-btn.ui-checkbox-on.ui-btn-b:after, html background-color: primary_color { border-color: #16a085; color: #fff }
+html .ui-page-theme-b .ui-checkbox-on:after, html .ui-bar-b .ui-checkbox-on:after, html .ui-body-b .ui-checkbox-on:after, html body .ui-group-theme-b .ui-checkbox-on:after, html .ui-btn.ui-checkbox-on.ui-btn-b:after, html background-color: primary_color { border-color: #79acff; color: #fff }
 
-html .ui-page-theme-b .ui-radio-on:after, html .ui-bar-b .ui-radio-on:after, html .ui-body-b .ui-radio-on:after, html body .ui-group-theme-b .ui-radio-on:after, html .ui-btn.ui-radio-on.ui-btn-b:after { background-color: #16a085; color: #fff }
+html .ui-page-theme-b .ui-radio-on:after, html .ui-bar-b .ui-radio-on:after, html .ui-body-b .ui-radio-on:after, html body .ui-group-theme-b .ui-radio-on:after, html .ui-btn.ui-radio-on.ui-btn-b:after { background-color: #4385f5; color: #fff }
 
-html .ui-bar-c, html .ui-page-theme-c .ui-bar-inherit, html .ui-bar-c .ui-bar-inherit, html .ui-body-c .ui-bar-inherit, html body .ui-group-theme-c .ui-bar-inherit { background: #f2f2f2; border-color: #f2f2f2; color: #000; font-weight: bold }
+html .ui-bar-c, html .ui-page-theme-c .ui-bar-inherit, html .ui-bar-c .ui-bar-inherit, html .ui-body-c .ui-bar-inherit, html body .ui-group-theme-c .ui-bar-inherit { background: #f2f2f2; border-color: #f2f2f2; color: #000; font-weight: normal }
 
-html .ui-bar-c { border-width: 1px; border-style: solid }
+html .ui-bar-c { border: 1px solid; }
 
 html .ui-overlay-c, html .ui-page-theme-c, html .ui-page-theme-c .ui-panel-wrapper { background: #f9f9f9; border-color: #bbb; color: #333 }
 
 html .ui-body-c, html .ui-page-theme-c .ui-body-inherit, html .ui-bar-c .ui-body-inherit, html .ui-body-c .ui-body-inherit, html body .ui-group-theme-c .ui-body-inherit, html .ui-panel-page-container-c { background: #000; border-color: #f2f2f2; color: #333 }
 
-html .ui-body-c { border-width: 1px; border-style: solid }
+html .ui-body-c { border: 1px solid; }
 
-html .ui-page-theme-c a, html .ui-bar-c a, html .ui-body-c a, html body .ui-group-theme-c a { color: #eee; font-weight: bold }
+html .ui-page-theme-c a, html .ui-bar-c a, html .ui-body-c a, html body .ui-group-theme-c a { color: #eee; font-weight: normal }
 
 html .ui-page-theme-c a:visited, html .ui-bar-c a:visited, html .ui-body-c a:visited, html body .ui-group-theme-c a:visited { color: #eee }
 
@@ -4890,17 +4883,17 @@ html .ui-page-theme-c .ui-checkbox-on:after, html .ui-bar-c .ui-checkbox-on:afte
 
 html .ui-page-theme-c .ui-radio-on:after, html .ui-bar-c .ui-radio-on:after, html .ui-body-c .ui-radio-on:after, html body .ui-group-theme-c .ui-radio-on:after, html .ui-btn.ui-radio-on.ui-btn-c:after { background-color: #f2f2f2; color: #000 }
 
-html .ui-bar-d, html .ui-page-theme-d .ui-bar-inherit, html .ui-bar-d .ui-bar-inherit, html .ui-body-d .ui-bar-inherit, html body .ui-group-theme-d .ui-bar-inherit { background: #c1392b; border-color: #c1392b; color: #fff; font-weight: bold }
+html .ui-bar-d, html .ui-page-theme-d .ui-bar-inherit, html .ui-bar-d .ui-bar-inherit, html .ui-body-d .ui-bar-inherit, html body .ui-group-theme-d .ui-bar-inherit { background: #c1392b; border-color: #c1392b; color: #fff; font-weight: normal }
 
-html .ui-bar-d { border-width: 1px; border-style: solid }
+html .ui-bar-d { border: 1px solid; }
 
 html .ui-overlay-d, html .ui-page-theme-d, html .ui-page-theme-d .ui-panel-wrapper { background: #f9f9f9; border-color: #bbb; color: #333 }
 
 html .ui-body-d, html .ui-page-theme-d .ui-body-inherit, html .ui-bar-d .ui-body-inherit, html .ui-body-d .ui-body-inherit, html body .ui-group-theme-d .ui-body-inherit, html .ui-panel-page-container-d { background: #fff; border-color: #c1392b; color: #333 }
 
-html .ui-body-d { border-width: 1px; border-style: solid }
+html .ui-body-d { border: 1px solid; }
 
-html .ui-page-theme-d a, html .ui-bar-d a, html .ui-body-d a, html body .ui-group-theme-d a { color: #e84c3d; font-weight: bold }
+html .ui-page-theme-d a, html .ui-bar-d a, html .ui-body-d a, html body .ui-group-theme-d a { color: #e84c3d; font-weight: normal }
 
 html .ui-page-theme-d a:visited, html .ui-bar-d a:visited, html .ui-body-d a:visited, html body .ui-group-theme-d a:visited { color: #e84c3d }
 
@@ -4920,17 +4913,17 @@ html .ui-page-theme-d .ui-checkbox-on:after, html .ui-bar-d .ui-checkbox-on:afte
 
 html .ui-page-theme-d .ui-radio-on:after, html .ui-bar-d .ui-radio-on:after, html .ui-body-d .ui-radio-on:after, html body .ui-group-theme-d .ui-radio-on:after, html .ui-btn.ui-radio-on.ui-btn-d:after { background-color: #c1392b; color: #fff }
 
-html .ui-bar-e, html .ui-page-theme-e .ui-bar-inherit, html .ui-bar-e .ui-bar-inherit, html .ui-body-e .ui-bar-inherit, html body .ui-group-theme-e .ui-bar-inherit { background: #f1c40f; border-color: #f1c40f; color: #fff; font-weight: bold }
+html .ui-bar-e, html .ui-page-theme-e .ui-bar-inherit, html .ui-bar-e .ui-bar-inherit, html .ui-body-e .ui-bar-inherit, html body .ui-group-theme-e .ui-bar-inherit { background: #f1c40f; border-color: #f1c40f; color: #fff; font-weight: normal }
 
-html .ui-bar-e { border-width: 1px; border-style: solid }
+html .ui-bar-e { border: 1px solid; }
 
 html .ui-overlay-e, html .ui-page-theme-e, html .ui-page-theme-e .ui-panel-wrapper { background: #f9f9f9; border-color: #bbb; color: #333 }
 
 html .ui-body-e, html .ui-page-theme-e .ui-body-inherit, html .ui-bar-e .ui-body-inherit, html .ui-body-e .ui-body-inherit, html body .ui-group-theme-e .ui-body-inherit, html .ui-panel-page-container-e { background: #fff; border-color: #f1c40f; color: #333 }
 
-html .ui-body-e { border-width: 1px; border-style: solid }
+html .ui-body-e { border: 1px solid; }
 
-html .ui-page-theme-e a, html .ui-bar-e a, html .ui-body-e a, html body .ui-group-theme-e a { color: #f4d03f; font-weight: bold }
+html .ui-page-theme-e a, html .ui-bar-e a, html .ui-body-e a, html body .ui-group-theme-e a { color: #f4d03f; font-weight: normal }
 
 html .ui-page-theme-e a:visited, html .ui-bar-e a:visited, html .ui-body-e a:visited, html body .ui-group-theme-e a:visited { color: #f4d03f }
 
@@ -4950,17 +4943,17 @@ html .ui-page-theme-e .ui-checkbox-on:after, html .ui-bar-e .ui-checkbox-on:afte
 
 html .ui-page-theme-e .ui-radio-on:after, html .ui-bar-e .ui-radio-on:after, html .ui-body-e .ui-radio-on:after, html body .ui-group-theme-e .ui-radio-on:after, html .ui-btn.ui-radio-on.ui-btn-e:after { background-color: #f1c40f; color: #fff }
 
-html .ui-bar-f, html .ui-page-theme-f .ui-bar-inherit, html .ui-bar-f .ui-bar-inherit, html .ui-body-f .ui-bar-inherit, html body .ui-group-theme-f .ui-bar-inherit { background: #3498db; border-color: #3498db; color: #fff; font-weight: bold }
+html .ui-bar-f, html .ui-page-theme-f .ui-bar-inherit, html .ui-bar-f .ui-bar-inherit, html .ui-body-f .ui-bar-inherit, html body .ui-group-theme-f .ui-bar-inherit { background: #3498db; border-color: #3498db; color: #fff; font-weight: normal }
 
-html .ui-bar-f { border-width: 1px; border-style: solid }
+html .ui-bar-f { border: 1px solid; }
 
 html .ui-overlay-f, html .ui-page-theme-f, html .ui-page-theme-f .ui-panel-wrapper { background: #f9f9f9; border-color: #bbb; color: #333 }
 
 html .ui-body-f, html .ui-page-theme-f .ui-body-inherit, html .ui-bar-f .ui-body-inherit, html .ui-body-f .ui-body-inherit, html body .ui-group-theme-f .ui-body-inherit, html .ui-panel-page-container-f { background: #fff; border-color: #3498db; color: #333 }
 
-html .ui-body-f { border-width: 1px; border-style: solid }
+html .ui-body-f { border: 1px solid; }
 
-html .ui-page-theme-f a, html .ui-bar-f a, html .ui-body-f a, html body .ui-group-theme-f a { color: #5dade2; font-weight: bold }
+html .ui-page-theme-f a, html .ui-bar-f a, html .ui-body-f a, html body .ui-group-theme-f a { color: #5dade2; font-weight: normal }
 
 html .ui-page-theme-f a:visited, html .ui-bar-f a:visited, html .ui-body-f a:visited, html body .ui-group-theme-f a:visited { color: #5dade2 }
 
@@ -4980,17 +4973,17 @@ html .ui-page-theme-f .ui-checkbox-on:after, html .ui-bar-f .ui-checkbox-on:afte
 
 html .ui-page-theme-f .ui-radio-on:after, html .ui-bar-f .ui-radio-on:after, html .ui-body-f .ui-radio-on:after, html body .ui-group-theme-f .ui-radio-on:after, html .ui-btn.ui-radio-on.ui-btn-f:after { background-color: #3498db; color: #fff }
 
-html .ui-bar-g, html .ui-page-theme-g .ui-bar-inherit, html .ui-bar-g .ui-bar-inherit, html .ui-body-g .ui-bar-inherit, html body .ui-group-theme-g .ui-bar-inherit { background: #2ecc71; border-color: #2ecc71; color: #fff; font-weight: bold }
+html .ui-bar-g, html .ui-page-theme-g .ui-bar-inherit, html .ui-bar-g .ui-bar-inherit, html .ui-body-g .ui-bar-inherit, html body .ui-group-theme-g .ui-bar-inherit { background: #2ecc71; border-color: #2ecc71; color: #fff; font-weight: normal }
 
-html .ui-bar-g { border-width: 1px; border-style: solid }
+html .ui-bar-g { border: 1px solid; }
 
 html .ui-overlay-g, html .ui-page-theme-g, html .ui-page-theme-g .ui-panel-wrapper { background: #f9f9f9; border-color: #bbb; color: #333 }
 
 html .ui-body-g, html .ui-page-theme-g .ui-body-inherit, html .ui-bar-g .ui-body-inherit, html .ui-body-g .ui-body-inherit, html body .ui-group-theme-g .ui-body-inherit, html .ui-panel-page-container-g { background: #fff; border-color: #2ecc71; color: #333 }
 
-html .ui-body-g { border-width: 1px; border-style: solid }
+html .ui-body-g { border: 1px solid; }
 
-html .ui-page-theme-g a, html .ui-bar-g a, html .ui-body-g a, html body .ui-group-theme-g a { color: #55d98d; font-weight: bold }
+html .ui-page-theme-g a, html .ui-bar-g a, html .ui-body-g a, html body .ui-group-theme-g a { color: #55d98d; font-weight: normal }
 
 html .ui-page-theme-g a:visited, html .ui-bar-g a:visited, html .ui-body-g a:visited, html body .ui-group-theme-g a:visited { color: #55d98d }
 
@@ -5011,27 +5004,16 @@ html .ui-page-theme-g .ui-checkbox-on:after, html .ui-bar-g .ui-checkbox-on:afte
 html .ui-page-theme-g .ui-radio-on:after, html .ui-bar-g .ui-radio-on:after, html .ui-body-g .ui-radio-on:after, html body .ui-group-theme-g .ui-radio-on:after, html .ui-btn.ui-radio-on.ui-btn-g:after { background-color: #2ecc71; color: #fff }
 
 @font-face {
-    font-family: 'Open Sans Condensed';
-    font-style:  normal;
-    font-weight: 400;
+  font-family: 'Open Sans Condensed';
+  font-style: normal;
+  font-weight: 300;
+  src: local('Open Sans Cond Light'), local('OpenSans-CondensedLight'), url(https://fonts.gstatic.com/s/opensanscondensed/v10/gk5FxslNkTTHtojXrkp-xGAzD5WKQVN4wSyA0MYYi4rr7w4p9aSvGirXi6XmeXNA.woff) format('woff');
 }
-
 @font-face {
-    font-family: 'Open Sans Condensed';
-    font-style:  normal;
-    font-weight: 700;
-}
-
-@font-face {
-    font-family: 'Open Sans Condensed';
-    font-style:  normal;
-    font-weight: 900;
-}
-
-@font-face {
-    font-family: 'Open Sans Condensed';
-    font-style:  italic;
-    font-weight: 400;
+  font-family: 'Open Sans Condensed';
+  font-style: normal;
+  font-weight: 700;
+  src: local('Open Sans Condensed Bold'), local('OpenSans-CondensedBold'), url(https://fonts.gstatic.com/s/opensanscondensed/v10/gk5FxslNkTTHtojXrkp-xM6Eyu0BCqAfob_z3hhzRFzr7w4p9aSvGirXi6XmeXNA.woff) format('woff');
 }
 
 @font-face {

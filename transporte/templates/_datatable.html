@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% load humanize %}
+
+{% block extcss %}<link rel="stylesheet" href="https://cdn.datatables.net/1.10.15/css/dataTables.jqueryui.min.css"/>{% endblock %}
+{% block extlibs %}<script type="text/javascript"
+        src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript"
+        src="https://cdn.datatables.net/1.10.15/js/dataTables.jqueryui.min.js"></script>
+<script type="text/javascript"
+        src="{% static "js/datatableloc.js" %}"></script>{% endblock %}
+
+{% block content %}<div class="topcontainer">
+    <table id="tabladedatos" data-role="table" data-mode="columntoggle"
+           class="table-stroke ui-shadow table-stripe  ui-responsive">
+        <thead>   <!-- header row -->
+            <tr>{%  block theader %}{% endblock %}
+            </tr>
+        </thead>
+        <tbody>{% block tbody %}{% endblock %}
+        </tbody>
+    </table>
+</div>{% endblock %}
