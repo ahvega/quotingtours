@@ -142,3 +142,12 @@ ENV/
 .idea/
 
 transporte/transportelocal.backup
+/Vagrantfile
+/.vagrant/
+/bk_transporte
+/data.json
+/requirements_old.txt
+/transporte/filters.py
+/transporte/playground.py
+/transporte/migrations/
+/assets/
