@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block title %}Buscar Usuarios{% endblock %}
+{% block page-title %}Usuarios{% endblock %}
+{% block content %}
+    <div class="topcontainer" style="padding: 10px;">
+  <form method="get">
+    {{ filter.form.as_p }}
+    <button type="submit">Search</button>
+  </form>
+  <ul>
+  {% for user in filter.qs %}
+    <li>{{ user.username }} - {{ user.get_full_name }}</li>
+  {% endfor %}
+  </ul></div>
+{% endblock %}
