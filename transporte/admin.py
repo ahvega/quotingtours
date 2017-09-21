@@ -166,8 +166,8 @@ class CotizacionDetalleAdminForm(forms.ModelForm):
 
 class CotizacionDetalleAdmin(admin.ModelAdmin):
     form = CotizacionDetalleAdminForm
-    list_display = ['descripcion', 'cotizacion', 'cantidad', 'costo', 'monto', 'markup', 'total']
-    readonly_fields = ['descripcion', 'costo', 'monto', 'markup', 'total', 'slug', 'creado', 'actualizado']
+    list_display = ['descripcion', 'cotizacion', 'cantidad', 'costo', 'monto', 'utilidad', 'markup', 'total']
+    readonly_fields = ['descripcion', 'costo', 'monto', 'utilidad', 'markup', 'total', 'slug', 'creado', 'actualizado']
     search_fields = ['descripcion']
     list_filter = (('cotizacion', DropdownFilterRelated),)
     ordering = ['creado']

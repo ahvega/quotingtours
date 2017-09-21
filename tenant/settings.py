@@ -167,10 +167,10 @@ FORMAT_MODULE_PATH = 'tenant.formats'
 
 TEMPLATES = [
     {
-        'BACKEND':  'django.template.backends.django.DjangoTemplates',
-        'DIRS':     [os.path.join(BASE_DIR, 'transporte/templates')],
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [os.path.join(BASE_DIR, 'transporte/templates')],
         'APP_DIRS': True,
-        'OPTIONS':  {
+        'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.debug',
                 # 'django.core.context_processors.request',
@@ -189,12 +189,12 @@ WSGI_APPLICATION = 'tenant.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE':   'tenant_schemas.postgresql_backend',
-        'NAME':     'transporte',
-        'USER':     'postgres',
+        'ENGINE': 'tenant_schemas.postgresql_backend',
+        'NAME': 'transporte',
+        'USER': 'postgres',
         'PASSWORD': 'honduras',
-        'HOST':     'localhost',
-        'PORT':     '',
+        'HOST': 'localhost',
+        'PORT': '',
         # 'ENGINE': 'django.db.backends.sqlite3',
         # 'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
@@ -255,7 +255,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 LOGIN_REDIRECT_URL = '/'
 
 REST_FRAMEWORK = {
-    'DEFAULT_PERMISSION_CLASSES':     [
+    'DEFAULT_PERMISSION_CLASSES': [
         # 'rest_framework.permissions.IsAdminUser',
         # 'rest_framework.permissions.AllowAny',
         'rest_framework.permissions.IsAuthenticated',
@@ -265,16 +265,16 @@ REST_FRAMEWORK = {
         # 'rest_framework.authentication.SessionAuthentication',
         # 'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
     ],
-    'DEFAULT_RENDERER_CLASSES':       [
+    'DEFAULT_RENDERER_CLASSES': [
         'rest_framework.renderers.JSONRenderer',
         'rest_framework.renderers.BrowsableAPIRenderer',
         # 'rest_framework_xml.renderers.XMLRenderer',
     ],
-    'DEFAULT_PARSER_CLASSES':         [
+    'DEFAULT_PARSER_CLASSES': [
         'rest_framework.parsers.JSONParser',
         'rest_framework_xml.parsers.XMLParser',
     ],
-    'DEFAULT_FILTER_BACKENDS':        [
+    'DEFAULT_FILTER_BACKENDS': [
         'django_filters.rest_framework.DjangoFilterBackend',
     ],
     # 'PAGE_SIZE':                  10

@@ -25,11 +25,11 @@ class TipoDeVehiculo(models.Model):
     nombre = CharField(max_length=20)
     slug = extension_fields.AutoSlugField(populate_from='nombre', blank=True)
     rendimiento = IntegerField()
-    costo_por_dia = DecimalField(max_digits=10, decimal_places=2)
-    costo_por_km = DecimalField(max_digits=10, decimal_places=2)
+    costo_por_dia = DecimalField(max_digits=10, decimal_places=3)
+    costo_por_km = DecimalField(max_digits=10, decimal_places=3)
     capacidad_nominal = IntegerField()
     capacidad_real = IntegerField()
-    galones_tanque = DecimalField(max_digits=6, decimal_places=2)
+    galones_tanque = DecimalField(max_digits=6, decimal_places=3)
     activo = BooleanField(default=True)
     creado = DateTimeField(auto_now_add=True, editable=False)
     actualizado = models.DateTimeField(auto_now=True, editable=False)
@@ -149,8 +149,8 @@ class NivelDePrecio(models.Model):
     tipo = models.CharField(max_length=10, choices=Tipo.choices, validators=[Tipo.validator], default=Tipo.Porcentaje)
     accion = models.CharField(max_length=10, choices=Accion.choices, validators=[Accion.validator],
                               default=Accion.Incrementa)
-    valor = models.DecimalField(max_digits=5, decimal_places=2, default=0)
-    _factor = models.DecimalField(max_digits=5, decimal_places=4, db_column='factor', null=True, blank=True)
+    valor = models.DecimalField(max_digits=6, decimal_places=3)
+    _factor = models.DecimalField(max_digits=7, decimal_places=5, db_column='factor', null=True, blank=True)
     creado = models.DateTimeField(auto_now_add=True, editable=False)
     actualizado = models.DateTimeField(auto_now=True, editable=False)
 
@@ -179,9 +179,9 @@ class NivelDePrecio(models.Model):
     def get_update_url(self):
         return reverse('transporte_niveldeprecio_update', args=(self.slug,))
 
-    @property
-    def porciento(self):
-        return self.valor * 100.0
+    # @property
+    # def porciento(self):
+    #     return self.valor * 100.0
 
 
 class Cliente(models.Model):
@@ -377,8 +377,8 @@ class CotizacionDetalle(models.Model):
     markup = models.DecimalField(max_digits=8,
                                  decimal_places=6,
                                  default=0, editable=False)
-    utilidad = models.DecimalField(max_digits=6,
-                                   decimal_places=2,
+    utilidad = models.DecimalField(max_digits=8,
+                                   decimal_places=4,
                                    default=0, editable=False)
     total = models.DecimalField(max_digits=10,
                                 decimal_places=2,
@@ -410,8 +410,8 @@ class CotizacionDetalle(models.Model):
     def save(self, *args, **kwargs):
         self.costo = self.item.costo
         self.monto = self.cantidad * self.costo
-        self.markup = Decimal(round(self.nivel_de_precio.factor - 1, 4)).quantize(Decimal("0.000000"))
-        self.utilidad = Decimal(self.nivel_de_precio.valor).quantize(Decimal("0.0000"))
+        self.markup = Decimal(round(self.nivel_de_precio.factor - 1, 4)).quantize(Decimal("0.0000"))
+        self.utilidad = Decimal(self.nivel_de_precio.valor).quantize(Decimal("0.000"))
         self.total = Decimal(self.monto) * (1 + Decimal(self.markup))
         super(CotizacionDetalle, self).save(*args, **kwargs)
 
@@ -533,6 +533,7 @@ class Tramo(models.Model):
     # Relationship Fields
     desde_lugar = models.ForeignKey(Lugar, verbose_name='origen', related_name='desde')
     hacia_lugar = models.ForeignKey(Lugar, verbose_name='destino', related_name='hacia')
+
     # vehiculos = models.ManyToManyField(TramoEnVehiculo, through=TipoDeVehiculo)
 
     class Meta:
@@ -663,7 +664,7 @@ class TramoEnVehiculo(models.Model):
 
     @property
     def nombre(self):
-        return self.tramo.codigo+' en '+self.vehiculo.nombre
+        return self.tramo.codigo + ' en ' + self.vehiculo.nombre
 
     @nombre.setter
     def nombre(self, value):
