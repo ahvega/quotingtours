@@ -1,19 +1,22 @@
-{% extends "base.html" %}{% block content %}
-    <style>
-        body > div.site-container.ui-page.ui-page-theme-a.ui-page-active > div.ui-content > div > a {
-            display: none !important;
-        }
-    </style>
-    <div class="form-group topcontainer">
-        <form class="form">
-            <table id="table-detail"
-                   class="ui-table ui-shadow table-stripe table-stroke ui-responsive">
-                <thead>{% block thead %}{% endblock %}</thead>
-                <tbody>{% block tbody %}{% endblock %}</tbody>
-            </table>
-        </form>
-    </div>
-    {% block detalle %}{% endblock %}
-    <br/><br/>
-{% endblock %}
-{% block footer %}{% endblock %}
+{% extends "base.html" %}
+{% load staticfiles %}
+{% load humanize %}{% block extcss %}
+        <link rel="stylesheet"
+              href="http://cdnjs.cloudflare.com/ajax/libs/material-design-lite/1.1.0/material.min.css"/>
+        <link rel="stylesheet" href="https://cdn.datatables.net/1.10.15/css/dataTables.material.min.css"/>{% endblock %}{% block content %}
+            <div class="topcontainer">
+                <table id="table-detail"
+                    class="ui-table ui-shadow table-stripe table-stroke ui-responsive">
+                    <thead>{% block thead %}{% endblock %}
+                    </thead>
+                    <tbody>{% block tbody %}{% endblock %}
+                    </tbody>
+                </table>
+            </div>{% block detalle %}{% endblock %}
+            <br/><br/>{% endblock %}{% block footer %}{% endblock %}{% block scripts2 %}
+    <script type="text/javascript"
+            src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript"
+            src="https://cdn.datatables.net/1.10.15/js/dataTables.material.min.js"></script>
+    <script type="text/javascript"
+            src="{% static "js/tablelocale.js" %}"></script>{% endblock %}

@@ -149,8 +149,8 @@ class NivelDePrecio(models.Model):
     tipo = models.CharField(max_length=10, choices=Tipo.choices, validators=[Tipo.validator], default=Tipo.Porcentaje)
     accion = models.CharField(max_length=10, choices=Accion.choices, validators=[Accion.validator],
                               default=Accion.Incrementa)
-    valor = models.DecimalField(max_digits=6, decimal_places=3)
-    _factor = models.DecimalField(max_digits=7, decimal_places=5, db_column='factor', null=True, blank=True)
+    valor = models.DecimalField(max_digits=7, decimal_places=4)
+    _factor = models.DecimalField(max_digits=7, decimal_places=6, db_column='factor', null=True, blank=True)
     creado = models.DateTimeField(auto_now_add=True, editable=False)
     actualizado = models.DateTimeField(auto_now=True, editable=False)
 
@@ -287,8 +287,8 @@ class Cotizacion(models.Model):
                                  blank=True,
                                  db_column='total',
                                  default=0)
-    _utilidad = models.DecimalField(max_digits=5,
-                                    decimal_places=2,
+    _utilidad = models.DecimalField(max_digits=6,
+                                    decimal_places=4,
                                     null=True,
                                     blank=True,
                                     db_column='utilidad',
@@ -340,10 +340,10 @@ class Cotizacion(models.Model):
         redondeado = (math.ceil(float(total_agregado['total']) / redondeoLps)) * redondeoLps
         redondeado = Decimal(redondeado).quantize(Decimal("0.00"))
         if redondeado == 0.00:
-            return 0.000000
+            return 0.0000
         else:
             utilidad_porcentual = (redondeado - Decimal(subtotal_agregado['subtotal'])) / redondeado
-            return Decimal(utilidad_porcentual).quantize(Decimal("0.000000"))
+            return Decimal(utilidad_porcentual).quantize(Decimal("0.0000"))
 
     @utilidad.setter
     def utilidad(self, value):
@@ -374,10 +374,10 @@ class CotizacionDetalle(models.Model):
     monto = models.DecimalField(max_digits=10,
                                 decimal_places=2,
                                 default=0, editable=False)
-    markup = models.DecimalField(max_digits=8,
-                                 decimal_places=6,
+    markup = models.DecimalField(max_digits=6,
+                                 decimal_places=4,
                                  default=0, editable=False)
-    utilidad = models.DecimalField(max_digits=8,
+    utilidad = models.DecimalField(max_digits=6,
                                    decimal_places=4,
                                    default=0, editable=False)
     total = models.DecimalField(max_digits=10,
@@ -411,7 +411,7 @@ class CotizacionDetalle(models.Model):
         self.costo = self.item.costo
         self.monto = self.cantidad * self.costo
         self.markup = Decimal(round(self.nivel_de_precio.factor - 1, 4)).quantize(Decimal("0.0000"))
-        self.utilidad = Decimal(self.nivel_de_precio.valor).quantize(Decimal("0.000"))
+        self.utilidad = Decimal(self.nivel_de_precio.valor).quantize(Decimal("0.0000"))
         self.total = Decimal(self.monto) * (1 + Decimal(self.markup))
         super(CotizacionDetalle, self).save(*args, **kwargs)
 

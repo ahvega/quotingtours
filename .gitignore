@@ -16,7 +16,6 @@
 .idea/**/sqlDataSources.xml
 .idea/**/dynamic.xml
 .idea/**/uiDesigner.xml
-.idea/*.xml
 # Gradle:
 .idea/**/gradle.xml
 .idea/**/libraries
@@ -150,4 +149,4 @@ transporte/transportelocal.backup
 /transporte/filters.py
 /transporte/playground.py
 /transporte/migrations/
-/assets/
+#/assets/

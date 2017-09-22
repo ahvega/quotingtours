@@ -3,7 +3,7 @@
 {% load misformatos %}
 {% block title %}Cotización{% endblock %}
 {% block page-title %}Cotización{% endblock %}
-{% block thead %}
+{% block thead %}<tr>
     <th colspan="2" class="izquierda">{{ cotizacion.nombre }}{% if request.user.is_superuser %}
         <div class="ui-nodisc-icon mininav3r">
             <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-edit ui-btn-icon-notext ui-btncito"
@@ -15,7 +15,7 @@
                data-ajax="false" onclick="window.location.reload(false);">>add</a>
             <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-delete ui-btn-icon-notext ui-btncito"
                title="Borrar Cotización {{ cotizacion.nombre }}" href="{{ cotizacion.get_delete_url }}">delete</a></div>
-    {% endif %}</th>
+    {% endif %}</th></tr>
 {% endblock %}
 {% block tbody %}
     <tr>
@@ -62,14 +62,11 @@
     </tr>
 {% endblock %}
 {% block detalle %}
-    <div class="form-group topcontainer">
-        <form class="form">
-            <div id="titulodetalle">Ítems</div>
-            <table data-role="table" id="table-list" data-mode="columntoggle"
+    <div class="topcontainer">
+            <table data-role="table" id="tabladedatos" data-mode="columntoggle"
                    class="table-stroke ui-shadow table-stripe  ui-responsive">
                 <thead>
                 <tr>
-{#                    <th data-priority="9" class="derecha">#</th>#}
                     <th class="izquierda">Ítem</th>
                     <th></th>
                     <th data-priority="1" class="derecha"><small>Cantidad</small></th>
@@ -83,7 +80,7 @@
                 <tbody>
                 {% for linea in cotizacion.lineas.all %}
                     <tr>
-                        <td class="izquierda" data-search="{{ linea.description }}">
+                        <td data-search="{{ linea.descripcion }}" class="izquierda">
                             <a title="Ver Ítem {{ linea.descripcion }}"
                                href="{{ linea.get_absolute_url }}">{{ linea.descripcion }}</a></td>
                         <td><div class="ui-alt-icon ui-nodisc-icon mininav3r">
@@ -117,7 +114,6 @@
                     </tr>
                 </tfoot>
             </table>
-        </form>
     </div>
 {% endblock %}
 {% block footer %}{% if request.user.is_superuser %}
