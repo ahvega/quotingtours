@@ -571,7 +571,8 @@ div.mininav2 {
     font-weight: bold;
 }
 
-div.topcontainer {
+div.topcontainer,
+div.rutacontainer {
     margin: 12px;
     box-shadow: 0 1px 2px 1px #0000001a, 0 3px 6px #0000001a;
 }
@@ -670,18 +671,28 @@ html .ui-page-theme-a .ui-table-columntoggle-btn {
     font-size: small;
 }
 
-#tabladedatos a, #table-list a, #table-detail a {
+#tabladedatos a,
+#tabladedatosruta a,
+#table-list a,
+#table-detail a {
     color: #3367D6;
     text-decoration: none;
     text-transform: uppercase;
     font-weight: bold;
 }
 
-table.dataTable thead > tr > th.sorting_asc, table.dataTable thead > tr > th.sorting_desc, table.dataTable thead > tr > th.sorting, table.dataTable thead > tr > td.sorting_asc, table.dataTable thead > tr > td.sorting_desc, table.dataTable thead > tr > td.sorting {
+table.dataTable thead > tr > th.sorting_asc,
+table.dataTable thead > tr > th.sorting_desc,
+table.dataTable thead > tr > th.sorting,
+table.dataTable thead > tr > td.sorting_asc,
+table.dataTable thead > tr > td.sorting_desc,
+table.dataTable thead > tr > td.sorting {
     padding-right: 36px !important;
 }
 
-#tabladedatos tfoot, #table-list tfoot {
+#tabladedatos tfoot,
+#tabladedatosruta tfoot,
+#table-list tfoot {
     background-color: #dedede;
     font-weight: bold;
     border-top: 3px double #BCBCBC;

@@ -1,7 +1,7 @@
 from rest_framework import viewsets, permissions, filters
 
 from .models import TipoDeVehiculo, Parametro, Item, NivelDePrecio, Cotizacion, Cliente, Itinerario, \
-    CotizacionDetalle, Vehiculo, TramoEnVehiculo, Tramo, Lugar, Conductor
+    CotizacionDetalle, Vehiculo, TramoEnVehiculo, Tramo, Lugar, Conductor, RutaDetalle
 from . import serializers
 
 
@@ -60,6 +60,14 @@ class ItinerarioViewSet(viewsets.ModelViewSet):
 
     queryset = Itinerario.objects.all()
     serializer_class = serializers.ItinerarioSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+
+class RutaDetalleViewSet(viewsets.ModelViewSet):
+    """Viewset for the RutaDetalle class"""
+
+    queryset = RutaDetalle.objects.all()
+    serializer_class = serializers.RutaDetalleSerializer
     permission_classes = [permissions.IsAuthenticated]
 
 

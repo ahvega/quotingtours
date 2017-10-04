@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% load bootstrap3 %}
+{% block extlibs %}{% endblock %}
+{% load staticfiles %}
+{% block title %}Detalle de Ruta{% endblock %}
+{% block page-title %}Detalle de Ruta{% endblock %}
+{% block content %}
+    <div class="topcontainer" style="padding: 10px;">
+        <form id="laforma" method="post" class="form form-horizontal">
+            {% csrf_token %}
+            <input type="hidden" id="id_cotizacion" name="cotizacion" value="{{ c_id }}"/>
+            {% bootstrap_form form exclude=cotizacion %}
+            <button id="submit" class="ui-btn ui-btn-b ui-btn-icon-left ui-btn-inline ui-corner-all"
+                    type="submit">Guardar Tramo
+            </button>
+        </form>
+    </div>{% endblock %}{% block footer %}
+{% endblock %}

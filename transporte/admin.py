@@ -105,8 +105,8 @@ class CotizacionAdmin(admin.ModelAdmin):
         return formfield
 
     form = CotizacionAdminForm
-    list_display = ['nombre', 'fecha_vence', 'descripcion', 'subtotal', 'utilidad', 'total']
-    readonly_fields = ['subtotal', 'utilidad', 'total', 'slug', 'creado', 'actualizado']
+    list_display = ['nombre', 'fecha_vence', 'descripcion', 'kms_total', 'hrs_total', 'subtotal', 'utilidad', 'total']
+    readonly_fields = ['kms_total', 'hrs_total', 'subtotal', 'utilidad', 'total', 'slug', 'creado', 'actualizado']
     search_fields = ['nombre', 'descripcion']
     list_filter = (('itinerario', DropdownFilterRelated), 'fecha_vence')
     date_hierarchy = 'fecha_vence'
@@ -156,6 +156,24 @@ class ItinerarioAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Itinerario, ItinerarioAdmin)
+
+
+class RutaDetalleAdminForm(forms.ModelForm):
+    class Meta:
+        model = RutaDetalle
+        fields = ['tramo', 'cotizacion']
+
+
+class RutaDetalleAdmin(admin.ModelAdmin):
+    form = RutaDetalleAdminForm
+    list_display = ['tramo', 'desde', 'hacia', 'kms', 'hrs']
+    readonly_fields = ['desde', 'hacia', 'kms', 'hrs', 'creado', 'actualizado']
+    search_fields = ['tramo', 'desde', ' hacia']
+    list_filter = (('cotizacion', DropdownFilterRelated),)
+    ordering = ['id']
+
+
+admin.site.register(RutaDetalle, RutaDetalleAdmin)
 
 
 class CotizacionDetalleAdminForm(forms.ModelForm):
@@ -249,6 +267,7 @@ class TramoEnVehiculoAdmin(admin.ModelAdmin):
         'costo',
         'slug',
     ]
+
 
 admin.site.register(TramoEnVehiculo, TramoEnVehiculoAdmin)
 

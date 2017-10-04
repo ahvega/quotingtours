@@ -4,7 +4,7 @@ from django import forms
 from django.forms.utils import ErrorList
 
 from .models import TipoDeVehiculo, Parametro, Item, NivelDePrecio, Cotizacion, Cliente, Itinerario, \
-    CotizacionDetalle, Vehiculo, Tramo, Lugar, Conductor, TramoEnVehiculo
+    CotizacionDetalle, Vehiculo, Tramo, Lugar, Conductor, TramoEnVehiculo, RutaDetalle
 
 DateInput = partial(forms.DateInput, {'class': 'datepicker'})
 
@@ -37,7 +37,7 @@ class NivelDePrecioForm(forms.ModelForm):
 class CotizacionForm(forms.ModelForm):
     class Meta:
         model = Cotizacion
-        fields = ['itinerario', 'nombre', 'descripcion', 'fecha_vence']
+        fields = ['nombre', 'descripcion', 'fecha_vence']
         widgets = {'fecha_vence': DateInput(), }
 
 
@@ -56,14 +56,19 @@ class ItinerarioForm(forms.ModelForm):
             'fecha_hasta': DateInput(),
         }
 
+    def clean(self):
+        if self.cleaned_data['fecha_desde'] > self.cleaned_data['fecha_hasta']:
+            msg = 'La fecha de inicio no puede ser mayor que la fecha de final.'
+            self._errors['fecha_desde'] = ErrorList([msg])
+            del self.cleaned_data['fecha_desde']
 
-def clean(self):
-    if self.cleaned_data['fecha_desde'] > self.cleaned_data['fecha_hasta']:
-        msg = 'La fecha de inicio no puede ser mayor que la fecha de final.'
-        self._errors['fecha_desde'] = ErrorList([msg])
-        del self.cleaned_data['fecha_desde']
+        return self.cleaned_data
 
-    return self.cleaned_data
+
+class RutaDetalleForm(forms.ModelForm):
+    class Meta:
+        model = RutaDetalle
+        fields = ['tramo', ]
 
 
 class CotizacionDetalleForm(forms.ModelForm):

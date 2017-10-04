@@ -64,7 +64,9 @@
                                    href="{{ cotizacion.get_absolute_url }}">{{ cotizacion.nombre }}</a>: {{ cotizacion.descripcion }}</td>
                             <td><div class="ui-alt-icon ui-nodisc-icon mininav3r">
                                 <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-action ui-btn-icon-notext ui-btncito"
-                                   title="Ver Cotización {{ cotizacion.nombre }}" href="{{ cotizacion.get_absolute_url }}">goto</a>{% if request.user.is_superuser %}
+                                   title="Ver Cotización {{ cotizacion.nombre }}"
+                                   href="{{ cotizacion.get_absolute_url }}" data-ajax="false"
+                                   onclick="window.location.reload(false);">goto</a>{% if request.user.is_superuser %}
                                 <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-edit ui-btn-icon-notext ui-btncito"
                                    title="Editar Cotización {{ cotizacion.nombre }}" href="{{ cotizacion.get_update_url }}"
                                    data-ajax="false" onclick="window.location.reload(false);">>edit</a>

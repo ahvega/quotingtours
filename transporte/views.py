@@ -6,9 +6,10 @@ from django.contrib.auth.models import User
 from .filters import UserFilter
 
 from .forms import TipoDeVehiculoForm, ParametroForm, ItemForm, NivelDePrecioForm, CotizacionForm, ClienteForm, \
-    ItinerarioForm, CotizacionDetalleForm, VehiculoForm, LugarForm, TramoForm, ConductorForm, TramoEnVehiculoForm
+    ItinerarioForm, CotizacionDetalleForm, VehiculoForm, LugarForm, TramoForm, ConductorForm, TramoEnVehiculoForm, \
+    RutaDetalleForm
 from .models import TipoDeVehiculo, Parametro, Item, NivelDePrecio, Cotizacion, Cliente, Itinerario, \
-    CotizacionDetalle, Vehiculo, Tramo, Lugar, Conductor, TramoEnVehiculo
+    CotizacionDetalle, Vehiculo, Tramo, Lugar, Conductor, TramoEnVehiculo, RutaDetalle
 
 
 def indice(request):
@@ -219,6 +220,66 @@ class ItinerarioDeleteView(DeleteView):
         else:
             slug = self.object.cliente.slug
         return reverse('transporte_cliente_detail', kwargs={'slug': slug})
+
+
+class RutaDetalleListView(ListView):
+    model = RutaDetalle
+
+
+class RutaDetalleTable(ListView):
+    model = RutaDetalle
+    template_name = 'transporte/cotizacion_table.html'
+
+    def get_queryset(self):
+        return RutaDetalle.objects.all()
+
+
+class RutaDetalleCreateView(CreateView):
+    model = RutaDetalle
+    form_class = RutaDetalleForm
+
+    def form_valid(self, form):
+        rutadetalle = form.save(commit=False)
+        cotizacion_id = form.data['cotizacion']
+        cotizacion = get_object_or_404(Cotizacion, id=cotizacion_id)
+        rutadetalle.cotizacion = cotizacion
+        return super(RutaDetalleCreateView, self).form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super(RutaDetalleCreateView, self).get_context_data(**kwargs)
+        context['c_id'] = self.kwargs['cotizacion_id']
+        return context
+
+    def get_success_url(self):
+        if 'slug' in self.kwargs:
+            slug = self.kwargs['slug']
+        else:
+            slug = self.object.cotizacion.slug
+        return reverse('transporte_cotizacion_detail', kwargs={'slug': slug})
+
+
+class RutaDetalleDetailView(DetailView):
+    model = RutaDetalle
+
+
+class RutaDetalleUpdateView(UpdateView):
+    model = RutaDetalle
+    form_class = RutaDetalleForm
+
+    def get_success_url(self):
+        slug = self.object.cotizacion.slug
+        return reverse('transporte_cotizacion_detail', kwargs={'slug': slug})
+
+
+class RutaDetalleDeleteView(DeleteView):
+    model = RutaDetalle
+
+    def get_success_url(self):
+        if 'after' in self.request.POST:
+            return self.request.POST.get('after')
+        else:
+            slug = self.object.cotizacion.slug
+        return reverse('transporte_cotizacion_detail', kwargs={'slug': slug})
 
 
 class CotizacionDetalleListView(ListView):

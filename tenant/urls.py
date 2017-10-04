@@ -20,7 +20,8 @@ from transporte.views import TipoDeVehiculoListView, TipoDeVehiculoCreateView, \
     TramoListView, TramoCreateView, TramoDetailView, TramoUpdateView, LugarListView, LugarCreateView, \
     LugarDetailView, LugarUpdateView, ConductorListView, ConductorCreateView, \
     ConductorDetailView, ConductorUpdateView, indice, CotizacionTable, TramoEnVehiculoUpdate, TramoEnVehiculoDetail, \
-    TramoEnVehiculoCreate, TramoEnVehiculoList, TramoEnVehiculoDelete
+    TramoEnVehiculoCreate, TramoEnVehiculoList, TramoEnVehiculoDelete, RutaDetalleListView, RutaDetalleCreateView, \
+    RutaDetalleDetailView, RutaDetalleUpdateView, RutaDetalleDeleteView
 
 admin.autodiscover()
 router = routers.DefaultRouter()
@@ -148,6 +149,20 @@ urlpatterns += [
         name='transporte_itinerario_update'),
     url(r'^transporte/itinerario/delete/(?P<slug>\S+)/$', ItinerarioDeleteView.as_view(),
         name='transporte_itinerario_delete'),
+]
+
+urlpatterns += [
+    # urls for RutaDetalle
+    url(r'^transporte/rutadetalle/$', RutaDetalleListView.as_view(),
+        name='transporte_rutadetalle_list'),
+    url(r'^transporte/rutadetalle/create/(?P<cotizacion_id>\d+)/$', RutaDetalleCreateView.as_view(),
+        name='transporte_rutadetalle_create'),
+    url(r'^transporte/rutadetalle/detail/(?P<slug>\S+)/$', RutaDetalleDetailView.as_view(),
+        name='transporte_rutadetalle_detail'),
+    url(r'^transporte/rutadetalle/update/(?P<slug>\S+)/$', RutaDetalleUpdateView.as_view(),
+        name='transporte_rutadetalle_update'),
+    url(r'^transporte/rutadetalle/delete/(?P<slug>\S+)/$', RutaDetalleDeleteView.as_view(),
+        name='transporte_rutadetalle_delete'),
 ]
 
 urlpatterns += [

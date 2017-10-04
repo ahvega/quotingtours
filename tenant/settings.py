@@ -29,6 +29,7 @@ ALLOWED_HOSTS = [
     u'demo.quotingtours.com',
     u'107.180.103.216',
     u'demo.mistenants.com',
+    u'mistenants.com',
 ]
 
 # Application definition

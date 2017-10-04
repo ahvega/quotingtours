@@ -83,6 +83,8 @@ class CotizacionSerializer(serializers.ModelSerializer):
             'nombre',
             'fecha_vence',
             'descripcion',
+            'kms_total',
+            'hrs_total',
             'subtotal', 
             'utilidad',
             'total',
@@ -121,6 +123,20 @@ class ItinerarioSerializer(serializers.ModelSerializer):
             'slug',
             'creado',
             'actualizado',
+        )
+
+
+class RutaDetalleSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = models.RutaDetalle
+        fields = (
+            'id',
+            'tramo',
+            'desde',
+            'hacia',
+            'kms',
+            'hrs',
         )
 
 

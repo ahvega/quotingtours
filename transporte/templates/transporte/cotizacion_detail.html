@@ -1,36 +1,44 @@
 {% extends "_detail.html" %}
+{% load static %}
 {% load humanize %}
 {% load misformatos %}
 {% block title %}Cotización{% endblock %}
 {% block page-title %}Cotización{% endblock %}
-{% block thead %}<tr>
-    <th colspan="2" class="izquierda">{{ cotizacion.nombre }}{% if request.user.is_superuser %}
-        <div class="ui-nodisc-icon mininav3r">
-            <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-edit ui-btn-icon-notext ui-btncito"
-               title="Editar Cotización {{ cotizacion.nombre }}" href="{{ cotizacion.get_update_url }}"
-               data-ajax="false" onclick="window.location.reload(false);">edit</a>
-            <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-plus ui-btn-icon-notext ui-btncito"
-               title="Agregar Cotización Nueva"
-               href="{% url "transporte_cotizacion_create" itinerario_id=cotizacion.itinerario.pk %}"
-               data-ajax="false" onclick="window.location.reload(false);">>add</a>
-            <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-delete ui-btn-icon-notext ui-btncito"
-               title="Borrar Cotización {{ cotizacion.nombre }}" href="{{ cotizacion.get_delete_url }}">delete</a></div>
-    {% endif %}</th></tr>
+{% block thead %}
+    <tr>
+        <th colspan="2" class="izquierda">{{ cotizacion.nombre }}{% if request.user.is_superuser %}
+            <div class="ui-nodisc-icon mininav3r">
+                <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-edit ui-btn-icon-notext ui-btncito"
+                   title="Editar Cotización {{ cotizacion.nombre }}" href="{{ cotizacion.get_update_url }}"
+                   data-ajax="false" onclick="window.location.reload(false);">edit</a>
+                <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-plus ui-btn-icon-notext ui-btncito"
+                   title="Agregar Cotización Nueva"
+                   href="{% url "transporte_cotizacion_create" itinerario_id=cotizacion.itinerario.pk %}"
+                   data-ajax="false" onclick="window.location.reload(false);">>add</a>
+                <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-delete ui-btn-icon-notext ui-btncito"
+                   title="Borrar Cotización {{ cotizacion.nombre }}" href="{{ cotizacion.get_delete_url }}">delete</a>
+            </div>
+        {% endif %}</th>
+    </tr>
 {% endblock %}
 {% block tbody %}
     <tr>
         <td class="derecha"><strong>Cliente: </strong></td>
-        <td><a title="Ver Cliente: {{ cotizacion.itinerario.cliente }}" href="{{ cotizacion.itinerario.cliente.get_absolute_url }}"
+        <td><a title="Ver Cliente: {{ cotizacion.itinerario.cliente }}"
+               href="{{ cotizacion.itinerario.cliente.get_absolute_url }}"
                class="ui-btn ui-btn-a ui-btn-inline ui-icon-arrow-u-l ui-btncito ui-nodisc-icon ui-alt-icon ui-btn-icon-notext">goto</a>
-            <a href="{{ cotizacion.itinerario.cliente.get_absolute_url }}" title="Ver Cliente: {{ cotizacion.itinerario.cliente }}"
-               style="text-decoration: none;font-weight: bold;text-transform: uppercase;">{{ cotizacion.itinerario.cliente }}</a></td>
+            <a href="{{ cotizacion.itinerario.cliente.get_absolute_url }}"
+               title="Ver Cliente: {{ cotizacion.itinerario.cliente }}"
+               style="text-decoration: none;font-weight: bold;text-transform: uppercase;">{{ cotizacion.itinerario.cliente }}</a>
+        </td>
     </tr>
     <tr>
         <td class="derecha"><strong>Itinerario:</strong></td>
         <td><a title="Ver Itinerario: {{ cotizacion.itinerario }}" href="{{ cotizacion.itinerario.get_absolute_url }}"
                class="ui-btn ui-btn-a ui-btn-inline ui-icon-arrow-u ui-btncito ui-nodisc-icon ui-alt-icon ui-btn-icon-notext">goto</a>
             <a href="{{ cotizacion.itinerario.get_absolute_url }}" title="Ver Itinerario: {{ cotizacion.itinerario }}"
-               style="text-decoration: none;font-weight: bold;text-transform: uppercase;">{{ cotizacion.itinerario }}</a></td>
+               style="text-decoration: none;font-weight: bold;text-transform: uppercase;">{{ cotizacion.itinerario }}</a>
+        </td>
     </tr>
     <tr>
         <td class="derecha">Descripción</td>
@@ -39,6 +47,14 @@
     <tr>
         <td class="derecha">Vence</td>
         <td><strong>{{ cotizacion.fecha_vence|date:"D d/b" }}</strong></td>
+    </tr>
+    <tr>
+        <td class="derecha">Kilómetros</td>
+        <td><strong>{{ cotizacion.kms_total|intcomma }}</strong></td>
+    </tr>
+    <tr>
+        <td class="derecha">Horas</td>
+        <td><strong>{{ cotizacion.hrs_total|intcomma }}</strong></td>
     </tr>
     <tr>
         <td class="derecha">Costo</td>
@@ -62,67 +78,172 @@
     </tr>
 {% endblock %}
 {% block detalle %}
-    <div class="topcontainer">
-            <table data-role="table" id="tabladedatos" data-mode="columntoggle"
-                   class="table-stroke ui-shadow table-stripe  ui-responsive">
-                <thead>
+    {# tramos en cotizacion #}
+    <div class="rutacontainer">
+        <table data-role="table" id="tabladedatosruta" data-mode="columntoggle"
+               class="table-stroke ui-shadow table-stripe  ui-responsive">
+            <thead>
+            <tr>
+                <th class="izquierda">Tramo</th>
+                <th></th>
+                <th data-priority="1" class="derecha">
+                    <small>Desde</small>
+                </th>
+                <th data-priority="4" class="derecha">
+                    <small>Hacia</small>
+                </th>
+                <th data-priority="2" class="derecha">
+                    <small>Kms.</small>
+                </th>
+                <th data-priority="3" class="derecha">
+                    <small>Horas</small>
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for tramo in cotizacion.tramos.all %}
                 <tr>
-                    <th class="izquierda">Ítem</th>
-                    <th></th>
-                    <th data-priority="1" class="derecha"><small>Cantidad</small></th>
-                    <th data-priority="4" class="derecha"><small>Costo c/u</small></th>
-                    <th data-priority="2" class="derecha"><small>Costo Total</small></th>
-                    <th data-priority="3" class="derecha"><small>Utilidad</small></th>
-                    <th data-priority="5" class="derecha"><small>Markup</small></th>
-                    <th class="derecha"><small>Precio</small></th>
-                </tr>
-                </thead>
-                <tbody>
-                {% for linea in cotizacion.lineas.all %}
-                    <tr>
-                        <td data-search="{{ linea.descripcion }}" class="izquierda">
-                            <a title="Ver Ítem {{ linea.descripcion }}"
-                               href="{{ linea.get_absolute_url }}">{{ linea.descripcion }}</a></td>
-                        <td><div class="ui-alt-icon ui-nodisc-icon mininav3r">
+                    <td data-search="{{ tramo.tramo }}" class="izquierda">
+                        <a title="Ver Ítem {{ tramo.tramo|upper }}"
+                           href="{{ tramo.get_absolute_url }}">{{ tramo.tramo|upper }}</a></td>
+                    <td>
+                        <div class="ui-alt-icon ui-nodisc-icon mininav3r">
                             <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-action ui-btn-icon-notext ui-btncito"
-                               title="Ver Ítem {{ linea.descripcion }}" href="{{ linea.get_absolute_url }}">goto</a>{% if request.user.is_superuser %}
-                            <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-edit ui-btn-icon-notext ui-btncito"
-                               title="Editar Ítem {{ linea.descripcion }}" href="{{ linea.get_update_url }}"
-                               data-ajax="false" onclick="window.location.reload(false);">edit</a>
-                            <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-delete ui-btn-icon-notext ui-btncito"
-                               title="Eliminar Item {{ linea.descripcion }}" href="{{ linea.get_delete_url }}">delete</a>{% endif %}
-                        </div></td>
-                        <td class="derecha">{{ linea.cantidad }}</td>
-                        <td class="derecha">{{ linea.costo|intcomma }}</td>
-                        <td class="derecha">{{ linea.monto|intcomma }}</td>
-                        <td class="derecha">{{ linea.utilidad|porciento }}</td>
-                        <td class="derecha">{{ linea.markup|porciento }}</td>
-                        <td class="derecha">{{ linea.total|intcomma }}</td>
-                    </tr>
-                {% endfor %}
-                </tbody>
-                <tfoot>
-                    <tr>
-                        <td>TOTAL</td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td class="derecha">{{ cotizacion.subtotal|intcomma }}</td>
-                        <td class="derecha">{{ cotizacion.utilidad|porciento }}</td>
-                        <td class="derecha"></td>
-                        <td class="derecha">{{ cotizacion.total|intcomma }}</td>
-                    </tr>
-                </tfoot>
-            </table>
+                               title="Ver Tramo {{ tramo.descripcion }}" href="{{ tramo.get_absolute_url }}">goto</a>
+                            {% if request.user.is_superuser %}
+                                <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-edit ui-btn-icon-notext ui-btncito"
+                                   title="Editar Tramo {{ tramo.descripcion }}" href="{{ tramo.get_update_url }}"
+                                   data-ajax="false" onclick="window.location.reload(false);">edit</a>
+                                <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-delete ui-btn-icon-notext ui-btncito"
+                                   title="Eliminar Tramo {{ tramo.descripcion }}" href="{{ tramo.get_delete_url }}">delete</a>{% endif %}
+                        </div>
+                    </td>
+                    <td class="derecha">{{ tramo.desde }}</td>
+                    <td class="derecha">{{ tramo.hacia }}</td>
+                    <td class="derecha">{{ tramo.kms|intcomma }}</td>
+                    <td class="derecha">{{ tramo.hrs|intcomma }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+            <tfoot>
+            <tr>
+                <td>TOTAL</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td class="derecha">{{ cotizacion.kms_total|intcomma }}</td>
+                <td class="derecha">{{ cotizacion.hrs_total|intcomma }}</td>
+            </tr>
+            </tfoot>
+        </table>
+    </div>
+    {# Items en cotizacion #}
+    <div class="topcontainer">
+        <table data-role="table" id="tabladedatos" data-mode="columntoggle"
+               class="table-stroke ui-shadow table-stripe  ui-responsive">
+            <thead>
+            <tr>
+                <th class="izquierda">Ítem</th>
+                <th></th>
+                <th data-priority="1" class="derecha">
+                    <small>Cantidad</small>
+                </th>
+                <th data-priority="4" class="derecha">
+                    <small>Costo c/u</small>
+                </th>
+                <th data-priority="2" class="derecha">
+                    <small>Costo Total</small>
+                </th>
+                <th data-priority="3" class="derecha">
+                    <small>Utilidad</small>
+                </th>
+                <th data-priority="5" class="derecha">
+                    <small>Markup</small>
+                </th>
+                <th class="derecha">
+                    <small>Precio</small>
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for linea in cotizacion.lineas.all %}
+                <tr>
+                    <td data-search="{{ linea.descripcion }}" class="izquierda">
+                        <a title="Ver Ítem {{ linea.descripcion }}"
+                           href="{{ linea.get_absolute_url }}">{{ linea.descripcion }}</a></td>
+                    <td>
+                        <div class="ui-alt-icon ui-nodisc-icon mininav3r">
+                            <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-action ui-btn-icon-notext ui-btncito"
+                               title="Ver Ítem {{ linea.descripcion }}" href="{{ linea.get_absolute_url }}">goto</a>
+                            {% if request.user.is_superuser %}
+                                <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-edit ui-btn-icon-notext ui-btncito"
+                                   title="Editar Ítem {{ linea.descripcion }}" href="{{ linea.get_update_url }}"
+                                   data-ajax="false" onclick="window.location.reload(false);">edit</a>
+                                <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-delete ui-btn-icon-notext ui-btncito"
+                                   title="Eliminar Item {{ linea.descripcion }}" href="{{ linea.get_delete_url }}">delete</a>{% endif %}
+                        </div>
+                    </td>
+                    <td class="derecha">{{ linea.cantidad }}</td>
+                    <td class="derecha">{{ linea.costo|intcomma }}</td>
+                    <td class="derecha">{{ linea.monto|intcomma }}</td>
+                    <td class="derecha">{{ linea.utilidad|porciento }}</td>
+                    <td class="derecha">{{ linea.markup|porciento }}</td>
+                    <td class="derecha">{{ linea.total|intcomma }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+            <tfoot>
+            <tr>
+                <td>TOTAL</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td class="derecha">{{ cotizacion.subtotal|intcomma }}</td>
+                <td class="derecha">{{ cotizacion.utilidad|porciento }}</td>
+                <td class="derecha"></td>
+                <td class="derecha">{{ cotizacion.total|intcomma }}</td>
+            </tr>
+            </tfoot>
+        </table>
     </div>
 {% endblock %}
 {% block footer %}{% if request.user.is_superuser %}
-        <div class="fixed-action-btn">
-            <a class="btn-floating btn-large waves-effect waves-light red darken-2"
-               title="Agregar Ítem"
-               href="{% url "transporte_cotizaciondetalle_create" cotizacion_id=cotizacion.pk %}"
-               data-ajax="false" onclick="window.location.reload(false);">
-                <i class="material-icons">add</i></a>
-        </div>
-    {% endif %}
+    <div class="kc_fab_wrapper"></div>
+    {#    <div class="fixed-action-btn">#}
+{#        <a class="btn-floating btn-large waves-effect waves-light red darken-2"#}
+{#           title="Agregar Ítem"#}
+{#           href="{% url "transporte_cotizaciondetalle_create" cotizacion_id=cotizacion.pk %}"#}
+{#           data-ajax="false" onclick="window.location.reload(false);">#}
+{#            <i class="material-icons">add</i></a>#}
+{#    </div>#}
+{% endif %}
 {% endblock %}
+{% block scripts2 %}
+    <script src="{% static "js/kc.fab.min.js" %}"></script>
+    <script>
+        $(document).ready(function () {
+            var links = [
+                {
+                    "bgcolor": "#D32F2F",
+                    "icon": "+"
+                },
+                {
+                    "url": '{% url "transporte_rutadetalle_create" cotizacion_id=cotizacion.pk %}',
+{#                    "url": "#",#}
+                    "bgcolor": "#3B5998",
+                    "color": "#fffff",
+                    "icon": "<i class='fa fa-location-arrow'></i>",
+                    "title": "Agregar Tramo"
+                },
+                {
+                    "url": '{% url "transporte_cotizaciondetalle_create" cotizacion_id=cotizacion.pk %}',
+                    "bgcolor": "#263238",
+                    "tooltip": "Agregar Item",
+                    "color": "white",
+                    "icon": "<i class='fa fa-bars'></i>",
+                    "title": "Agregar Item"
+                }
+            ];
+            $('.kc_fab_wrapper').kc_fab(links);
+        })
+    </script>{% endblock %}
