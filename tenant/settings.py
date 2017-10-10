@@ -30,6 +30,7 @@ ALLOWED_HOSTS = [
     u'107.180.103.216',
     u'demo.mistenants.com',
     u'mistenants.com',
+    u'shorexplan.com',
 ]
 
 # Application definition

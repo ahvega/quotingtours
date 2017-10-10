@@ -6,7 +6,10 @@
 {% block page-title %}Cotización{% endblock %}
 {% block thead %}
     <tr>
-        <th colspan="2" class="izquierda">{{ cotizacion.nombre }}{% if request.user.is_superuser %}
+        <th colspan="2" class="izquierda"><a style="color:white;" title="Ver Cotización {{ cotizacion.nombre }}"
+                                             href="{{ cotizacion.get_absolute_url }}" data-ajax="false"
+                                             onclick="window.location.reload(false);">{{ cotizacion.nombre }}
+            {% if request.user.is_superuser %}
             <div class="ui-nodisc-icon mininav3r">
                 <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-edit ui-btn-icon-notext ui-btncito"
                    title="Editar Cotización {{ cotizacion.nombre }}" href="{{ cotizacion.get_update_url }}"
@@ -105,7 +108,8 @@
                 <tr>
                     <td data-search="{{ tramo.tramo }}" class="izquierda">
                         <a title="Ver Ítem {{ tramo.tramo|upper }}"
-                           href="{{ tramo.get_absolute_url }}">{{ tramo.tramo|upper }}</a></td>
+                           href="{{ tramo.get_absolute_url }}" data-ajax="false"
+                           onclick="window.location.reload(false);">{{ tramo.tramo|upper }}</a></td>
                     <td>
                         <div class="ui-alt-icon ui-nodisc-icon mininav3r">
                             <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-action ui-btn-icon-notext ui-btncito"

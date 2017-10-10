@@ -149,4 +149,5 @@ transporte/transportelocal.backup
 /transporte/filters.py
 /transporte/playground.py
 /transporte/migrations/
-#/assets/
+/static/
+transporte/templates/transporte/toss.js

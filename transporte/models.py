@@ -284,7 +284,7 @@ class Lugar(models.Model):
     actualizado = models.DateTimeField(auto_now=True, editable=False)
 
     class Meta:
-        ordering = ('-id',)
+        ordering = ('pais', 'nombre',)
         verbose_name_plural = 'Lugares'
 
     def __str__(self):
@@ -292,6 +292,10 @@ class Lugar(models.Model):
 
     def __unicode__(self):
         return u'%s' % self.nombre
+
+    def save(self, *args, **kwargs):
+        self.codigo = self.codigo.upper()
+        super(Lugar, self).save()
 
     def get_absolute_url(self):
         return reverse('transporte_lugar_detail', args=(self.slug,))
@@ -302,13 +306,13 @@ class Lugar(models.Model):
 
 class Tramo(models.Model):
     # Fields
-    _codigo = models.TextField(max_length=7, db_column='codigo', blank=True)
-    _descricpion = models.CharField(max_length=255, blank=True, null=True, db_column='descripcion')
-    _kms = models.IntegerField(null=True, blank=True, db_column='kms')
-    _hrs = models.DecimalField(max_digits=4, decimal_places=1, null=True, blank=True, db_column='hrs')
-    _cruza_frontera = models.BooleanField(db_column='cruza_frontera', default=False)
-    _zona_destino = models.CharField(max_length=4, db_column='zona_destino', null=True, blank=True)
-    desde_hacia = models.TextField(max_length=100)
+    codigo = models.TextField(max_length=7, blank=True, null=True)
+    descripcion = models.CharField(max_length=255, blank=True, null=True)
+    kms = models.IntegerField(null=True, blank=True)
+    hrs = models.DecimalField(max_digits=4, decimal_places=1, null=True, blank=True)
+    cruza_frontera = models.BooleanField(default=False)
+    zona_destino = models.CharField(max_length=4, null=True, blank=True)
+    desde_hacia = models.TextField(max_length=200)
     slug = extension_fields.AutoSlugField(populate_from='codigo', blank=True)
     creado = models.DateTimeField(auto_now_add=True, editable=False)
     actualizado = models.DateTimeField(auto_now=True, editable=False)
@@ -316,19 +320,20 @@ class Tramo(models.Model):
     desde_lugar = models.ForeignKey(Lugar, verbose_name='origen', related_name='desde')
     hacia_lugar = models.ForeignKey(Lugar, verbose_name='destino', related_name='hacia')
 
-    # vehiculos = models.ManyToManyField(TramoEnVehiculo, through=TipoDeVehiculo)
-
     class Meta:
-        ordering = ('-id',)
+        ordering = ('codigo',)
         unique_together = ('desde_lugar', 'hacia_lugar')
 
-    @property
-    def codigo(self):
-        return self.desde_lugar.codigo + '-' + self.hacia_lugar.codigo
-
-    @codigo.setter
-    def codigo(self, value):
-        self._codigo = value
+    def save(self, *args, **kwargs):
+        self.codigo = self.desde_lugar.codigo + '-' + self.hacia_lugar.codigo
+        self.pais_destino = self.hacia_lugar.pais
+        self.cruza_frontera = False if self.desde_lugar.pais == self.hacia_lugar.pais else True
+        self.zona_destino = self.hacia_lugar.zona
+        self.desde_hacia = self.desde_lugar.nombre + ' - ' + self.hacia_lugar.nombre
+        self.kms = distancia(self.desde_lugar.nombre, self.hacia_lugar.nombre)
+        self.hrs = duracion(self.desde_lugar.nombre, self.hacia_lugar.nombre)
+        self.descripcion = verbage(self.desde_lugar.nombre, self.hacia_lugar.nombre)
+        super(Tramo, self).save(*args, **kwargs)
 
     @property
     def origen(self):
@@ -337,54 +342,6 @@ class Tramo(models.Model):
     @property
     def destino(self):
         return self.hacia_lugar.nombre
-
-    @property
-    def pais_origen(self):
-        return self.desde_lugar.pais
-
-    @property
-    def pais_destino(self):
-        return self.hacia_lugar.pais
-
-    @property
-    def cruza_frontera(self):
-        return False if self.desde_lugar.pais == self.hacia_lugar.pais else True
-
-    @cruza_frontera.setter
-    def cruza_frontera(self, value):
-        self._cruza_frontera = value
-
-    @property
-    def zona_destino(self):
-        return self.hacia_lugar.zona
-
-    @zona_destino.setter
-    def zona_destino(self, value):
-        self._zona_destino = value
-
-    @property
-    def kms(self):
-        return distancia(self.desde_lugar.nombre, self.hacia_lugar.nombre)
-
-    @kms.setter
-    def kms(self, value):
-        self._kms = value
-
-    @property
-    def hrs(self):
-        return duracion(self.desde_lugar.nombre, self.hacia_lugar.nombre)
-
-    @hrs.setter
-    def hrs(self, value):
-        self._hrs = value
-
-    @property
-    def descripcion(self):
-        return verbage(self.desde_lugar.nombre, self.hacia_lugar.nombre)
-
-    @descripcion.setter
-    def descripcion(self, value):
-        self._descipcion = value
 
     def __str__(self):
         return self.codigo
@@ -501,8 +458,8 @@ class Cotizacion(models.Model):
 
 class RutaDetalle(models.Model):
     # Fields
-    _desde = models.CharField(max_length=20, null=True, blank=True, db_column='desde')
-    _hacia = models.CharField(max_length=20, null=True, blank=True, db_column='hacia')
+    desde = models.TextField(max_length=100, null=True, blank=True)
+    hacia = models.TextField(max_length=100, null=True, blank=True)
     kms = models.DecimalField(max_digits=5, null=True, blank=True, decimal_places=1)
     hrs = models.DecimalField(max_digits=3, null=True, blank=True, decimal_places=1)
     slug = extension_fields.AutoSlugField(populate_from='tramo', blank=True)
@@ -518,31 +475,32 @@ class RutaDetalle(models.Model):
         verbose_name = _('Tramo en Cotización')
         verbose_name_plural = _('Tramos en Cotización')
 
-    @property
-    def desde(self):
-        return self.tramo.origen
-
-    @desde.setter
-    def desde(self, value):
-        self._desde = value
-
-    @property
-    def hacia(self):
-        return self.tramo.destino
-
-    @hacia.setter
-    def hacia(self, value):
-        self._hacia = value
-
     def save(self, *args, **kwargs):
         self.kms = self.tramo.kms
         self.hrs = self.tramo.hrs
+        self.desde = self.tramo.origen
+        self.hacia = self.tramo.destino
         super(RutaDetalle, self).save(*args, **kwargs)
+
+    def __str__(self):
+        return str(self.slug)
+
+    def get_absolute_url(self):
+        return reverse('transporte_rutadetalle_detail', args=(self.slug,))
+
+    def get_update_url(self):
+        return reverse('transporte_rutadetalle_update', args=(self.slug,))
+
+    def get_delete_url(self):
+        return reverse('transporte_rutadetalle_delete', args=(self.slug,))
+
+    def cotizacion_slug(self):
+        return self.cotizacion.slug
 
 
 class CotizacionDetalle(models.Model):
     # Fields
-    _descripcion = models.CharField(max_length=100, null=True, blank=True, db_column='descripcion')
+    descripcion = models.CharField(max_length=100, null=True, blank=True)
     cantidad = models.DecimalField(max_digits=10, decimal_places=2)
     costo = models.DecimalField(max_digits=10, decimal_places=2,
                                 default=0, editable=False)
@@ -569,15 +527,16 @@ class CotizacionDetalle(models.Model):
         verbose_name = _('Ítem en Cotización')
         verbose_name_plural = _('Ítems en Cotización')
 
-    @property
-    def descripcion(self):
-        return self.item.descripcion_venta
-
-    @descripcion.setter
-    def descripcion(self, value):
-        self._descripcion = value
+    # @property
+    # def descripcion(self):
+    #     return self.item.descripcion_venta
+    #
+    # @descripcion.setter
+    # def descripcion(self, value):
+    #     self._descripcion = value
 
     def save(self, *args, **kwargs):
+        self.descripcion = self.item.descripcion_venta
         self.costo = self.item.costo
         self.monto = self.cantidad * self.costo
         self.markup = Decimal(round(self.nivel_de_precio.factor - 1, 4)).quantize(Decimal("0.0000"))
@@ -684,7 +643,7 @@ class Conductor(models.Model):
         return reverse('transporte_conductor_update', args=(self.slug,))
 
 
-# TODO: Crear simétrico de Tramo cuando se crea.
+# TODO: Crear simétrico de Tramo cuando se crea tramo nuevo.
 class TramoEnVehiculo(models.Model):
     # Fields
     _nombre = models.CharField(blank=True, db_column='nombre', max_length=25, null=True)

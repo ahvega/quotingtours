@@ -13,7 +13,7 @@
             <th data-priority="2" class="centrado">Hrs</th>{% endblock %}
 {% block tbody %}{% for tramo in tramo_list %}
                     <tr>
-                    <td data-search="{{ tramo.descripcion }}">
+                    <td data-search="{{ tramo.codigo }}">
                         <a title="Ver Tramo {{ tramo.codigo|upper }}"
                            href="{{ tramo.get_absolute_url }}">{{ tramo.codigo }}</td>
                     <td><div class="ui-alt-icon ui-nodisc-icon mininav3r">
