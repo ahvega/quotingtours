@@ -1,8 +1,9 @@
+# coding=utf-8
 from django.contrib import admin
 from django.forms.utils import ErrorList
 from django import forms
 from .filters import DropdownFilterValues, DropdownFilterRelated
-
+import copy
 from .models import *
 
 
@@ -14,15 +15,8 @@ class TipoDeVehiculoAdminForm(forms.ModelForm):
 
 class TipoDeVehiculoAdmin(admin.ModelAdmin):
     form = TipoDeVehiculoAdminForm
-    list_display = [
-        'nombre',
-        'rendimiento',
-        'costo_por_dia',
-        'costo_por_km',
-        'capacidad_nominal',
-        'capacidad_real',
-        'galones_tanque'
-    ]
+    list_display = ['nombre', 'rendimiento', 'costo_por_dia', 'costo_por_km',
+                    'capacidad_nominal', 'capacidad_real', 'galones_tanque']
     readonly_fields = ['creado', 'actualizado', 'slug']
     search_fields = ['nombre']
 
@@ -38,16 +32,10 @@ class ParametroAdminForm(forms.ModelForm):
 
 class ParametroAdmin(admin.ModelAdmin):
     form = ParametroAdminForm
-    list_display = [
-        'annio',
-        'nombre',
-        'valor',
-        'unidad',
-        'orden'
-    ]
+    list_display = ['annio', 'nombre', 'valor', 'unidad', 'orden']
     readonly_fields = ['creado', 'actualizado', 'slug']
     search_fields = ['nombre']
-    list_filter = ['annio']
+    list_filter = (('annio', DropdownFilterValues),)
 
 
 admin.site.register(Parametro, ParametroAdmin)
@@ -61,15 +49,11 @@ class ItemAdminForm(forms.ModelForm):
 
 class ItemAdmin(admin.ModelAdmin):
     form = ItemAdminForm
-    list_display = [
-        'nombre',
-        'tipo_item',
-        'costo',
-        'precio',
-        'descripcion_venta'
-    ]
+    list_display = ['nombre', 'tipo_item', 'costo', 'precio', 'descripcion_venta']
     readonly_fields = ['slug', 'creado', 'actualizado']
     search_fields = ['nombre', 'descripcion_compra', 'descripcion_venta']
+    list_filter = (('tipo_item', DropdownFilterValues), 'creado')
+    date_hierarchy = 'creado'
 
 
 admin.site.register(Item, ItemAdmin)
@@ -94,10 +78,34 @@ admin.site.register(NivelDePrecio, NivelDePrecioAdmin)
 class CotizacionAdminForm(forms.ModelForm):
     class Meta:
         model = Cotizacion
-        fields = ['itinerario', 'nombre', 'descripcion', 'nivel_de_precio', 'fecha_vence']
+        fields = ['itinerario', 'nombre', 'descripcion', 'nivel_de_precio',
+                  'fecha_ida', 'fecha_regreso', 'fecha_vence']
+
+
+# TODO: Accion para duplicar cotizacion en admin
+def copy_cotizacion(modeladmin, request, queryset):
+    # cot es una instancia de Cotizacion
+    for cot in queryset:
+        cot_copy = copy.copy(cot)
+        cot_copy.id = None
+        cot_copy.save()  # salvado inicial
+
+        # copiar relacion M2M
+        for tramo in cot.tramos.all():
+            cot_copy.tramos.add(tramo)
+
+        for linea in cot.lineas.all():
+            cot_copy.lineas.add(linea)
+
+        cot_copy.save()
+
+copy_cotizacion.short_description = "Hacer Copia de los Detalles de la Cotización"
 
 
 class CotizacionAdmin(admin.ModelAdmin):
+    actions = [copy_cotizacion]
+    save_on_top = True
+
     def formfield_for_dbfield(self, db_field, **kwargs):
         formfield = super(CotizacionAdmin, self).formfield_for_dbfield(db_field, **kwargs)
         if db_field.name == 'descripcion':
@@ -105,11 +113,13 @@ class CotizacionAdmin(admin.ModelAdmin):
         return formfield
 
     form = CotizacionAdminForm
-    list_display = ['nombre', 'fecha_vence', 'descripcion', 'kms_total', 'hrs_total', 'subtotal', 'utilidad', 'total']
-    readonly_fields = ['kms_total', 'hrs_total', 'subtotal', 'utilidad', 'total', 'slug', 'creado', 'actualizado']
+    list_display = ['nombre', 'fecha_ida', 'fecha_regreso', 'dias', 'fecha_vence',
+                    'descripcion', 'kms_total', 'hrs_total', 'subtotal', 'utilidad', 'total']
+    readonly_fields = ['dias', 'kms_total', 'hrs_total', 'subtotal',
+                       'utilidad', 'total', 'slug', 'creado', 'actualizado']
     search_fields = ['nombre', 'descripcion']
-    list_filter = (('itinerario', DropdownFilterRelated), 'fecha_vence')
-    date_hierarchy = 'fecha_vence'
+    list_filter = (('itinerario__cliente', DropdownFilterRelated), ('itinerario', DropdownFilterRelated), 'fecha_ida')
+    date_hierarchy = 'fecha_ida'
 
 
 admin.site.register(Cotizacion, CotizacionAdmin)
@@ -145,14 +155,22 @@ class ItinerarioAdminForm(forms.ModelForm):
         return self.cleaned_data
 
 
+def cerrar_itinerario(modeladmin, request, queryset):
+    queryset.update(estatus='Cerrado')
+
+
+cerrar_itinerario.short_description = "Marcar como Cerrado"
+
+
 class ItinerarioAdmin(admin.ModelAdmin):
     form = ItinerarioAdminForm
     list_display = ['nombre', 'cliente', 'fecha_desde', 'fecha_hasta', 'estatus']
     readonly_fields = ['slug', 'creado', 'actualizado']
     search_fields = ['cliente', 'nombre', 'fecha_desde']
-    list_filter = (('cliente', DropdownFilterRelated),)
+    list_filter = (('estatus', DropdownFilterValues), ('cliente', DropdownFilterRelated), 'fecha_desde',)
     ordering = ['cliente', 'fecha_desde']
     date_hierarchy = 'fecha_desde'
+    actions = [cerrar_itinerario]
 
 
 admin.site.register(Itinerario, ItinerarioAdmin)
@@ -183,6 +201,7 @@ class CotizacionDetalleAdminForm(forms.ModelForm):
 
 
 class CotizacionDetalleAdmin(admin.ModelAdmin):
+    save_as = True
     form = CotizacionDetalleAdminForm
     list_display = ['descripcion', 'cotizacion', 'cantidad', 'costo', 'monto', 'utilidad', 'markup', 'total']
     readonly_fields = ['descripcion', 'costo', 'monto', 'utilidad', 'markup', 'total', 'slug', 'creado', 'actualizado']
@@ -201,9 +220,11 @@ class VehiculoAdminForm(forms.ModelForm):
 
 
 class VehiculoAdmin(admin.ModelAdmin):
+    save_as = True
     form = VehiculoAdminForm
-    list_display = ['nombre', 'placa', 'fecha_adquirido', 'chofer_fijo']
+    list_display = ['nombre', 'placa', 'tipo', 'fecha_adquirido', 'chofer_fijo']
     readonly_fields = ['slug', 'creado', 'actualizado']
+    list_filter = (('tipo', DropdownFilterRelated),)
 
 
 admin.site.register(Vehiculo, VehiculoAdmin)
@@ -212,33 +233,17 @@ admin.site.register(Vehiculo, VehiculoAdmin)
 class TramoAdminForm(forms.ModelForm):
     class Meta:
         model = Tramo
-        fields = [
-            'desde_lugar',
-            'hacia_lugar',
-        ]
+        fields = ['desde_lugar', 'hacia_lugar', ]
 
 
+# TODO: Accion para Crear simétrico de Tramo en admin
 class TramoAdmin(admin.ModelAdmin):
+    save_as = True
     form = TramoAdminForm
-    list_display = [
-        'codigo',
-        'descripcion',
-        'desde_lugar',
-        'hacia_lugar',
-        'kms',
-        'hrs',
-        'slug',
-        'creado',
-        'actualizado',
-    ]
-    readonly_fields = [
-        'descripcion',
-        'kms',
-        'hrs',
-        'slug',
-        'creado',
-        'actualizado',
-    ]
+    list_display = ['codigo', 'descripcion', 'desde_lugar', 'hacia_lugar', 'kms', 'hrs', 'slug', 'creado',
+                    'actualizado', ]
+    readonly_fields = ['descripcion', 'kms', 'hrs', 'slug', 'creado', 'actualizado', ]
+    list_filter = (('desde_lugar', DropdownFilterRelated), ('hacia_lugar', DropdownFilterRelated))
 
 
 admin.site.register(Tramo, TramoAdmin)
@@ -247,26 +252,15 @@ admin.site.register(Tramo, TramoAdmin)
 class TramoEnVehiculoAdminForm(forms.ModelForm):
     class Meta:
         model = TramoEnVehiculo
-        fields = [
-            'tramo',
-            'vehiculo',
-        ]
+        fields = ['tramo', 'vehiculo', ]
 
 
 class TramoEnVehiculoAdmin(admin.ModelAdmin):
+    save_as = True
     form = TramoEnVehiculoAdminForm
-    list_display = [
-        'nombre',
-        'tramo',
-        'vehiculo',
-        'costo',
-        'slug',
-    ]
-    readonly_fields = [
-        'nombre',
-        'costo',
-        'slug',
-    ]
+    list_display = ['nombre', 'tramo', 'vehiculo', 'costo', 'slug', ]
+    readonly_fields = ['nombre', 'costo', 'slug', ]
+    list_filter = (('vehiculo', DropdownFilterRelated), ('tramo', DropdownFilterRelated),)
 
 
 admin.site.register(TramoEnVehiculo, TramoEnVehiculoAdmin)
@@ -282,6 +276,7 @@ class LugarAdminForm(forms.ModelForm):
 
 
 class LugarAdmin(admin.ModelAdmin):
+    save_as = True
     form = LugarAdminForm
     list_display = ['codigo', 'nombre', 'pais', 'slug', 'creado', 'actualizado']
     readonly_fields = ['slug', 'creado', 'actualizado']
@@ -298,22 +293,8 @@ class ConductorAdminForm(forms.ModelForm):
 
 class ConductorAdmin(admin.ModelAdmin):
     form = ConductorAdminForm
-    list_display = [
-        'nombre',
-        'slug',
-        'creado',
-        'actualizado',
-        'identidad',
-        'telefono',
-        'empleado',
-        'incentivo_por_dia'
-    ]
-    readonly_fields = [
-        'nombre',
-        'slug',
-        'creado',
-        'actualizado'
-    ]
+    list_display = ['nombre', 'slug', 'creado', 'actualizado', 'identidad', 'telefono', 'empleado', 'incentivo_por_dia']
+    readonly_fields = ['nombre', 'slug', 'creado', 'actualizado']
 
 
 admin.site.register(Conductor, ConductorAdmin)

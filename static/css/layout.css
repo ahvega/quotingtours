@@ -671,7 +671,10 @@ html .ui-page-theme-a .ui-table-columntoggle-btn {
     font-size: small;
 }
 
-#tabladedatos a, #table-list a, #table-detail a {
+#tabladedatos a,
+#tabladedatosruta a,
+#table-list a,
+#table-detail a {
     color: #3367D6;
     text-decoration: none;
     text-transform: uppercase;
