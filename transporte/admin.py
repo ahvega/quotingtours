@@ -5,7 +5,12 @@ from django import forms
 from .filters import DropdownFilterValues, DropdownFilterRelated
 import copy
 from .models import *
+from django.conf.locale.es import formats as es_formats
 
+# es_formats.DATETIME_FORMAT = "d M Y H:i:s"
+es_formats.DECIMAL_SEPARATOR = ','
+es_formats.THOUSAND_SEPARATOR = '.'
+es_formats.NUMBER_GROUPING = 3
 
 class TipoDeVehiculoAdminForm(forms.ModelForm):
     class Meta:
@@ -82,7 +87,6 @@ class CotizacionAdminForm(forms.ModelForm):
                   'fecha_ida', 'fecha_regreso', 'fecha_vence']
 
 
-# TODO: Accion para duplicar cotizacion en admin
 def copy_cotizacion(modeladmin, request, queryset):
     # cot es una instancia de Cotizacion
     for cot in queryset:
@@ -99,7 +103,7 @@ def copy_cotizacion(modeladmin, request, queryset):
 
         cot_copy.save()
 
-copy_cotizacion.short_description = "Hacer Copia de los Detalles de la Cotización"
+copy_cotizacion.short_description = "Crear Copia de Cotización"
 
 
 class CotizacionAdmin(admin.ModelAdmin):
@@ -118,8 +122,10 @@ class CotizacionAdmin(admin.ModelAdmin):
     readonly_fields = ['dias', 'kms_total', 'hrs_total', 'subtotal',
                        'utilidad', 'total', 'slug', 'creado', 'actualizado']
     search_fields = ['nombre', 'descripcion']
-    list_filter = (('itinerario__cliente', DropdownFilterRelated), ('itinerario', DropdownFilterRelated), 'fecha_ida')
+    list_filter = (('itinerario__cliente', DropdownFilterRelated),
+                   ('itinerario', DropdownFilterRelated), 'fecha_ida')
     date_hierarchy = 'fecha_ida'
+    ordering = ('itinerario__cliente__codigo', )
 
 
 admin.site.register(Cotizacion, CotizacionAdmin)
@@ -203,11 +209,15 @@ class CotizacionDetalleAdminForm(forms.ModelForm):
 class CotizacionDetalleAdmin(admin.ModelAdmin):
     save_as = True
     form = CotizacionDetalleAdminForm
-    list_display = ['descripcion', 'cotizacion', 'cantidad', 'costo', 'monto', 'utilidad', 'markup', 'total']
+    list_display = ['cliente', 'itinerario', 'cotizacion', 'descripcion',
+                    'cantidad', 'costo', 'monto', 'utilidad', 'markup', 'total']
+    list_display_links = ['descripcion']
     readonly_fields = ['descripcion', 'costo', 'monto', 'utilidad', 'markup', 'total', 'slug', 'creado', 'actualizado']
     search_fields = ['descripcion']
-    list_filter = (('cotizacion', DropdownFilterRelated),)
-    ordering = ['creado']
+    list_filter = (('cotizacion__itinerario__cliente', DropdownFilterRelated),
+                   ('cotizacion__itinerario', DropdownFilterRelated),
+                   ('cotizacion', DropdownFilterRelated),)
+    ordering = ['cotizacion__itinerario__cliente__codigo', 'cotizacion__fecha_ida','id']
 
 
 admin.site.register(CotizacionDetalle, CotizacionDetalleAdmin)
@@ -237,8 +247,28 @@ class TramoAdminForm(forms.ModelForm):
 
 
 # TODO: Accion para Crear simétrico de Tramo en admin
+def copy_tramo_regreso(modeladmin, request, queryset):
+    for tramo in queryset:
+        tramo_copy = copy.copy(tramo)
+        tramo_copy.id = None
+        tramo_origen_copy = tramo_copy.desde_lugar
+        tramo_copy.desde_lugar = tramo_copy.hacia_lugar
+        tramo_copy.hacia_lugar = tramo_origen_copy
+        tramo_copy.save() # grabado inicial
+
+        # copiar foreign relations
+        for vehiculo in tramo_copy.vehiculos.all():
+            tramo_copy.vehiculos.add(vehiculo)
+
+        tramo_copy.save()  # grabado definitivo con campos relacionados
+
+copy_tramo_regreso.short_description = "Crear Tramo de Regreso"
+
+
 class TramoAdmin(admin.ModelAdmin):
-    save_as = True
+    actions = [copy_tramo_regreso]
+    save_on_top = True
+
     form = TramoAdminForm
     list_display = ['codigo', 'descripcion', 'desde_lugar', 'hacia_lugar', 'kms', 'hrs', 'slug', 'creado',
                     'actualizado', ]

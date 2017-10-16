@@ -35,10 +35,28 @@ class NivelDePrecioForm(forms.ModelForm):
 
 
 class CotizacionForm(forms.ModelForm):
+    def formfield_for_dbfield(self, db_field, **kwargs):
+        formfield = super(CotizacionForm, self).formfield_for_dbfield(db_field, **kwargs)
+        if db_field.name == 'descripcion':
+            formfield.widget = forms.Textarea(attrs=formfield.widget.attrs)
+        return formfield
+
     class Meta:
         model = Cotizacion
-        fields = ['nombre', 'descripcion', 'fecha_vence']
-        widgets = {'fecha_vence': DateInput(), }
+        fields = ['nombre', 'descripcion', 'fecha_ida', 'fecha_regreso', 'fecha_vence']
+        widgets = {
+            'fecha_vence': DateInput(),
+            'fecha_ida': DateInput(),
+            'fecha_regreso': DateInput(),
+        }
+
+    def clean(self):
+        if self.cleaned_data['fecha_ida'] > self.cleaned_data['fecha_regreso']:
+            msg = 'La fecha de ida no puede ser mayor que la fecha de regreso.'
+            self._errors['fecha_ida'] = ErrorList([msg])
+            del self.cleaned_data['fecha_ida']
+
+        return self.cleaned_data
 
 
 class ClienteForm(forms.ModelForm):
@@ -75,11 +93,6 @@ class CotizacionDetalleForm(forms.ModelForm):
     class Meta:
         model = CotizacionDetalle
         fields = ['item', 'cantidad', 'nivel_de_precio']
-
-        # def __init__(self, *args, **kwargs):
-        #     super(CotizacionDetalleForm, self).__init__(*args, **kwargs)
-        #     self.fields["cotizacion"] = forms.CharField(widget=forms.HiddenInput())
-        #
 
 
 class VehiculoForm(forms.ModelForm):

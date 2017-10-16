@@ -177,9 +177,9 @@ class NivelDePrecio(models.Model):
 class Cliente(models.Model):
     # Fields
     nombre = models.CharField(max_length=100)
-    codigo = models.CharField(max_length=4, null=True)
+    codigo = models.CharField(unique=True, max_length=4, )
     contacto = models.CharField(max_length=100)
-    slug = extension_fields.AutoSlugField(populate_from='nombre', blank=True)
+    slug = extension_fields.AutoSlugField(populate_from='codigo', blank=True, overwrite=True)
     email = models.EmailField(unique=True, db_index=True, null=True)
     tel = models.CharField(max_length=15, null=True)
     ciudad = models.CharField(max_length=50, default='San Pedro Sula')
@@ -193,7 +193,7 @@ class Cliente(models.Model):
                                         on_delete=models.PROTECT, default=4)
 
     class Meta:
-        ordering = ('pais', 'ciudad', 'rtn', 'nombre',)
+        ordering = ('codigo',)
         verbose_name = _('Cliente')
         verbose_name_plural = _('Clientes')
 
@@ -239,7 +239,7 @@ class Itinerario(models.Model):
                                         on_delete=models.PROTECT, null=True)
 
     class Meta:
-        ordering = ('cliente', 'estatus', '-fecha_desde',)
+        ordering = ('cliente__codigo', 'estatus', '-fecha_desde',)
         verbose_name = _('Itinerario')
         verbose_name_plural = _('Itinerarios')
         unique_together = ('cliente', 'nombre')
@@ -254,13 +254,18 @@ class Itinerario(models.Model):
     def codigo_cliente(self):
         return self.cliente.codigo
 
+    codigo_cliente.setter
+
     @property
     def nombre_expandido(self):
         return unicode(self.fecha_desde.strftime('%y%m')) + '-' + \
                unicode(self.codigo_cliente) + '-' + unicode(self.nombre)
 
     def save(self, *args, **kwargs):
-        self.nombre = self.nombre_expandido
+        if self.nombre[:10] != self.nombre_expandido[:10]:
+            self.nombre = self.nombre_expandido
+        if self.nivel_de_precio is None:
+            self.nivel_de_precio = self.cliente.nivel_de_precio
         super(Itinerario, self).save()
 
     def get_absolute_url(self):
@@ -362,9 +367,9 @@ class Tramo(models.Model):
 class Cotizacion(models.Model):
     # Fields
     nombre = models.CharField(max_length=100)
-    slug = extension_fields.AutoSlugField(populate_from='nombre', blank=True)
-    fecha_ida = models.DateField(default=date.today())
-    fecha_regreso = models.DateField(default=date.today())
+    slug = extension_fields.AutoSlugField(populate_from='nombre', blank=True, overwrite=True)
+    fecha_ida = models.DateField(default=date.today)
+    fecha_regreso = models.DateField(default=date.today)
     _dias = models.IntegerField(db_column='dias', null=True, blank=True, default=1)
     fecha_vence = models.DateField(default=date(now().year, 12, 31))
     descripcion = models.CharField(default=' - ', max_length=100)
@@ -384,10 +389,10 @@ class Cotizacion(models.Model):
     # Relationship Fields
     itinerario = models.ForeignKey(Itinerario, on_delete=CASCADE, verbose_name='itinerario')
     nivel_de_precio = models.ForeignKey(NivelDePrecio, verbose_name='nivel de precio',
-                                        on_delete=models.PROTECT, null=True)
+                                        on_delete=models.PROTECT, null=True, blank=True)
 
     class Meta:
-        ordering = ('-id',)
+        ordering = ('itinerario__cliente__codigo','-fecha_ida')
         verbose_name = _('Cotización')
         verbose_name_plural = _('Cotizaciones')
 
@@ -408,6 +413,10 @@ class Cotizacion(models.Model):
     @property
     def nombre_itinerario(self):
         return self.itinerario.nombre
+
+    @property
+    def codigo_cliente(self):
+        return self.itinerario.codigo_cliente
 
     @property
     def kms_total(self):
@@ -463,6 +472,16 @@ class Cotizacion(models.Model):
     @utilidad.setter
     def utilidad(self, value):
         self._utilidad = value
+
+    def save(self, *args, **kwargs):
+        self.nombre =self.nombre.upper()
+        if self.itinerario is None:
+            self.itinerario = 1
+        if self.nombre[:4] != self.codigo_cliente:
+            self.nombre = self.codigo_cliente + '-' + self.nombre
+        if self.nivel_de_precio is None:
+            self.nivel_de_precio = self.itinerario.nivel_de_precio
+        super(Cotizacion, self).save(*args, **kwargs)
 
     def get_absolute_url(self):
         return reverse('transporte_cotizacion_detail', args=(self.slug,))
@@ -537,10 +556,20 @@ class CotizacionDetalle(models.Model):
         verbose_name = _('Ítem en Cotización')
         verbose_name_plural = _('Ítems en Cotización')
 
+    @property
+    def cliente(self):
+        return self.cotizacion.codigo_cliente
+
+    @property
+    def itinerario(self):
+        return self.cotizacion.itinerario
+
     def save(self, *args, **kwargs):
         self.descripcion = self.item.descripcion_venta
         self.costo = self.item.costo
         self.monto = self.cantidad * self.costo
+        if self.nivel_de_precio is None:
+            self.nivel_de_precio = self.cotizacion.nivel_de_precio
         self.markup = Decimal(round(self.nivel_de_precio.factor - 1, 4)).quantize(Decimal("0.0000"))
         self.utilidad = Decimal(self.nivel_de_precio.valor).quantize(Decimal("0.0000"))
         self.total = Decimal(self.monto) * (1 + Decimal(self.markup))

@@ -11,6 +11,12 @@ https://docs.djangoproject.com/en/1.10/ref/settings/
 """
 
 import os
+from django.conf.locale.es import formats as es_formats
+
+es_formats.DATETIME_FORMAT = "d M Y H:i:s"
+es_formats.DECIMAL_SEPARATOR = ','
+es_formats.THOUSAND_SEPARATOR = '.'
+es_formats.NUMBER_GROUPING = 3
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -123,6 +129,7 @@ MIDDLEWARE_CLASSES = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    # 'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'corsheaders.middleware.CorsPostCsrfMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -225,13 +232,13 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/1.10/topics/i18n/
 
-LANGUAGE_CODE = 'es'
-
-TIME_ZONE = 'America/Tegucigalpa'
-
 USE_I18N = True
 
 # USE_L10N = True
+
+LANGUAGE_CODE = 'es-hn'
+
+TIME_ZONE = 'America/Tegucigalpa'
 
 USE_TZ = True
 
