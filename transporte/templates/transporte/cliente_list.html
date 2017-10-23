@@ -2,6 +2,7 @@
 {% block title %}Clientes{% endblock %}
 {% block page-title %}Clientes{% endblock %}{% block theader %}
                                 <th class="centrado">Cliente</th>
+                                <th class="centrado">Código</th>
                                 <th></th>
                                 <th data-priority="1" class="centrado">Contacto</th>
                                 <th data-priority="2" class="centrado">Tel</th>
@@ -11,6 +12,7 @@
                                 <td class="izquierda" data-search="{{ cliente.nombre }}">
                                     <a title="Ver Cliente {{ cliente.nombre }}"
                                        href="{{ cliente.get_absolute_url }}">{{ cliente.nombre }}</a></td>
+                                <td class="centrado">{{ cliente.codigo }}</td>
                                 <td class="izquierda" width="1">
                                     <div class="ui-alt-icon ui-nodisc-icon mininav3r">
                                         <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-action ui-btn-icon-notext ui-btncito"

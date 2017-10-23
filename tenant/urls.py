@@ -6,6 +6,7 @@ from rest_framework import routers
 from rest_framework.authtoken import views as authviews
 from rest_framework_jwt.views import obtain_jwt_token, refresh_jwt_token
 
+from django.conf import settings
 from transporte import api
 from transporte.filters import UserFilter
 from transporte.views import TipoDeVehiculoListView, TipoDeVehiculoCreateView, \
@@ -46,6 +47,13 @@ urlpatterns = [
     url(r'^search/$', FilterView.as_view(filterset_class=UserFilter,
                                          template_name='search/user_list.html'), name='search'),
 ]
+
+if settings.DEBUG:
+    import debug_toolbar
+
+    urlpatterns = [
+                      url(r'^__debug__/', include(debug_toolbar.urls)),
+                  ] + urlpatterns
 
 urlpatterns += [
     # urls for Django Rest Framework API

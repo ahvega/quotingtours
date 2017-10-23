@@ -1,9 +1,11 @@
 {% load staticfiles %}<!DOCTYPE html>
-<html lang="es">
+<html lang="es-HN">
     <head>
         <meta charset="utf-8">
         <title>{% block title %}title{% endblock %}</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="apple-mobile-web-app-capable" content="yes"/>
+        <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
         <meta name="description" content="{% block description %}{% endblock %}">
         <meta name="author" content="Adalberto H. Vega">
         <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
@@ -43,8 +45,11 @@
             </div><!-- /header -->
             <div data-role="content"><!-- content -->{% block content %}{% endblock %}
             </div><!-- /content -->
-            <div data-role="panel" data-display="overlay" data-theme="b" id="nav-panel" style="width: 200px"><!-- panel -->
-                <ul data-role="listview" class="ui-nodisc-icon">
+            <div data-role="panel" data-display="overlay" data-theme="b" id="nav-panel"
+                 style="width: 200px; background-color:#3367d6;padding-bottom: 20px;"><!-- panel -->
+                <img src="{% static "images/logo-LATTours.png" %}" alt="LAT Tours">
+                <ul data-role="listview" class="ui-nodisc-icon"
+                style="margin-top: 10px; border-top: thin solid #FEFEFE;">
                     <li data-icon="delete"><a href="#" data-rel="close">Cerrar menu</a></li>
                     <li data-icon="home"><a href="/">Home</a></li>
                     <li data-icon="gear"><a href="{% url 'transporte_parametro_list' %}" data-ajax="false" onclick="window.location.reload(false);">Parámetros</a></li>

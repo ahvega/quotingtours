@@ -85,8 +85,14 @@ class Parametro(models.Model):
         return reverse('transporte_parametro_update', args=(self.slug,))
 
 
-redondeo = Parametro.objects.get(slug='2017-redondeo-lps')
-redondeoLps = float(int(ast.literal_eval(redondeo.valor)))
+def param(parm):
+    return Parametro.objects.get(slug=parm).valor
+
+
+redondeoLps = float(int(ast.literal_eval(param('2017-redondeo-lps'))))
+minimoKms = param('2017-minimo-kms')
+minimoHrs = param('2017-tiempo-minimo')
+# minimoHrs = 12
 
 
 class Item(models.Model):
@@ -177,7 +183,7 @@ class NivelDePrecio(models.Model):
 class Cliente(models.Model):
     # Fields
     nombre = models.CharField(max_length=100)
-    codigo = models.CharField(unique=True, max_length=4, )
+    codigo = models.CharField(unique=True, max_length=4, null=True, blank=True)
     contacto = models.CharField(max_length=100)
     slug = extension_fields.AutoSlugField(populate_from='codigo', blank=True, overwrite=True)
     email = models.EmailField(unique=True, db_index=True, null=True)
@@ -224,7 +230,8 @@ class Itinerario(models.Model):
         Cerrado = ChoiceItem("Cerrado")
 
     # Fields
-    nombre = models.CharField(max_length=100)
+    nombre = models.CharField(max_length=255)
+    _codigo_cliente = models.CharField(max_length=4, blank=True, null=True, db_column='codigo_cliente')
     slug = extension_fields.AutoSlugField(populate_from='nombre', blank=True, overwrite=True)
     fecha_desde = models.DateField(verbose_name='Fecha Inicio')
     fecha_hasta = models.DateField(verbose_name='Fecha Final')
@@ -254,7 +261,9 @@ class Itinerario(models.Model):
     def codigo_cliente(self):
         return self.cliente.codigo
 
-    codigo_cliente.setter
+    @codigo_cliente.setter
+    def codigo_cliente(self, value):
+        self._codigo_cliente = value
 
     @property
     def nombre_expandido(self):
@@ -285,8 +294,7 @@ class Lugar(models.Model):
     codigo = models.CharField(max_length=3, unique=True, )
     nombre = models.CharField(max_length=50)
     pais = models.CharField(max_length=30)
-    zona = models.CharField(max_length=4, choices=Zona.choices,
-                            validators=[Zona.validator], default=Zona.Uno)
+    zona = models.CharField(max_length=4, choices=Zona.choices, validators=[Zona.validator], default=Zona.Uno)
     slug = extension_fields.AutoSlugField(populate_from='codigo', blank=True)
     creado = models.DateTimeField(auto_now_add=True, editable=False)
     actualizado = models.DateTimeField(auto_now=True, editable=False)
@@ -338,9 +346,15 @@ class Tramo(models.Model):
         self.cruza_frontera = False if self.desde_lugar.pais == self.hacia_lugar.pais else True
         self.zona_destino = self.hacia_lugar.zona
         self.desde_hacia = self.desde_lugar.nombre + ' - ' + self.hacia_lugar.nombre
-        self.kms = distancia(self.desde_lugar.nombre, self.hacia_lugar.nombre)
-        self.hrs = duracion(self.desde_lugar.nombre, self.hacia_lugar.nombre)
-        self.descripcion = verbage(self.desde_lugar.nombre, self.hacia_lugar.nombre)
+        if self.desde_lugar == self.hacia_lugar:
+            self.kms = minimoKms
+            self.hrs = minimoHrs
+            self.desde_hacia = "Movimientos en " + self.desde_lugar.nombre
+            self.descripcion = self.desde_hacia + " " + minimoKms + " Kms // " + minimoHrs + " Hrs"
+        else:
+            self.kms = distancia(self.desde_lugar.nombre, self.hacia_lugar.nombre)
+            self.hrs = duracion(self.desde_lugar.nombre, self.hacia_lugar.nombre)
+            self.descripcion = verbage(self.desde_lugar.nombre, self.hacia_lugar.nombre)
         super(Tramo, self).save(*args, **kwargs)
 
     @property
@@ -372,7 +386,7 @@ class Cotizacion(models.Model):
     fecha_regreso = models.DateField(default=date.today)
     _dias = models.IntegerField(db_column='dias', null=True, blank=True, default=1)
     fecha_vence = models.DateField(default=date(now().year, 12, 31))
-    descripcion = models.CharField(default=' - ', max_length=100)
+    descripcion = models.CharField(default=' - ', max_length=255)
     _kmstotal = models.DecimalField(max_digits=5, decimal_places=1, db_column='kms_total', null=True,
                                     blank=True, default=0)
     _hrstotal = models.DecimalField(max_digits=3, decimal_places=1, db_column='hrs_total', null=True,
@@ -392,7 +406,7 @@ class Cotizacion(models.Model):
                                         on_delete=models.PROTECT, null=True, blank=True)
 
     class Meta:
-        ordering = ('itinerario__cliente__codigo','-fecha_ida')
+        ordering = ('itinerario__cliente__codigo', '-fecha_ida')
         verbose_name = _('Cotización')
         verbose_name_plural = _('Cotizaciones')
 
@@ -474,10 +488,10 @@ class Cotizacion(models.Model):
         self._utilidad = value
 
     def save(self, *args, **kwargs):
-        self.nombre =self.nombre.upper()
+        self.nombre = self.nombre.upper()
         if self.itinerario is None:
             self.itinerario = 1
-        if self.nombre[:4] != self.codigo_cliente:
+        if self.nombre[:4] != self.itinerario.codigo_cliente:
             self.nombre = self.codigo_cliente + '-' + self.nombre
         if self.nivel_de_precio is None:
             self.nivel_de_precio = self.itinerario.nivel_de_precio
@@ -534,7 +548,7 @@ class RutaDetalle(models.Model):
 
 class CotizacionDetalle(models.Model):
     # Fields
-    descripcion = models.CharField(max_length=100, null=True, blank=True)
+    descripcion = models.CharField(max_length=255, null=True, blank=True)
     cantidad = models.DecimalField(max_digits=10, decimal_places=2)
     costo = models.DecimalField(max_digits=10, decimal_places=2, default=0, editable=False)
     monto = models.DecimalField(max_digits=10, decimal_places=2, default=0, editable=False)

@@ -62,7 +62,7 @@ class CotizacionForm(forms.ModelForm):
 class ClienteForm(forms.ModelForm):
     class Meta:
         model = Cliente
-        fields = ['nombre', 'contacto', 'rtn', 'email', 'tel', 'nivel_de_precio']
+        fields = ['nombre', 'codigo', 'contacto', 'rtn', 'email', 'tel', 'nivel_de_precio']
 
 
 class ItinerarioForm(forms.ModelForm):

@@ -39,6 +39,10 @@ ALLOWED_HOSTS = [
     u'shorexplan.com',
 ]
 
+INTERNAL_IPS = [
+    '127.0.0.1',
+    ]
+
 # Application definition
 SHARED_APPS = (
     'tenant_schemas',  # mandatory, should always be before any django app
@@ -53,6 +57,7 @@ SHARED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.humanize',
+    'debug_toolbar',
     # 'djchoices',
     'bootstrap3',
     'crispy_forms',
@@ -103,6 +108,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.humanize',
+    'debug_toolbar',
     # 'djchoices',
     'bootstrap3',
     'crispy_forms',
@@ -126,6 +132,7 @@ MIDDLEWARE_CLASSES = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'corsheaders.middleware.CorsMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -135,7 +142,6 @@ MIDDLEWARE_CLASSES = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'debug_toolbar.middleware.DebugToolbarMiddleware',
     'transporte.middleware.corsMiddleware'
 ]
 
@@ -236,7 +242,10 @@ USE_I18N = True
 
 # USE_L10N = True
 
-LANGUAGE_CODE = 'es-hn'
+LANGUAGE_CODE = 'es-mx'
+
+NUMBER_GROUPING = 3
+USE_THOUSAND_SEPARATOR = True
 
 TIME_ZONE = 'America/Tegucigalpa'
 

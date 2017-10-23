@@ -12,6 +12,7 @@ es_formats.DECIMAL_SEPARATOR = ','
 es_formats.THOUSAND_SEPARATOR = '.'
 es_formats.NUMBER_GROUPING = 3
 
+
 class TipoDeVehiculoAdminForm(forms.ModelForm):
     class Meta:
         model = TipoDeVehiculo
@@ -103,6 +104,7 @@ def copy_cotizacion(modeladmin, request, queryset):
 
         cot_copy.save()
 
+
 copy_cotizacion.short_description = "Crear Copia de Cotización"
 
 
@@ -125,7 +127,7 @@ class CotizacionAdmin(admin.ModelAdmin):
     list_filter = (('itinerario__cliente', DropdownFilterRelated),
                    ('itinerario', DropdownFilterRelated), 'fecha_ida')
     date_hierarchy = 'fecha_ida'
-    ordering = ('itinerario__cliente__codigo', )
+    ordering = ('itinerario__cliente__codigo',)
 
 
 admin.site.register(Cotizacion, CotizacionAdmin)
@@ -139,8 +141,8 @@ class ClienteAdminForm(forms.ModelForm):
 
 class ClienteAdmin(admin.ModelAdmin):
     form = ClienteAdminForm
-    list_display = ['nombre', 'contacto', 'email', 'tel', 'rtn', 'nivel_de_precio']
-    readonly_fields = ['slug', 'creado', 'actualizado']
+    list_display = ['nombre', 'codigo', 'contacto', 'email', 'tel', 'rtn', 'nivel_de_precio']
+    readonly_fields = ['slug', 'creado', 'actualizado',]
     search_fields = ['nombre', 'contacto', 'email', 'tel']
 
 
@@ -161,14 +163,25 @@ class ItinerarioAdminForm(forms.ModelForm):
         return self.cleaned_data
 
 
-def cerrar_itinerario(modeladmin, request, queryset):
-    queryset.update(estatus='Cerrado')
+# def cerrar_itinerario(modeladmin, request, queryset):
+#     queryset.update(estatus='Cerrado')
+#
+#
+# cerrar_itinerario.short_description = "Marcar como Cerrado"
 
+def create_action_estatus(estatus):
+    def action(modeladmin, request, queryset):
+        queryset.update(estatus=estatus)
 
-cerrar_itinerario.short_description = "Marcar como Cerrado"
+    name = "mark_%s" % (estatus,)
+    return name, (action, name, "Cambiar Estatus: %s " % (estatus,))
 
 
 class ItinerarioAdmin(admin.ModelAdmin):
+    def get_actions(self, request):
+        statuses= [ "Solicitado", "Cotizado", "Confirmado", "Facturado", "Cerrado"]
+        return dict(create_action_estatus(e) for e in statuses)
+
     form = ItinerarioAdminForm
     list_display = ['nombre', 'cliente', 'fecha_desde', 'fecha_hasta', 'estatus']
     readonly_fields = ['slug', 'creado', 'actualizado']
@@ -176,7 +189,7 @@ class ItinerarioAdmin(admin.ModelAdmin):
     list_filter = (('estatus', DropdownFilterValues), ('cliente', DropdownFilterRelated), 'fecha_desde',)
     ordering = ['cliente', 'fecha_desde']
     date_hierarchy = 'fecha_desde'
-    actions = [cerrar_itinerario]
+    # actions = [cerrar_itinerario]
 
 
 admin.site.register(Itinerario, ItinerarioAdmin)
@@ -189,6 +202,7 @@ class RutaDetalleAdminForm(forms.ModelForm):
 
 
 class RutaDetalleAdmin(admin.ModelAdmin):
+    save_as = True
     form = RutaDetalleAdminForm
     list_display = ['tramo', 'desde', 'hacia', 'kms', 'hrs']
     readonly_fields = ['desde', 'hacia', 'kms', 'hrs', 'creado', 'actualizado']
@@ -206,8 +220,19 @@ class CotizacionDetalleAdminForm(forms.ModelForm):
         fields = ['item', 'cotizacion', 'cantidad', 'nivel_de_precio']
 
 
+# def create_action(nivel_de_precio):
+#     def action(modeladmin, request, queryset):
+#         queryset.update(nivel_de_precio=nivel_de_precio)
+#
+#     name = "mark_%s" % (nivel_de_precio,)
+#     return name, (action, name, "Cambiar Nivel de Precio: %s " % (nivel_de_precio,))
+
+
 class CotizacionDetalleAdmin(admin.ModelAdmin):
-    save_as = True
+    # def get_actions(self, request):
+    #     return dict(create_action(n) for n in NivelDePrecio.objects.all())
+
+    # save_as = True
     form = CotizacionDetalleAdminForm
     list_display = ['cliente', 'itinerario', 'cotizacion', 'descripcion',
                     'cantidad', 'costo', 'monto', 'utilidad', 'markup', 'total']
@@ -217,7 +242,7 @@ class CotizacionDetalleAdmin(admin.ModelAdmin):
     list_filter = (('cotizacion__itinerario__cliente', DropdownFilterRelated),
                    ('cotizacion__itinerario', DropdownFilterRelated),
                    ('cotizacion', DropdownFilterRelated),)
-    ordering = ['cotizacion__itinerario__cliente__codigo', 'cotizacion__fecha_ida','id']
+    ordering = ['cotizacion__itinerario__cliente__codigo', 'cotizacion__fecha_ida', 'id']
 
 
 admin.site.register(CotizacionDetalle, CotizacionDetalleAdmin)
@@ -254,13 +279,14 @@ def copy_tramo_regreso(modeladmin, request, queryset):
         tramo_origen_copy = tramo_copy.desde_lugar
         tramo_copy.desde_lugar = tramo_copy.hacia_lugar
         tramo_copy.hacia_lugar = tramo_origen_copy
-        tramo_copy.save() # grabado inicial
+        tramo_copy.save()  # grabado inicial
 
         # copiar foreign relations
         for vehiculo in tramo_copy.vehiculos.all():
             tramo_copy.vehiculos.add(vehiculo)
 
         tramo_copy.save()  # grabado definitivo con campos relacionados
+
 
 copy_tramo_regreso.short_description = "Crear Tramo de Regreso"
 
@@ -270,9 +296,10 @@ class TramoAdmin(admin.ModelAdmin):
     save_on_top = True
 
     form = TramoAdminForm
-    list_display = ['codigo', 'descripcion', 'desde_lugar', 'hacia_lugar', 'kms', 'hrs', 'slug', 'creado',
+    list_display = ['codigo', 'desde_hacia', 'descripcion', 'desde_lugar', 'hacia_lugar', 'kms', 'hrs', 'slug',
+                    'creado',
                     'actualizado', ]
-    readonly_fields = ['descripcion', 'kms', 'hrs', 'slug', 'creado', 'actualizado', ]
+    readonly_fields = ['desde_hacia', 'descripcion', 'kms', 'hrs', 'slug', 'creado', 'actualizado', ]
     list_filter = (('desde_lugar', DropdownFilterRelated), ('hacia_lugar', DropdownFilterRelated))
 
 

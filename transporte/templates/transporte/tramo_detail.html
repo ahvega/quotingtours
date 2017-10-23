@@ -3,17 +3,17 @@
 {% block title %}Detalle de Tramo{% endblock %}
 {% block page-title %}Detalle de Tramo{% endblock %}
 {% block thead %}
-    <th colspan="2" class="izquierda">{{ tramo.desde_lugar }} - {{ tramo.hacia_lugar }}{% if request.user.is_superuser %}
+    <th colspan="2" class="izquierda">{{ tramo.desde_hacia }}{% if request.user.is_superuser %}
         <div class="ui-nodisc-icon mininav3r">
             <a class="ui-btn ui-btn-inline ui-btn-a ui-icon-edit ui-btn-icon-notext ui-btncito"
-               title="Editar Tramo {{ tramo.desde_lugar }} - {{ tramo.hacia_lugar }}" href="{{ tramo.get_update_url }}"
+               title="Editar Tramo {{ tramo.desde_hacia }}" href="{{ tramo.get_update_url }}"
                data-ajax="false" onclick="window.location.reload(false);">edit</a>
             <a class="ui-btn ui-btn-inline ui-btn-a ui-icon-plus ui-btn-icon-notext ui-btncito"
                title="Agregar Nuevo Tramo"
                href="{% url "transporte_tramo_create" %}"
                data-ajax="false" onclick="window.location.reload(false);">add</a>
             <a class="ui-btn ui-btn-inline ui-btn-a ui-icon-delete ui-btn-icon-notext ui-btncito"
-               title="Borrar Tramo {{ tramo.desde_lugar }} - {{ tramo.hacia_lugar }}" href="{{ tramo.get_delete_url }}">delete</a></div>
+               title="Borrar Tramo {{ tramo.desde_hacia }}" href="{{ tramo.get_delete_url }}">delete</a></div>
     {% endif %}</th>
 {% endblock %}
 {% block tbody %}
