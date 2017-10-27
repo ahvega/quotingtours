@@ -1,3 +1,4 @@
+# coding=utf-8
 """
 Django settings for tenant project.
 
@@ -9,9 +10,10 @@ https://docs.djangoproject.com/en/1.10/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.10/ref/settings/
 """
-
+# from __future__ import unicode_literals
 import os
 from django.conf.locale.es import formats as es_formats
+
 
 es_formats.DATETIME_FORMAT = "d M Y H:i:s"
 es_formats.DECIMAL_SEPARATOR = ','
@@ -51,6 +53,7 @@ SHARED_APPS = (
     'django.contrib.contenttypes',
 
     # everything below here is optional
+    'suit',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.sessions',
@@ -73,6 +76,7 @@ SHARED_APPS = (
 )
 
 TENANT_APPS = (
+    'suit',
     'django.contrib.admin',
     'django.contrib.admindocs',
     'django.contrib.auth',
@@ -100,6 +104,7 @@ TENANT_APPS = (
 INSTALLED_APPS = [
     'tenant_schemas',
     'clientes',
+    'suit',
     'django.contrib.admin',
     'django.contrib.admindocs',
     'django.contrib.auth',
@@ -122,6 +127,36 @@ INSTALLED_APPS = [
     'googlemaps',
     'transporte',
 ]
+
+# Django Suit configuration example
+SUIT_CONFIG = {
+    # header
+    'ADMIN_NAME': u'Administración - Cotizaciones de Transporte',
+    # 'HEADER_DATE_FORMAT': 'l, j. F Y',
+    # 'HEADER_TIME_FORMAT': 'H:i',
+
+    # forms
+    # 'SHOW_REQUIRED_ASTERISK': True,  # Default True
+    # 'CONFIRM_UNSAVED_CHANGES': True, # Default True
+
+    # menu
+    # 'SEARCH_URL': '/admin/auth/user/',
+    # 'MENU_ICONS': {
+    #    'sites': 'icon-leaf',
+    #    'auth': 'icon-lock',
+    # },
+    # 'MENU_OPEN_FIRST_CHILD': True, # Default True
+    # 'MENU_EXCLUDE': ('auth.group',),
+    # 'MENU': (
+    #     'sites',
+    #     {'app': 'auth', 'icon':'icon-lock', 'models': ('user', 'group')},
+    #     {'label': 'Settings', 'icon':'icon-cog', 'models': ('auth.user', 'auth.group')},
+    #     {'label': 'Support', 'icon':'icon-question-sign', 'url': '/support/'},
+    # ),
+
+    # misc
+    # 'LIST_PER_PAGE': 15
+}
 
 DATABASE_ROUTERS = (
     'tenant_schemas.routers.TenantSyncRouter',
@@ -188,7 +223,6 @@ TEMPLATES = [
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.debug',
-                # 'django.core.context_processors.request',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',

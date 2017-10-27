@@ -88,7 +88,7 @@
             <thead>
             <tr>
                 <th class="izquierda">Tramo</th>
-                <th></th>
+                <th class="derecha">Acciones</th>
                 <th data-priority="1" class="derecha">
                     <small>Desde</small>
                 </th>
@@ -148,7 +148,7 @@
             <thead>
             <tr>
                 <th class="izquierda">Ítem</th>
-                <th></th>
+                <th class="derecha">Acciones</th>
                 <th data-priority="1" class="derecha">
                     <small>Cantidad</small>
                 </th>
@@ -213,13 +213,6 @@
 {% endblock %}
 {% block footer %}{% if request.user.is_superuser %}
     <div class="kc_fab_wrapper"></div>
-    {#    <div class="fixed-action-btn">#}
-{#        <a class="btn-floating btn-large waves-effect waves-light red darken-2"#}
-{#           title="Agregar Ítem"#}
-{#           href="{% url "transporte_cotizaciondetalle_create" cotizacion_id=cotizacion.pk %}"#}
-{#           data-ajax="false" onclick="window.location.reload(false);">#}
-{#            <i class="material-icons">add</i></a>#}
-{#    </div>#}
 {% endif %}
 {% endblock %}
 {% block scripts2 %}

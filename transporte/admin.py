@@ -1,9 +1,9 @@
 # coding=utf-8
-from django.contrib import admin
+from django.contrib import admin, messages
 from django.forms.utils import ErrorList
 from django import forms
 from .filters import DropdownFilterValues, DropdownFilterRelated
-import copy
+from copy import deepcopy
 from .models import *
 from django.conf.locale.es import formats as es_formats
 
@@ -12,6 +12,8 @@ es_formats.DECIMAL_SEPARATOR = ','
 es_formats.THOUSAND_SEPARATOR = '.'
 es_formats.NUMBER_GROUPING = 3
 
+admin.site.site_title = "Cotizaciones de Transporte"
+admin.site.site_header = "Administración - Cotizaciones de Transporte"
 
 class TipoDeVehiculoAdminForm(forms.ModelForm):
     class Meta:
@@ -88,24 +90,49 @@ class CotizacionAdminForm(forms.ModelForm):
                   'fecha_ida', 'fecha_regreso', 'fecha_vence']
 
 
+def make_cambiar_nivel(nivel):
+    def cambiar_nivel(modeladmin, request, queryset):
+        for item in queryset:
+            item.nivel_de_precio = nivel
+            item.save()
+            messages.info(request, u"{0} cambiado Nivel de Precio a {1}".format(item.descripcion,
+                                                                                     nivel.nombre))
+
+    cambiar_nivel.short_description = "Cambiar Nivel de Precio a {0:.1f}%%".format(nivel.valor * 100)
+    # We need a different '__name__' for each action - Django
+    # uses this as a key in the drop-down box.
+    cambiar_nivel.__name__ = "nivel_{0:s}".format(nivel.slug)
+
+    return cambiar_nivel
+
+
 def copy_cotizacion(modeladmin, request, queryset):
     # cot es una instancia de Cotizacion
     for cot in queryset:
-        cot_copy = copy.copy(cot)
+        cot_copy = deepcopy(cot)
         cot_copy.id = None
         cot_copy.save()  # salvado inicial
 
         # copiar relacion M2M
         for tramo in cot.tramos.all():
-            cot_copy.tramos.add(tramo)
+            tramo_copy = deepcopy(tramo)
+            tramo_copy.id = None
+            tramo_copy.cotizacion_id = cot_copy.id
+            tramo_copy.save()
+            cot_copy.tramos.add(tramo_copy)
 
         for linea in cot.lineas.all():
-            cot_copy.lineas.add(linea)
+            linea_copy = deepcopy(linea)
+            linea_copy.id = None
+            linea_copy.cotizacion_id = cot_copy.id
+            linea_copy.save()
+            cot_copy.lineas.add(linea_copy)
 
         cot_copy.save()
+        messages.info(request, u"Cotizacion {0} copiada.".format(cot_copy.nombre))
 
 
-copy_cotizacion.short_description = "Crear Copia de Cotización"
+copy_cotizacion.short_description = "Crear Copia"
 
 
 class CotizacionAdmin(admin.ModelAdmin):
@@ -119,7 +146,7 @@ class CotizacionAdmin(admin.ModelAdmin):
         return formfield
 
     form = CotizacionAdminForm
-    list_display = ['nombre', 'fecha_ida', 'fecha_regreso', 'dias', 'fecha_vence',
+    list_display = ['nombre', 'nivel_de_precio', 'fecha_ida', 'fecha_regreso', 'dias', 'fecha_vence',
                     'descripcion', 'kms_total', 'hrs_total', 'subtotal', 'utilidad', 'total']
     readonly_fields = ['dias', 'kms_total', 'hrs_total', 'subtotal',
                        'utilidad', 'total', 'slug', 'creado', 'actualizado']
@@ -128,6 +155,17 @@ class CotizacionAdmin(admin.ModelAdmin):
                    ('itinerario', DropdownFilterRelated), 'fecha_ida')
     date_hierarchy = 'fecha_ida'
     ordering = ('itinerario__cliente__codigo',)
+
+    def get_actions(self, request):
+        actions = super(CotizacionAdmin, self).get_actions(request)
+
+        for nivel in NivelDePrecio.objects.all():
+            action = make_cambiar_nivel(nivel)
+            actions[action.__name__] = (action,
+                                        action.__name__,
+                                        "Cambiar Nivel de Precio a {0:.1f}%%".format(nivel.valor * 100))
+
+        return actions
 
 
 admin.site.register(Cotizacion, CotizacionAdmin)
@@ -162,12 +200,6 @@ class ItinerarioAdminForm(forms.ModelForm):
 
         return self.cleaned_data
 
-
-# def cerrar_itinerario(modeladmin, request, queryset):
-#     queryset.update(estatus='Cerrado')
-#
-#
-# cerrar_itinerario.short_description = "Marcar como Cerrado"
 
 def create_action_estatus(estatus):
     def action(modeladmin, request, queryset):
@@ -220,19 +252,7 @@ class CotizacionDetalleAdminForm(forms.ModelForm):
         fields = ['item', 'cotizacion', 'cantidad', 'nivel_de_precio']
 
 
-# def create_action(nivel_de_precio):
-#     def action(modeladmin, request, queryset):
-#         queryset.update(nivel_de_precio=nivel_de_precio)
-#
-#     name = "mark_%s" % (nivel_de_precio,)
-#     return name, (action, name, "Cambiar Nivel de Precio: %s " % (nivel_de_precio,))
-
-
 class CotizacionDetalleAdmin(admin.ModelAdmin):
-    # def get_actions(self, request):
-    #     return dict(create_action(n) for n in NivelDePrecio.objects.all())
-
-    # save_as = True
     form = CotizacionDetalleAdminForm
     list_display = ['cliente', 'itinerario', 'cotizacion', 'descripcion',
                     'cantidad', 'costo', 'monto', 'utilidad', 'markup', 'total']
@@ -243,6 +263,17 @@ class CotizacionDetalleAdmin(admin.ModelAdmin):
                    ('cotizacion__itinerario', DropdownFilterRelated),
                    ('cotizacion', DropdownFilterRelated),)
     ordering = ['cotizacion__itinerario__cliente__codigo', 'cotizacion__fecha_ida', 'id']
+
+    def get_actions(self, request):
+        actions = super(CotizacionDetalleAdmin, self).get_actions(request)
+
+        for nivel in NivelDePrecio.objects.all():
+            action = make_cambiar_nivel(nivel)
+            actions[action.__name__] = (action,
+                                        action.__name__,
+                                        "Cambiar Nivel de Precio a {0:.1f}%%".format(nivel.valor * 100))
+
+        return actions
 
 
 admin.site.register(CotizacionDetalle, CotizacionDetalleAdmin)
@@ -274,7 +305,7 @@ class TramoAdminForm(forms.ModelForm):
 # TODO: Accion para Crear simétrico de Tramo en admin
 def copy_tramo_regreso(modeladmin, request, queryset):
     for tramo in queryset:
-        tramo_copy = copy.copy(tramo)
+        tramo_copy = deepcopy(tramo)
         tramo_copy.id = None
         tramo_origen_copy = tramo_copy.desde_lugar
         tramo_copy.desde_lugar = tramo_copy.hacia_lugar
@@ -282,11 +313,15 @@ def copy_tramo_regreso(modeladmin, request, queryset):
         tramo_copy.save()  # grabado inicial
 
         # copiar foreign relations
-        for vehiculo in tramo_copy.vehiculos.all():
-            tramo_copy.vehiculos.add(vehiculo)
+        for vehiculo in tramo.vehiculos.all():
+            vehiculo_copy = deepcopy(vehiculo)
+            vehiculo_copy.id = None
+            vehiculo_copy.tramo_id = tramo_copy.id
+            vehiculo_copy.save()
+            tramo_copy.vehiculos.add(vehiculo_copy)
 
-        tramo_copy.save()  # grabado definitivo con campos relacionados
-
+        tramo_copy.save()  # grabado definitivo con campos relacionadosimpo
+        messages.info(request, u"Tramo {0} creado".format(tramo_copy.codigo))
 
 copy_tramo_regreso.short_description = "Crear Tramo de Regreso"
 

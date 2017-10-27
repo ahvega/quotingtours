@@ -92,6 +92,8 @@ def param(parm):
 redondeoLps = float(int(ast.literal_eval(param('2017-redondeo-lps'))))
 minimoKms = param('2017-minimo-kms')
 minimoHrs = param('2017-tiempo-minimo')
+
+
 # minimoHrs = 12
 
 
@@ -393,10 +395,10 @@ class Cotizacion(models.Model):
                                     blank=True, default=0)
     _subtotal = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True,
                                     db_column='subtotal', default=0)
-    _total = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True,
-                                 db_column='total', default=0)
     _utilidad = models.DecimalField(max_digits=6, decimal_places=4, null=True, blank=True,
                                     db_column='utilidad', default=0)
+    _total = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True,
+                                 db_column='total', default=0)
     creado = models.DateTimeField(auto_now_add=True, editable=False)
     actualizado = models.DateTimeField(auto_now=True, editable=False)
 
@@ -555,7 +557,7 @@ class CotizacionDetalle(models.Model):
     markup = models.DecimalField(max_digits=6, decimal_places=4, default=0, editable=False)
     utilidad = models.DecimalField(max_digits=6, decimal_places=4, default=0, editable=False)
     total = models.DecimalField(max_digits=10, decimal_places=2, default=0, editable=False)
-    slug = extension_fields.AutoSlugField(populate_from='item', blank=True)
+    slug = extension_fields.AutoSlugField(populate_from='forslug', blank=True, overwrite=True)
     creado = models.DateTimeField(auto_now_add=True, editable=False)
     actualizado = models.DateTimeField(auto_now=True, editable=False)
 
@@ -577,6 +579,10 @@ class CotizacionDetalle(models.Model):
     @property
     def itinerario(self):
         return self.cotizacion.itinerario
+
+    @property
+    def forslug(self):
+        return self.cotizacion.nombre + '-' + self.item.slug
 
     def save(self, *args, **kwargs):
         self.descripcion = self.item.descripcion_venta
@@ -703,13 +709,16 @@ class TramoEnVehiculo(models.Model):
         verbose_name_plural = 'Tramos En Vehículos'
         unique_together = ('tramo', 'vehiculo')
 
+    def __str__(self):
+        return str(self.nombre)
+
     def save(self, *args, **kwargs):
         self.nombre = self.tramo.codigo + ' en ' + self.vehiculo.nombre
         self.costo = self.vehiculo.costo_por_km * Decimal(self.tramo.kms)
         super(TramoEnVehiculo, self).save()
 
     def get_absolute_url(self):
-        return reverse('transporte_tramoenvehiculo_detail', args=(self.id,))
+        return reverse('transporte_tramoenvehiculo_detail', args=(self.slug,))
 
     def get_update_url(self):
-        return reverse('transporte_tramoenvehiculo_update', args=(self.id,))
+        return reverse('transporte_tramoenvehiculo_update', args=(self.slug,))
