@@ -4,24 +4,43 @@
 {% block title %}Ítem en Cotización{% endblock %}
 {% block page-title %}Ítem en Cotización{% endblock %}
 {% block thead %}
-    <th colspan="2" class="izquierda">{{ cotizaciondetalle.item }}{% if request.user.is_superuser %}
+    <th colspan="2" class="izquierda">
+        <a style="color: white;" href="{{ cotizaciondetalle.item.get_absolute_url }}" title="Ver Ítem {{ cotizaciondetalle.item }}">
+        <i class="material-icons text-lime">toc</i>{{ cotizaciondetalle.item }}</a>{% if request.user.is_superuser %}
         <div class="ui-nodisc-icon mininav3r">
             <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-edit ui-btn-icon-notext ui-btncito"
-               title="Editar Ítem {{ cotizaciondetalle.nombre }}" href="{{ cotizaciondetalle.get_update_url }}">edit</a>
+               data-ajax="false" onclick="window.location.reload(false);"
+               title="Editar Ítem {{ cotizaciondetalle }}" href="{{ cotizaciondetalle.get_update_url }}">edit</a>
             <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-plus ui-btn-icon-notext ui-btncito"
                title="Agregar Nuevo Ítem"
                href="{% url "transporte_cotizaciondetalle_create" cotizacion_id=cotizaciondetalle.cotizacion.pk %}">add</a>
             <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-delete ui-btn-icon-notext ui-btncito"
-               title="Borrar Ítem {{ cotizaciondetalle.nombre }}" href="{{ cotizaciondetalle.get_delete_url }}">delete</a></div>
+               title="Borrar Ítem {{ cotizaciondetalle }}" href="{{ cotizaciondetalle.get_delete_url }}">delete</a></div>
     {% endif %}</th>
 {% endblock %}
 {% block tbody %}
     <tr>
+        <td class="derecha"><strong>Cliente: </strong></td>
+        <td><a href="{{ cotizaciondetalle.cotizacion.itinerario.cliente.get_absolute_url }}"
+               title="Ver Cliente: {{ cotizaciondetalle.cotizacion.itinerario.cliente }}">
+            <i class="material-icons text-green md-18">recent_actors</i>
+            <strong>{{ cotizaciondetalle.cotizacion.itinerario.cliente }}</strong></a>
+        </td>
+    </tr>
+    <tr>
+        <td class="derecha"><strong>Itinerario:</strong></td>
+        <td><a href="{{ cotizaciondetalle.cotizacion.itinerario.get_absolute_url }}"
+               title="Ver Itinerario: {{ cotizaciondetalle.cotizacion.itinerario }}">
+            <i class="material-icons text-green md-18">date_range</i>
+            <strong>{{ cotizaciondetalle.cotizacion.itinerario }}</strong></a>
+        </td>
+    </tr>
+    <tr>
         <td class="derecha"><strong>Cotización:</strong></td>
-        <td><a title="Ver Cotización: {{ cotizaciondetalle.cotizacion }}" href="{{ cotizaciondetalle.cotizacion.get_absolute_url }}"
-               class="ui-btn ui-btn-a ui-btn-inline ui-icon-arrow-u-l ui-btncito ui-nodisc-icon ui-alt-icon ui-btn-icon-notext">call</a>
-            <a href="{{ cotizaciondetalle.cotizacion.get_absolute_url }}" title="Ver Cotización: {{ cotizaciondetalle.cotizacion }}"
-               style="text-decoration: none;font-weight: bold;text-transform: uppercase;">{{ cotizaciondetalle.cotizacion }}</a></td>
+        <td><a title="Ver Cotización: {{ cotizaciondetalle.cotizacion }}" data-ajax="false"
+               href="{{ cotizaciondetalle.cotizacion.get_absolute_url }}" onclick="window.location.reload(false)">
+            <i class="material-icons text-green md-18">assignment_turned_in</i>
+            <strong>{{ cotizaciondetalle.cotizacion }}</strong></a></td>
     </tr>
     <tr>
         <td class="derecha">Descripción</td>
@@ -37,7 +56,7 @@
     </tr>
     <tr>
         <td class="derecha">Subtotal</td>
-        <td><strong>{{ cotizaciondetalle.monto|intcomma }}</strong></td>
+        <td><strong>{{ cotizaciondetalle.costo_total|intcomma }}</strong></td>
     </tr>
     <tr>
         <td class="derecha">Utilidad</td>
@@ -53,11 +72,11 @@
     </tr>
     <tr>
         <td class="derecha">Creado</td>
-        <td><strong>{{ cotizaciondetalle.creado }}</strong></td>
+        <td><em>{{ cotizaciondetalle.creado }}</em></td>
     </tr>
     <tr>
         <td class="derecha">Actualizado</td>
-        <td><strong>{{ cotizaciondetalle.actualizado }}</strong></td>
+        <td><em>{{ cotizaciondetalle.actualizado }}</em></td>
     </tr>
 {% endblock %}
 {% block footer %}

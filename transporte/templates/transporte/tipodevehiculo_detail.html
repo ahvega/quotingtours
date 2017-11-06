@@ -4,16 +4,17 @@
 {% block extcss %}<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/material-design-lite/1.1.0/material.min.css"/>
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.15/css/dataTables.material.min.css"/>
 {% endblock %}
-{% block extlibs %}<script type="text/javascript"
+{% block extlibs %}<script defer type="text/javascript"
         src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
-<script type="text/javascript"
-        src="https://cdn.datatables.net/1.10.15/js/dataTables.material.min.js"></script>
+    <script defer type="text/javascript"
+            src="{% static "js/dataTables.material.min.js" %}"></script>
     <script type="text/javascript"
         src="{% static "js/tablelocale.js" %}"></script>{% endblock %}
 {% block title %}Tipo de Vehículo{% endblock %}
 {% block page-title %}Tipo de Vehículo{% endblock %}
 {% block thead %}
-    <th colspan="2" class="izquierda">{{ tipodevehiculo.nombre }}{% if request.user.is_superuser %}
+    <th colspan="2" class="izquierda"><i
+            class="material-icons text-lime">directions_bus</i>{{ tipodevehiculo.nombre }}{% if request.user.is_superuser %}
         <div class="ui-nodisc-icon mininav3r">
             <a class="ui-btn ui-btn-inline ui-btn-a ui-icon-edit ui-btn-icon-notext ui-btncito"
                title="Editar Tipo {{ tipodevehiculo.nombre }}" href="{{ tipodevehiculo.get_update_url }}"

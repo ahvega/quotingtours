@@ -39,6 +39,7 @@ ALLOWED_HOSTS = [
     u'demo.mistenants.com',
     u'mistenants.com',
     u'shorexplan.com',
+    u'192.168.0.21',
 ]
 
 INTERNAL_IPS = [

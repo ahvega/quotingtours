@@ -1,20 +1,23 @@
 {% extends "_table.html" %}{% load humanize %}
 {% block title %}Clientes{% endblock %}
 {% block page-title %}Clientes{% endblock %}{% block theader %}
+                                <th data-priority="6" class="centrado">Código</th>
                                 <th class="centrado">Cliente</th>
-                                <th class="centrado">Código</th>
-                                <th class="derecha">Acciones</th>
-                                <th data-priority="1" class="centrado">Contacto</th>
-                                <th data-priority="2" class="centrado">Tel</th>
-                                <th data-priority="3" class="centrado">Email</th>
+                                <th data-priority="7" class="derecha">Acciones</th>
+                                <th data-priority="5" class="derecha">Cotizado</th>
+                                <th data-priority="2" class="centrado">Contacto</th>
+                                <th data-priority="1" class="centrado">Tel</th>
                                 <th data-priority="4" class="centrado">RTN</th>{% endblock %}{% block tbody %}{% for cliente in cliente_list %}
                             <tr>
+                                <td class="centrado">{{ cliente.codigo }}</td>
                                 <td class="izquierda" data-search="{{ cliente.nombre }}">
                                     <a title="Ver Cliente {{ cliente.nombre }}"
                                        href="{{ cliente.get_absolute_url }}">{{ cliente.nombre }}</a></td>
-                                <td class="centrado">{{ cliente.codigo }}</td>
                                 <td class="izquierda" width="1">
-                                    <div class="ui-alt-icon ui-nodisc-icon mininav3r">
+                                    <div class="ui-alt-icon ui-nodisc-icon mininav4r">
+                                        <a title="Enviar email a {{ cliente.nombre }} <{{ cliente.email }}>"
+                                           href="mailto:{{ cliente.email }}">
+                                            <i class='material-icons text-green md-18'>mail_outline</i></a>
                                         <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-action ui-btn-icon-notext ui-btncito"
                                            title="Ver Cliente {{ cliente.nombre }}"
                                            href="{{ cliente.get_absolute_url }}">goto</a>{% if request.user.is_superuser %}
@@ -26,14 +29,11 @@
                                            href="{{ cliente.get_delete_url }}">delete</a>{% endif %}
                                     </div>
                                 </td>
+                                <td class="derecha">{{ cliente.total_cotizado|intcomma }}</td>
                                 <td class="izquierda">{{ cliente.contacto }}</td>
                                 <td class="centrado">
-                                    <a class="ui-alt-icon ui-nodisc-icon ui-btn ui-btn-inline ui-btn-c ui-icon-phone ui-btn-icon-notext ui-btncito"
-                                       title="Llamar a {{ cliente.nombre }}" href="tel:{{ cliente.tel }}">phone</a>{{ cliente.tel }}
-                                </td>
-                                <td class="centrado">
-                                    <a title="Enviar email a {{ cliente.nombre }} <{{ cliente.email }}>" href="mailto:{{ cliente.email }}"
-                                       class="ui-alt-icon ui-nodisc-icon ui-btn ui-btn-inline ui-btn-c ui-icon-mail ui-btn-icon-notext ui-btncito"></a>
+                                    <a title="Llamar a {{ cliente.nombre }}" href="tel:{{ cliente.tel }}"><i
+                                            class='material-icons text-green md-18'>phone</i>{{ cliente.tel }}</a>
                                 </td>
                                 <td class="centrado">{{ cliente.rtn }}</td>
                             </tr>{% endfor %}{% endblock %}{% block footer %}{% if request.user.is_superuser %}

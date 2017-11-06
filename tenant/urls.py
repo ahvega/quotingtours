@@ -22,13 +22,16 @@ from transporte.views import TipoDeVehiculoListView, TipoDeVehiculoCreateView, \
     LugarDetailView, LugarUpdateView, ConductorListView, ConductorCreateView, \
     ConductorDetailView, ConductorUpdateView, indice, CotizacionTable, TramoEnVehiculoUpdate, TramoEnVehiculoDetail, \
     TramoEnVehiculoCreate, TramoEnVehiculoList, TramoEnVehiculoDelete, RutaDetalleListView, RutaDetalleCreateView, \
-    RutaDetalleDetailView, RutaDetalleUpdateView, RutaDetalleDeleteView
+    RutaDetalleDetailView, RutaDetalleUpdateView, RutaDetalleDeleteView, ItemGrupoListView, ItemGrupoCreateView, \
+    ItemGrupoDetailView, ItemGrupoUpdateView, ItemGrupoLineaUpdateView, ItemGrupoLineaDetailView, \
+    ItemGrupoLineaCreateView, ItemGrupoLineaListView, ItemGrupoLineaDeleteView, ItemGrupoDeleteView, ItemDeleteView
 
 admin.autodiscover()
 router = routers.DefaultRouter()
 router.register(r'tipodevehiculo', api.TipoDeVehiculoViewSet)
 router.register(r'parametro', api.ParametroViewSet)
 router.register(r'item', api.ItemViewSet)
+router.register(r'itemgrupo', api.ItemGrupoViewSet)
 router.register(r'niveldeprecio', api.NivelDePrecioViewSet)
 router.register(r'cotizacion', api.CotizacionViewSet)
 router.register(r'cliente', api.ClienteViewSet)
@@ -104,6 +107,36 @@ urlpatterns += [
         name='transporte_item_detail'),
     url(r'^transporte/item/update/(?P<slug>\S+)/$', ItemUpdateView.as_view(),
         name='transporte_item_update'),
+    url(r'^transporte/item/delete/(?P<slug>\S+)/$', ItemDeleteView.as_view(),
+        name='transporte_item_delete'),
+]
+
+urlpatterns += [
+    # urls for ItemGrupo
+    url(r'^transporte/itemgrupo/$', ItemGrupoListView.as_view(),
+        name='transporte_itemgrupo_list'),
+    url(r'^transporte/itemgrupo/create/$', ItemGrupoCreateView.as_view(),
+        name='transporte_itemgrupo_create'),
+    url(r'^transporte/itemgrupo/detail/(?P<slug>\S+)/$', ItemGrupoDetailView.as_view(),
+        name='transporte_itemgrupo_detail'),
+    url(r'^transporte/itemgrupo/update/(?P<slug>\S+)/$', ItemGrupoUpdateView.as_view(),
+        name='transporte_itemgrupo_update'),
+    url(r'^transporte/itemgrupo/delete/(?P<slug>\S+)/$', ItemGrupoDeleteView.as_view(),
+        name='transporte_itemgrupo_delete'),
+]
+
+urlpatterns += [
+    # urls for ItemGrupoLinea
+    url(r'^transporte/itemgrupolinea/$', ItemGrupoLineaListView.as_view(),
+        name='transporte_itemgrupolinea_list'),
+    url(r'^transporte/itemgrupolinea/create/(?P<itemgrupo_id>\d+)/$', ItemGrupoLineaCreateView.as_view(),
+        name='transporte_itemgrupolinea_create'),
+    url(r'^transporte/itemgrupolinea/detail/(?P<slug>\S+)/$', ItemGrupoLineaDetailView.as_view(),
+        name='transporte_itemgrupolinea_detail'),
+    url(r'^transporte/itemgrupolinea/update/(?P<slug>\S+)/$', ItemGrupoLineaUpdateView.as_view(),
+        name='transporte_itemgrupolinea_update'),
+    url(r'^transporte/itemgrupolinea/delete/(?P<slug>\S+)/$', ItemGrupoLineaDeleteView.as_view(),
+        name='transporte_itemgrupolinea_delete'),
 ]
 
 urlpatterns += [

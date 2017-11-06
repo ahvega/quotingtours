@@ -1,10 +1,11 @@
 from functools import partial
 
 from django import forms
+from django.forms import Textarea
 from django.forms.utils import ErrorList
 
 from .models import TipoDeVehiculo, Parametro, Item, NivelDePrecio, Cotizacion, Cliente, Itinerario, \
-    CotizacionDetalle, Vehiculo, Tramo, Lugar, Conductor, TramoEnVehiculo, RutaDetalle
+    CotizacionDetalle, Vehiculo, Tramo, Lugar, Conductor, TramoEnVehiculo, RutaDetalle, ItemGrupo, ItemGrupoLinea
 
 DateInput = partial(forms.DateInput, {'class': 'datepicker'})
 
@@ -26,6 +27,25 @@ class ItemForm(forms.ModelForm):
     class Meta:
         model = Item
         fields = ['nombre', 'costo', 'precio', 'descripcion_compra', 'descripcion_venta', 'tipo_item']
+        widgets = {
+            'descripcion_compra': Textarea(attrs={'cols': 80, 'rows': 3}),
+            'descripcion_venta': Textarea(attrs={'cols': 80, 'rows': 3}),
+        }
+
+
+class ItemGrupoForm(forms.ModelForm):
+    class Meta:
+        model = ItemGrupo
+        fields = ['nombre', 'descripcion_venta']
+        widgets = {
+            'descripcion_venta': Textarea(attrs={'cols': 80, 'rows': 3})
+        }
+
+
+class ItemGrupoLineaForm(forms.ModelForm):
+    class Meta:
+        model = ItemGrupoLinea
+        fields = ['item', 'cantidad', 'nivel_de_precio']
 
 
 class NivelDePrecioForm(forms.ModelForm):
@@ -86,7 +106,7 @@ class ItinerarioForm(forms.ModelForm):
 class RutaDetalleForm(forms.ModelForm):
     class Meta:
         model = RutaDetalle
-        fields = ['tramo', ]
+        fields = ['orden', 'tramo', ]
 
 
 class CotizacionDetalleForm(forms.ModelForm):

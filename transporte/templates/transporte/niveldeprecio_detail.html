@@ -4,7 +4,8 @@
 {% block title %}Nivel de Precio{% endblock %}
 {% block page-title %}Nivel de Precio{% endblock %}
 {% block thead %}
-    <th colspan="2" class="izquierda">{{ niveldeprecio.nombre }}{% if request.user.is_superuser %}
+    <th colspan="2" class="izquierda"><i
+            class="material-icons text-lime">local_offer</i>{{ niveldeprecio.nombre }}{% if request.user.is_superuser %}
         <div class="ui-nodisc-icon mininav3r">
             <a class="ui-btn ui-btn-inline ui-btn-a ui-icon-edit ui-btn-icon-notext ui-btncito"
                title="Editar Nivel de Precio {{ niveldeprecio.nombre }}" href="{{ niveldeprecio.get_update_url }}">edit</a>
@@ -47,7 +48,7 @@
 {% endblock %}
 {% block footer %}{% if request.user.is_superuser %}
         <div class="fixed-action-btn">
-            <a class="btn-floating btn-large waves-effect waves-light red darken-2"
+            <a class="btn-floating btn-large waves-effect waves-light purple darken-2"
                href="{{ niveldeprecio.get_update_url }}">
                 <i class="material-icons">edit</i></a>
         </div> {% endif %}{% endblock %}

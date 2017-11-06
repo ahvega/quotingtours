@@ -1,0 +1,41 @@
+{% extends "_table.html" %}{% load humanize %}{% load misformatos %}
+{% block title %}Grupos{% endblock %}
+{% block page-title %}Grupos{% endblock %}{% block theader %}
+    <th class="center">Grupo</th>
+    <th data-priority="5" class="derecha">Acciones</th>
+    <th data-priority="3" class="izquierda">Descripción</th>
+    <th data-priority="2" class="derecha">Costo</th>
+    <th data-priority="4" class="derecha">Utilidad</th>
+    <th data-priority="1" class="derecha">Precio</th>{% endblock %}{% block tbody %}{% for item in itemgrupo_list %}
+    <tr>
+        <td data-search="{{ item.nombre }}">
+            <a title="Ver Ítem {{ item.nombre }}"
+               href="{{ item.get_absolute_url }}">{{ item.nombre }}</a></td>
+        <td class="izquierda" width="1">
+            <div class="ui-alt-icon ui-nodisc-icon mininav3r">
+                <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-action ui-btn-icon-notext ui-btncito"
+                   title="Ver {{ item.nombre }}"
+                   href="{{ item.get_absolute_url }}">goto</a>{% if request.user.is_superuser %}
+                <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-edit ui-btn-icon-notext ui-btncito"
+                   title="Editar {{ item.nombre }}"
+                   href="{{ item.get_update_url }}"
+                   data-ajax="false" onclick="window.location.reload(false);">edit</a>
+                <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-delete ui-btn-icon-notext ui-btncito"
+                   title="Eliminar {{ item.nombre }}"
+                   href="{{ item.get_delete_url }}">delete</a>{% endif %}
+            </div>
+        </td>
+        <td class="izquierda">{{ item.descripcion_venta }}</td>
+        <td class="derecha">{{ item.costo|intcomma }}</td>
+        <td class="derecha">{{ item.utilidad_valor|intcomma }}&nbsp;<small
+                style="color: #7d1313"><em>&nbsp;{{ item.utilidad|porciento }}</em></small></td>
+        <td class="derecha">{{ item.precio|intcomma }}</td>
+    </tr>{% endfor %}{% endblock %}{% block footer %}{% if request.user.is_superuser %}
+    <div class="fixed-action-btn">
+        <a class="btn-floating btn-large waves-effect waves-light red darken-2"
+           title="Crear Ítem"
+           href="{% url "transporte_itemgrupo_create" %}"
+           data-ajax="false" onclick="window.location.reload(false);">
+            <i class="material-icons md-28">add</i></a>
+    </div>{% endif %}{% endblock %}
+

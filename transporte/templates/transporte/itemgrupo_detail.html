@@ -1,0 +1,130 @@
+{% extends "_detail.html" %}
+{% load humanize %}
+{% load misformatos %}
+{% block title %}Detalle de Grupo{% endblock %}
+{% block page-title %}Detalle de Grupo{% endblock %}
+{% block thead %}
+    <th colspan="2" class="izquierda">
+        <a class="text-white" title="Ver Grupo {{ itemgrupo.nombre }}"
+            href="{{ itemgrupo.get_absolute_url }}" data-ajax="false"
+            onclick="window.location.reload(false);">
+            <i class="material-icons text-lime">apps</i>{{ itemgrupo.nombre }}</a>{% if request.user.is_superuser %}
+        <div class="ui-nodisc-icon mininav3r">
+            <a class="ui-btn ui-btn-inline ui-btn-a ui-icon-edit ui-btn-icon-notext ui-btncito"
+               title="Editar Ítem {{ itemgrupo.nombre }}" href="{{ itemgrupo.get_update_url }}"
+               data-ajax="false" onclick="window.location.reload(false);">edit</a>
+            <a class="ui-btn ui-btn-inline ui-btn-a ui-icon-plus ui-btn-icon-notext ui-btncito"
+               title="Agregar Nuevo Ítem"
+               href="{% url "transporte_itemgrupo_create" %}"
+               data-ajax="false" onclick="window.location.reload(false);">add</a>
+            <a class="ui-btn ui-btn-inline ui-btn-a ui-icon-delete ui-btn-icon-notext ui-btncito"
+               title="Borrar Ítem {{ itemgrupo.nombre }}" href="{{ itemgrupo.get_delete_url }}">delete</a></div>
+    {% endif %}</th>
+{% endblock %}
+{% block tbody %}
+    <tr>
+        <td class="derecha">Descripción</td>
+        <td><strong>{{ itemgrupo.descripcion_venta }}</strong></td>
+    </tr>
+    <tr>
+        <td class="derecha">Costo</td>
+        <td><strong>{{ itemgrupo.costo|intcomma }}</strong></td>
+    </tr>
+    <tr>
+        <td class="derecha">Utilidad</td>
+        <td><strong>{{ itemgrupo.utilidad_valor|intcomma }}
+            <small style="color: #7d1313"><em> {{ itemgrupo.utilidad|porciento }}</em></small></strong></td>
+    </tr>
+    <tr>
+        <td class="derecha">Precio</td>
+        <td><strong>{{ itemgrupo.precio|intcomma }}</strong></td>
+    </tr>
+    <tr>
+        <td class="derecha">Creado</td>
+        <td><em>{{ itemgrupo.creado }}</em></td>
+    </tr>
+    <tr>
+        <td class="derecha">Actualizado</td>
+        <td><em>{{ itemgrupo.actualizado }}</em></td>
+    </tr>
+{% endblock %}
+{% block detalle %}
+    {# Items en grupo #}
+    <div class="topcontainer">
+        <table data-role="table" id="tabladedatos" data-mode="columntoggle"
+               class="table-stroke ui-shadow table-stripe  ui-responsive">
+            <thead>
+            <tr>
+                <th class="izquierda">Ítem</th>
+                <th data-priority="6" class="derecha">Acciones</th>
+                <th data-priority="1" class="derecha">
+                    <small>Cantidad</small>
+                </th>
+                <th data-priority="4" class="derecha">
+                    <small>Costo c/u</small>
+                </th>
+                <th data-priority="2" class="derecha">
+                    <small>Costo Total</small>
+                </th>
+                <th data-priority="3" class="derecha">
+                    <small>Utilidad</small>
+                </th>
+                <th data-priority="5" class="derecha">
+                    <small>Markup</small>
+                </th>
+                <th class="derecha">
+                    <small>Precio</small>
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for linea in itemgrupo.grupo_lineas.all %}
+                <tr>
+                    <td data-search="{{ linea.descripcion }}" class="izquierda">
+                        <a title="Ver Ítem {{ linea.descripcion }}"
+                           href="{{ linea.get_absolute_url }}">{{ linea.descripcion }}</a></td>
+                    <td>
+                        <div class="ui-alt-icon ui-nodisc-icon mininav3r">
+                            <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-action ui-btn-icon-notext ui-btncito"
+                               title="Ver Ítem {{ linea.descripcion }}" href="{{ linea.get_absolute_url }}">goto</a>
+                            {% if request.user.is_superuser %}
+                                <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-edit ui-btn-icon-notext ui-btncito"
+                                   title="Editar Ítem {{ linea.descripcion }}" href="{{ linea.get_update_url }}"
+                                   data-ajax="false" onclick="window.location.reload(false);">edit</a>
+                                <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-delete ui-btn-icon-notext ui-btncito"
+                                   title="Eliminar Item {{ linea.descripcion }}" href="{{ linea.get_delete_url }}">delete</a>{% endif %}
+                        </div>
+                    </td>
+                    <td class="derecha">{{ linea.cantidad }}</td>
+                    <td class="derecha">{{ linea.costo|intcomma }}</td>
+                    <td class="derecha">{{ linea.costo_total|intcomma }}</td>
+                    <td class="derecha">{{ linea.utilidad_valor|intcomma }}
+                        <small style="color: #7d1313"><em> {{ linea.utilidad|porciento }}</em></small></td>
+                    <td class="derecha">{{ linea.markup|porciento }}</td>
+                    <td class="derecha">{{ linea.total|intcomma }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+            <tfoot>
+            <tr>
+                <td>TOTAL</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td class="derecha">{{ itemgrupo.subtotal|intcomma }}</td>
+                <td class="derecha">{{ itemgrupo.utilidad_valor|intcomma }}
+                    <small style="color: #7d1313"><em> {{ itemgrupo.utilidad|porciento }}</em></small></td>
+                <td class="derecha"></td>
+                <td class="derecha">{{ itemgrupo.total|intcomma }}</td>
+            </tr>
+            </tfoot>
+        </table>
+    </div>
+{% endblock %}
+{% block footer %}{% if request.user.is_superuser %}
+    <div class="fixed-action-btn">
+        <a class="btn-floating btn-large waves-effect waves-light red darken-2"
+           href="{% url "transporte_itemgrupolinea_create" itemgrupo_id=itemgrupo.pk %}"
+           data-ajax="false" onclick="window.location.reload(false);">
+            <i class="material-icons md-28">add</i></a>
+    </div>{% endif %}{% endblock %}

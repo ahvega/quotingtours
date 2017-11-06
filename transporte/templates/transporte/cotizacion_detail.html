@@ -6,9 +6,11 @@
 {% block page-title %}Cotización{% endblock %}
 {% block thead %}
     <tr>
-        <th colspan="2" class="izquierda"><a style="color:white;" title="Ver Cotización {{ cotizacion.nombre }}"
-                                             href="{{ cotizacion.get_absolute_url }}" data-ajax="false"
-                                             onclick="window.location.reload(false);">{{ cotizacion.nombre }}
+        <th colspan="2" class="izquierda">
+            <a class="text-white" title="Ver Cotización {{ cotizacion }}"
+                href="{{ cotizacion.get_absolute_url }}" data-ajax="false"
+                onclick="window.location.reload(false);"><i
+                class="material-icons text-lime">assignment_turned_in</i>{{ cotizacion }}
             {% if request.user.is_superuser %}
             <div class="ui-nodisc-icon mininav3r">
                 <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-edit ui-btn-icon-notext ui-btncito"
@@ -27,20 +29,16 @@
 {% block tbody %}
     <tr>
         <td class="derecha"><strong>Cliente: </strong></td>
-        <td><a title="Ver Cliente: {{ cotizacion.itinerario.cliente }}"
-               href="{{ cotizacion.itinerario.cliente.get_absolute_url }}"
-               class="ui-btn ui-btn-a ui-btn-inline ui-icon-arrow-u-l ui-btncito ui-nodisc-icon ui-alt-icon ui-btn-icon-notext">goto</a>
-            <a href="{{ cotizacion.itinerario.cliente.get_absolute_url }}"
-               title="Ver Cliente: {{ cotizacion.itinerario.cliente }}"
-               style="text-decoration: none;font-weight: bold;text-transform: uppercase;">{{ cotizacion.itinerario.cliente }}</a>
+        <td><a href="{{ cotizacion.itinerario.cliente.get_absolute_url }}"
+               title="Ver Cliente: {{ cotizacion.itinerario.cliente }}">
+            <i class="material-icons text-green md-18">recent_actors</i><strong>
+            {{ cotizacion.itinerario.cliente }}</strong></a>
         </td>
     </tr>
     <tr>
         <td class="derecha"><strong>Itinerario:</strong></td>
-        <td><a title="Ver Itinerario: {{ cotizacion.itinerario }}" href="{{ cotizacion.itinerario.get_absolute_url }}"
-               class="ui-btn ui-btn-a ui-btn-inline ui-icon-arrow-u ui-btncito ui-nodisc-icon ui-alt-icon ui-btn-icon-notext">goto</a>
-            <a href="{{ cotizacion.itinerario.get_absolute_url }}" title="Ver Itinerario: {{ cotizacion.itinerario }}"
-               style="text-decoration: none;font-weight: bold;text-transform: uppercase;">{{ cotizacion.itinerario }}</a>
+        <td><a href="{{ cotizacion.itinerario.get_absolute_url }}" title="Ver Itinerario: {{ cotizacion.itinerario }}">
+            <i class="material-icons text-green md-18">date_range</i><strong>{{ cotizacion.itinerario }}</strong></a>
         </td>
     </tr>
     <tr>
@@ -49,8 +47,8 @@
     </tr>
     <tr>
         <td class="derecha">Vence</td>
-        <td><strong>{{ cotizacion.fecha_vence|date:"D d/b" }}</strong></td>
-    </tr>
+        <td><strong>{{ cotizacion.fecha_vence|date:"D D/M/Y" }}</strong></td>
+    </tr>{% if cotizacion.tramos.exists %}
     <tr>
         <td class="derecha">Kilómetros</td>
         <td><strong>{{ cotizacion.kms_total|intcomma }}</strong></td>
@@ -58,14 +56,14 @@
     <tr>
         <td class="derecha">Horas</td>
         <td><strong>{{ cotizacion.hrs_total|intcomma }}</strong></td>
-    </tr>
+    </tr>{% endif %}
     <tr>
         <td class="derecha">Costo</td>
         <td><strong>{{ cotizacion.subtotal|intcomma }}</strong></td>
     </tr>
     <tr>
         <td class="derecha">Utilidad</td>
-        <td><strong>{{ cotizacion.utilidad|porciento }}</strong></td>
+        <td><strong>{{ cotizacion.utilidad_valor|intcomma }} <small style="color: #4385F5"><em>{{ cotizacion.utilidad|porciento }}</em></small></strong></td>
     </tr>
     <tr>
         <td class="derecha">Precio</td>
@@ -80,15 +78,16 @@
         <td><strong>{{ cotizacion.actualizado }}</strong></td>
     </tr>
 {% endblock %}
-{% block detalle %}
+{% block detalle %}{% if cotizacion.tramos.exists %}
     {# tramos en cotizacion #}
     <div class="rutacontainer">
         <table data-role="table" id="tabladedatosruta" data-mode="columntoggle"
                class="table-stroke ui-shadow table-stripe  ui-responsive">
             <thead>
             <tr>
+                <th class="derecha">#</th>
                 <th class="izquierda">Tramo</th>
-                <th class="derecha">Acciones</th>
+                <th data-priority="5" class="derecha">Acciones</th>
                 <th data-priority="1" class="derecha">
                     <small>Desde</small>
                 </th>
@@ -106,20 +105,17 @@
             <tbody>
             {% for tramo in cotizacion.tramos.all %}
                 <tr>
+                    <td class="derecha">{{ tramo.orden }}</td>
                     <td data-search="{{ tramo.tramo }}" class="izquierda">
-                        <a title="Ver Ítem {{ tramo.tramo|upper }}"
-                           href="{{ tramo.get_absolute_url }}" data-ajax="false"
-                           onclick="window.location.reload(false);">{{ tramo.tramo|upper }}</a></td>
+                        <a title="Ver Ítem {{ tramo.tramo }}"
+                           href="{{ tramo.get_update_url }}" data-ajax="false"
+                           onclick="window.location.reload(false);">{{ tramo.tramo }}</a></td>
                     <td>
-                        <div class="ui-alt-icon ui-nodisc-icon mininav3r">
-                            <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-action ui-btn-icon-notext ui-btncito"
-                               title="Ver Tramo {{ tramo.descripcion }}" href="{{ tramo.get_absolute_url }}">goto</a>
-                            {% if request.user.is_superuser %}
-                                <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-edit ui-btn-icon-notext ui-btncito"
-                                   title="Editar Tramo {{ tramo.descripcion }}" href="{{ tramo.get_update_url }}"
-                                   data-ajax="false" onclick="window.location.reload(false);">edit</a>
-                                <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-delete ui-btn-icon-notext ui-btncito"
-                                   title="Eliminar Tramo {{ tramo.descripcion }}" href="{{ tramo.get_delete_url }}">delete</a>{% endif %}
+                        <div class="ui-alt-icon ui-nodisc-icon mininav3r">{% if request.user.is_superuser %}
+                            <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-edit ui-btn-icon-notext ui-btncito"
+                               title="Editar Tramo {{ tramo.descripcion }}" href="{{ tramo.get_update_url }}">edit</a>
+                            <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-delete ui-btn-icon-notext ui-btncito"
+                               title="Eliminar Tramo {{ tramo.descripcion }}" href="{{ tramo.get_delete_url }}">delete</a>{% endif %}
                         </div>
                     </td>
                     <td class="derecha">{{ tramo.desde }}</td>
@@ -131,8 +127,11 @@
             </tbody>
             <tfoot>
             <tr>
-                <td>TOTAL</td>
                 <td></td>
+                <td>TOTAL</td>
+                <td class="derecha"><a title="Mapa de la Ruta" target="_blank"
+                       href="https://www.google.com/maps/dir/{% for tramo in cotizacion.tramos.all %}{{ tramo.desde }}/{% if forloop.last %}{{ tramo.hacia }}/{% endif %}{% endfor %}"
+                ><i class="material-icons text-green" style="vertical-align: middle;">directions</i>Ruta</a></td>
                 <td></td>
                 <td></td>
                 <td class="derecha">{{ cotizacion.kms_total|intcomma }}</td>
@@ -140,7 +139,7 @@
             </tr>
             </tfoot>
         </table>
-    </div>
+    </div>{% endif %}
     {# Items en cotizacion #}
     <div class="topcontainer">
         <table data-role="table" id="tabladedatos" data-mode="columntoggle"
@@ -148,7 +147,7 @@
             <thead>
             <tr>
                 <th class="izquierda">Ítem</th>
-                <th class="derecha">Acciones</th>
+                <th data-priority="5" class="derecha">Acciones</th>
                 <th data-priority="1" class="derecha">
                     <small>Cantidad</small>
                 </th>
@@ -161,7 +160,7 @@
                 <th data-priority="3" class="derecha">
                     <small>Utilidad</small>
                 </th>
-                <th data-priority="5" class="derecha">
+                <th data-priority="4" class="derecha">
                     <small>Markup</small>
                 </th>
                 <th class="derecha">
@@ -173,11 +172,13 @@
             {% for linea in cotizacion.lineas.all %}
                 <tr>
                     <td data-search="{{ linea.descripcion }}" class="izquierda">
-                        <a title="Ver Ítem {{ linea.descripcion }}"
+                        <a title="Ver Ítem {{ linea.descripcion }}" data-ajax="false"
+                           onclick="window.location.reload(false);"
                            href="{{ linea.get_absolute_url }}">{{ linea.descripcion }}</a></td>
                     <td>
                         <div class="ui-alt-icon ui-nodisc-icon mininav3r">
                             <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-action ui-btn-icon-notext ui-btncito"
+                               data-ajax="false" onclick="window.location.reload(false);"
                                title="Ver Ítem {{ linea.descripcion }}" href="{{ linea.get_absolute_url }}">goto</a>
                             {% if request.user.is_superuser %}
                                 <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-edit ui-btn-icon-notext ui-btncito"
@@ -189,8 +190,9 @@
                     </td>
                     <td class="derecha">{{ linea.cantidad }}</td>
                     <td class="derecha">{{ linea.costo|intcomma }}</td>
-                    <td class="derecha">{{ linea.monto|intcomma }}</td>
-                    <td class="derecha">{{ linea.utilidad|porciento }}</td>
+                    <td class="derecha">{{ linea.costo_total|intcomma }}</td>
+                    <td class="derecha">{{ linea.utilidad_valor|intcomma }}
+                        <small style="color: #4385F5"><em>{{ linea.utilidad|porciento }}</em></small></td>
                     <td class="derecha">{{ linea.markup|porciento }}</td>
                     <td class="derecha">{{ linea.total|intcomma }}</td>
                 </tr>
@@ -203,15 +205,15 @@
                 <td></td>
                 <td></td>
                 <td class="derecha">{{ cotizacion.subtotal|intcomma }}</td>
-                <td class="derecha">{{ cotizacion.utilidad|porciento }}</td>
+                <td class="derecha">{{ cotizacion.utilidad_valor|intcomma }}
+                    <small style="color: #4385F5"><em>{{ cotizacion.utilidad|porciento }}</em></small></td>
                 <td class="derecha"></td>
                 <td class="derecha">{{ cotizacion.total|intcomma }}</td>
             </tr>
             </tfoot>
         </table>
     </div>
-{% endblock %}
-{% block footer %}{% if request.user.is_superuser %}
+{% endblock %}{% block footer %}{% if request.user.is_superuser %}
     <div class="kc_fab_wrapper"></div>
 {% endif %}
 {% endblock %}
@@ -229,7 +231,7 @@
 {#                    "url": "#",#}
                     "bgcolor": "#3B5998",
                     "color": "#fffff",
-                    "icon": "<i class='fa fa-location-arrow'></i>",
+                    "icon": "<i class='material-icons' style='vertical-align: middle;'>directions</i>",
                     "title": "Agregar Tramo"
                 },
                 {
@@ -237,7 +239,7 @@
                     "bgcolor": "#263238",
                     "tooltip": "Agregar Item",
                     "color": "white",
-                    "icon": "<i class='fa fa-bars'></i>",
+                    "icon": "<i class='material-icons' style='vertical-align: middle;'>toc</i>",
                     "title": "Agregar Item"
                 }
             ];

@@ -57,6 +57,24 @@ class ItemSerializer(serializers.ModelSerializer):
         )
 
 
+class ItemGrupoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.ItemGrupo
+        fields = (
+            'id',
+            'nombre',
+            'tipo_item',
+            'costo',
+            'precio',
+            'descripcion_compra',
+            'descripcion_venta',
+            'imprimir_detalle',
+            'slug',
+            'creado',
+            'actualizado',
+        )
+
+
 class NivelDePrecioSerializer(serializers.ModelSerializer):
 
     class Meta:
@@ -149,7 +167,7 @@ class CotizacionDetalleSerializer(serializers.ModelSerializer):
             'descripcion',
             'cantidad',
             'costo',
-            'monto',
+            'costo_total',
             'markup',
             'utilidad',
             'total',

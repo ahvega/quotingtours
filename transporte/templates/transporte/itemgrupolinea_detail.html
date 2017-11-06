@@ -1,0 +1,72 @@
+{% extends "_detail.html" %}
+{% load humanize %}
+{% load misformatos %}
+{% block title %}Ítem en Grupo{% endblock %}
+{% block page-title %}Ítem en Grupo{% endblock %}
+{% block thead %}
+    <th colspan="2" class="izquierda"><i class="material-icons text-lime">toc</i>{{ itemgrupolinea.item }}{% if request.user.is_superuser %}
+        <div class="ui-nodisc-icon mininav3r">
+            <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-edit ui-btn-icon-notext ui-btncito"
+               title="Editar Ítem {{ itemgrupolinea.nombre }}" href="{{ itemgrupolinea.get_update_url }}">edit</a>
+            <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-plus ui-btn-icon-notext ui-btncito"
+               title="Agregar Nuevo Ítem"
+               href="{% url "transporte_itemgrupolinea_create" itemgrupo_id=itemgrupolinea.item_grupo.pk %}">add</a>
+            <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-delete ui-btn-icon-notext ui-btncito"
+               title="Borrar Ítem {{ itemgrupolinea.nombre }}"
+               href="{{ itemgrupolinea.get_delete_url }}">delete</a></div>
+    {% endif %}</th>
+{% endblock %}
+{% block tbody %}
+    <tr>
+        <td class="derecha"><strong>Grupo:</strong></td>
+        <td><a title="Ver Grupo: {{ itemgrupolinea.item_grupo }}"
+               href="{{ itemgrupolinea.item_grupo.get_absolute_url }}">
+            <i class="material-icons text-green">apps</i>{{ itemgrupolinea.item_grupo }}</a>
+        </td>
+    </tr>
+    <tr>
+        <td class="derecha">Descripción</td>
+        <td><strong>{{ itemgrupolinea.descripcion }}</strong></td>
+    </tr>
+    <tr>
+        <td class="derecha">Cantidad</td>
+        <td><strong>{{ itemgrupolinea.cantidad|intcomma }}</strong></td>
+    </tr>
+    <tr>
+        <td class="derecha">Costo</td>
+        <td><strong>{{ itemgrupolinea.costo|intcomma }}</strong></td>
+    </tr>
+    <tr>
+        <td class="derecha">Subtotal</td>
+        <td><strong>{{ itemgrupolinea.costo_total|intcomma }}</strong></td>
+    </tr>
+    <tr>
+        <td class="derecha">Utilidad</td>
+        <td><strong>{{ itemgrupolinea.utilidad|porciento }}</strong></td>
+    </tr>
+    <tr>
+        <td class="derecha">Margen</td>
+        <td><strong>{{ itemgrupolinea.markup|porciento }}</strong></td>
+    </tr>
+    <tr>
+        <td class="derecha">Total</td>
+        <td><strong>{{ itemgrupolinea.total|intcomma }}</strong></td>
+    </tr>
+    <tr>
+        <td class="derecha">Creado</td>
+        <td><em>{{ itemgrupolinea.creado }}</em></td>
+    </tr>
+    <tr>
+        <td class="derecha">Actualizado</td>
+        <td><em>{{ itemgrupolinea.actualizado }}</em></td>
+    </tr>
+{% endblock %}
+{% block footer %}
+    {% if request.user.is_superuser %}
+        <div class="fixed-action-btn">
+            <a class="btn-floating btn-large waves-effect waves-light red darken-2"
+               title="Editar Ítem {{ itemgrupolinea.descripcion }}"
+               href="{{ itemgrupolinea.get_update_url }}">
+                <i class="material-icons">edit</i></a>
+        </div>
+    {% endif %}{% endblock %}

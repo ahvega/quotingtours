@@ -5,15 +5,18 @@
 {% block page-title %}Lugares{% endblock %}
 {% block theader %}
             <th class="centrado">Lugar</th>
-            <th class="derecha">Acciones</th>
-            <th data-priority="4" class="centrado">Código</th>
+            <th data-priority="3" class="derecha">Acciones</th>
+            <th data-priority="1" class="centrado">Código</th>
             <th data-priority="2" class="centrado">País</th>{% endblock %}
 {% block tbody %}{% for lugar in lugar_list %}
                     <tr>
                     <td data-search="{{ lugar.nombre }}">
-                        <a title="Ver Tramo {{ lugar.nombre }}"
-                           href="{{ lugar.get_absolute_url }}">{{ lugar.nombre }}</td>
-                    <td><div class="ui-alt-icon ui-nodisc-icon mininav3r">
+                        <a title="Ver Lugar {{ lugar.nombre }}"
+                           href="{{ lugar.get_absolute_url }}">{{ lugar.nombre }}</a></td>
+                    <td><div class="ui-alt-icon ui-nodisc-icon mininav4r">
+                        <a title="Ver Mapa de {{ lugar.nombre }}" target="_blank" style="line-height: 24px;"
+                           href="https://www.google.com/maps/place/{{ lugar.nombre }}"><i
+                           class="material-icons text-green">place</i></a>
                         <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-action ui-btn-icon-notext ui-btncito"
                            title="Ver Tramo {{ lugar.nombre }}" href="{{ lugar.get_absolute_url }}">goto</a>{% if request.user.is_superuser %}
                         <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-edit ui-btn-icon-notext ui-btncito"

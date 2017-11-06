@@ -1,9 +1,13 @@
 {% extends "_detail.html" %}
 {% load humanize %}
-{% block title %}Detalle de Item{% endblock %}
-{% block page-title %}Detalle de Item{% endblock %}
+{% load misformatos %}
+{% block title %}Detalle de Ítem{% endblock %}
+{% block page-title %}Detalle de Ítem{% endblock %}
 {% block thead %}
-    <th colspan="2" class="izquierda">{{ item.nombre }}{% if request.user.is_superuser %}
+    <th colspan="2" class="izquierda"><a style="color:white;" title="Ver Item {{ item.nombre }}"
+        href="{{ item.get_absolute_url }}" data-ajax="false"
+        onclick="window.location.reload(false);"><i
+            class="material-icons text-lime">toc</i>{{ item.nombre }}{% if request.user.is_superuser %}
         <div class="ui-nodisc-icon mininav3r">
             <a class="ui-btn ui-btn-inline ui-btn-a ui-icon-edit ui-btn-icon-notext ui-btncito"
                title="Editar Ítem {{ item.nombre }}" href="{{ item.get_update_url }}"
@@ -39,16 +43,16 @@
     </tr>
     <tr>
         <td class="derecha">Creado</td>
-        <td><strong>{{ item.creado }}</strong></td>
+        <td>{{ item.creado }}</td>
     </tr>
     <tr>
         <td class="derecha">Actualizado</td>
-        <td><strong>{{ item.actualizado }}</strong></td>
+        <td>{{ item.actualizado }}</td>
     </tr>
 {% endblock %}
 {% block footer %}{% if request.user.is_superuser %}
         <div class="fixed-action-btn">
-            <a class="btn-floating btn-large waves-effect waves-light red darken-2"
+            <a class="btn-floating btn-large waves-effect waves-light purple darken-2"
                href="{{ item.get_update_url }}"
                data-ajax="false" onclick="window.location.reload(false);">
                 <i class="material-icons">edit</i></a>

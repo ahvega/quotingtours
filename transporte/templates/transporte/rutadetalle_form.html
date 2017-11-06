@@ -10,7 +10,7 @@
             {% csrf_token %}
             <input type="hidden" id="id_cotizacion" name="cotizacion" value="{{ c_id }}"/>
             {% bootstrap_form form exclude=cotizacion %}
-            <button id="submit" class="ui-btn ui-btn-b ui-btn-icon-left ui-btn-inline ui-corner-all"
+            <button id="submit" class="ui-btn ui-btn-b ui-btn-icon-left ui-btn-inline ui-corner-all" data-ajax="false"
                     type="submit">Guardar Tramo
             </button>
         </form>

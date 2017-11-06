@@ -1,0 +1,43 @@
+{% extends "_detail.html" %}
+{% load humanize %}
+{% block title %}Eliminación de Ruta{% endblock %}
+{% block page-title %}Eliminación de Ruta{% endblock %}
+{% block thead %}
+    <th class="derecha">Eliminando Ruta</th>
+    <th class="izquierda">{{ rutadetalle.tramo.desde_hacia }}</th>
+{% endblock %}
+{% block tbody %}
+    <tr>
+        <td class="derecha">Código Ruta</td>
+        <td><strong>{{ rutadetalle.tramo.codigo|upper }}</strong></td>
+    </tr>
+    <tr>
+        <td class="derecha">Descripión</td>
+        <td>{{ rutadetalle.tramo.descripcion }}</td>
+    </tr>
+    <tr>
+        <td class="derecha">Desde</td>
+        <td><strong>{{ rutadetalle.tramo.desde_lugar.nombre }}</strong></td>
+    </tr>
+    <tr>
+        <td class="derecha">Hacia</td>
+        <td><strong>{{ rutadetalle.tramo.hacia_lugar.nombre }}</strong></td>
+    </tr>
+    <tr>
+        <td class="derecha">Kilómetros</td>
+        <td><strong>{{ rutadetalle.kms }}</strong></td>
+    </tr>
+    <tr>
+        <td class="derecha">Horas</td>
+        <td><strong>{{ rutadetalle.hrs }}</strong></td>
+    </tr>
+{% endblock %}
+{% block footer %}
+    {% if request.user.is_superuser %}
+        <form action="" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="after" value="{{ rutadetalle.cotizacion.get_absolute_url }}"/>
+            <input type="submit" value="CONFIRMAR ELIMINACION DE RUTA" name="DeleteAndShowParent"
+                   class="ui-btn ui-btn-a ui-btn-icon-left ui-btn-inline ui-shadow ui-link ui-icon-delete ui-btn-icon-left"/>
+        </form>
+    {% endif %}{% endblock %}

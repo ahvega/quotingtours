@@ -1,9 +1,11 @@
 {% extends "_detail.html" %}
-{% load humanize %}
+{% load humanize %}{% load misformatos %}
 {% block title %}Detalle de Tramo{% endblock %}
 {% block page-title %}Detalle de Tramo{% endblock %}
 {% block thead %}
-    <th colspan="2" class="izquierda">{{ tramo.desde_hacia }}{% if request.user.is_superuser %}
+    <th colspan="2" class="izquierda"><a target="_blank" class="text-white"
+           href="https://www.google.com/maps/dir/{{ tramo.desde_lugar }}/{{ tramo.hacia_lugar }}">
+        <i class="material-icons text-lime">directions</i>&nbsp;  {{ tramo.desde_hacia }}</a>{% if request.user.is_superuser %}
         <div class="ui-nodisc-icon mininav3r">
             <a class="ui-btn ui-btn-inline ui-btn-a ui-icon-edit ui-btn-icon-notext ui-btncito"
                title="Editar Tramo {{ tramo.desde_hacia }}" href="{{ tramo.get_update_url }}"
@@ -43,6 +45,74 @@
     </tr>
 {% endblock %}
 {% block detalle %}
+    {% if tramo.rutas.exists %}
+            {# cotizaciones con este tramo #}
+            <div class="topcontainer"><!-- cotizacionescontainer -->
+                <table id="tabladedatos" data-role="table" data-mode="columntoggle"
+                       class="table-stroke ui-shadow table-stripe ui-responsive"><!-- tabladedatos -->
+                    <thead><!-- header row -->
+                    <tr>
+                        <th class="centrado">Cotización</th>
+                        <th data-priority="7" class="derecha">Acciones</th>
+                        <th data-priority="6" class="izquierda">Cliente: Itinerario</th>
+                        <th data-priority="4" class="centrado">Fecha</th>
+                        <th data-priority="5" class="centrado">Vence</th>
+                        <th data-priority="2" class="derecha">Subtotal</th>
+                        <th data-priority="3" class="derecha">Utilidad</th>
+                        <th data-priority="1" class="derecha">Total</th>
+                    </tr>
+                    </thead><!-- /header row -->
+                    <tbody><!-- data  -->
+                    {% for ruta in tramo.rutas.all %}
+                            <tr>
+                                <td data-search="{{ ruta.cotizacion.nombre }}">
+                                    <a title="Ver Cotización {{ ruta.cotizacion.nombre }}"
+                                       href="{{ ruta.cotizacion.get_absolute_url }}"
+                                       data-ajax="false"
+                                       onclick="window.location.reload(false);">
+                                        <i class="material-icons text-green md-16">assignment_turned_in</i>&nbsp;
+                                        {{ ruta.cotizacion.nombre }}</a>:<br>{{ ruta.cotizacion.descripcion }}
+                                </td>
+                                <td>
+                                    <div class="ui-alt-icon ui-nodisc-icon mininav3r">
+                                        <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-action ui-btn-icon-notext ui-btncito"
+                                           title="Ver Cotización {{ ruta.cotizacion.nombre }}"
+                                           href="{{ ruta.cotizacion.get_absolute_url }}"
+                                           data-ajax="false" onclick="window.location.reload(false);">goto</a>
+                                        {% if request.user.is_superuser %}
+                                            <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-edit ui-btn-icon-notext ui-btncito"
+                                               title="Editar Cotización {{ ruta.cotizacion.nombre }}"
+                                               href="{{ ruta.cotizacion.get_update_url }}"
+                                               data-ajax="false" onclick="window.location.reload(false);">edit</a>
+                                            <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-delete ui-btn-icon-notext ui-btncito"
+                                               title="Eliminar Cotización {{ ruta.cotizacion.nombre }}"
+                                               href="{{ ruta.cotizacion.get_delete_url }}">delete</a>{% endif %}
+                                    </div>
+                                </td>
+                                <td class="izquierda">
+                                    <strong><a href="{{ ruta.cotizacion.itinerario.cliente.get_absolute_url }}">
+                                        <i class="material-icons md-16 text-green">recent_actors</i>&nbsp;
+                                        {{ ruta.cotizacion.itinerario.cliente.nombre }}</a></strong>:<br/>
+                                    <a href="{{ ruta.cotizacion.itinerario.get_absolute_url }}"><i class="material-icons text-green md-16">date_range</i>&nbsp;
+                                        {{ ruta.cotizacion.itinerario }}</a></td>
+                                <td class="centrado">{{ ruta.cotizacion.creado|date }}</td>
+                                <td class="centrado">{{ ruta.cotizacion.fecha_vence|date }}</td>
+                                <td class="derecha">{{ ruta.cotizacion.subtotal|intcomma }}</td>
+                                <td class="derecha">{{ ruta.cotizacion.utilidad_valor|intcomma }}
+                                    <small style="color: #4385F5"><em>{{ ruta.cotizacion.utilidad|porciento }}</em></small>
+                                </td>
+                                <td class="derecha">{{ ruta.cotizacion.total|intcomma }}</td>
+                            </tr>
+                    {% endfor %}
+                    </tbody><!-- /data -->
+                </table><!-- /tabladedatos -->
+            </div><!-- /topcontainer -->
+            {# fin de cotizaciones con este tramo #}
+
+
+
+    {% endif %}
+
     <div class="form-group topcontainer">
         <form class="form">
             <div id="titulodetalle">Costo Kilometraje por Vehículo</div>
@@ -51,7 +121,7 @@
                 <thead>
                 <tr>
                     <th class="center">Vehículo</th>
-                    <th class="derecha">Acciones</th>
+                    <th data-priority="2" class="derecha">Acciones</th>
                     <th data-priority="1" class="derecha">Costo Kms.</th>
                 </tr>
                 </thead>

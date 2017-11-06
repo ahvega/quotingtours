@@ -2,7 +2,7 @@
 {% block title %}Itinerarios{% endblock %}
 {% block page-title %}Itinerarios{% endblock %}{% block theader %}
                                 <th class="centrado">Itinerario</th>
-                                <th class="derecha">Acciones</th>
+                                <th data-priority="5" class="derecha">Acciones</th>
                                 <th data-priority="4" class="izquierda">Cliente</th>
                                 <th data-priority="1" class="centrado">Inicia</th>
                                 <th data-priority="2" class="centrado">Termina</th>
@@ -12,7 +12,7 @@
                                     <a title="Ver Itinerario {{ itinerario.nombre }}"
                                        href="{{ itinerario.get_absolute_url }}">{{ itinerario.nombre }}</a></td>
                                 <td class="izquierda" width="1">
-                                    <div class="ui-alt-icon ui-nodisc-icon mininav3r">
+                                    <div class="ui-alt-icon ui-nodisc-icon mininav4r">
                                         <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-action ui-btn-icon-notext ui-btncito"
                                            title="Ver Itinerario {{ itinerario.nombre }}"
                                            href="{{ itinerario.get_absolute_url }}">goto</a>{% if request.user.is_superuser %}

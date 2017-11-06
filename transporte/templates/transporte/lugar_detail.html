@@ -3,7 +3,9 @@
 {% block title %}Detalle de Lugar{% endblock %}
 {% block page-title %}Detalle de Lugar{% endblock %}
 {% block thead %}
-    <th colspan="2" class="izquierda">{{ lugar.nombre }}{% if request.user.is_superuser %}
+    <th colspan="2" class="izquierda"><a style="color: white;"
+            title="Mapa" href="https://www.google.com/maps/place/{{ lugar.nombre }}" target="_blank"><i
+            class="material-icons text-lime">place</i> {{ lugar.nombre }}</a>{% if request.user.is_superuser %}
         <div class="ui-nodisc-icon mininav3r">
             <a class="ui-btn ui-btn-inline ui-btn-a ui-icon-edit ui-btn-icon-notext ui-btncito"
                title="Editar Lugar {{ lugar.nombre }}" href="{{ lugar.get_update_url }}">edit</a>
@@ -25,11 +27,11 @@
     </tr>
     <tr>
         <td class="derecha">Creado</td>
-        <td><strong>{{ lugar.creado }}</strong></td>
+        <td><em>{{ lugar.creado }}</em></td>
     </tr>
     <tr>
         <td class="derecha">Actualizado</td>
-        <td><strong>{{ lugar.actualizado }}</strong></td>
+        <td><em>{{ lugar.actualizado }}</em></td>
     </tr>
 {% endblock %}
 {% block footer %}{% if request.user.is_superuser %}

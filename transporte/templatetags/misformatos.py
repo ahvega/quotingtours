@@ -6,7 +6,10 @@ register = template.Library()
 @register.filter
 def porciento(numero):
     # return format(numero, "%")
-    return "{:%}".format(numero)
+    try:
+        return "{:%}".format(numero)
+    except ValueError:
+        return ''
 
 
 register.simple_tag(porciento, takes_context=True)

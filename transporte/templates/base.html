@@ -45,24 +45,49 @@
             </div><!-- /header -->
             <div data-role="content"><!-- content -->{% block content %}{% endblock %}
             </div><!-- /content -->
-            <div data-role="panel" data-display="overlay" data-theme="b" id="nav-panel"
-                 style="width: 200px; background-color:#3367d6;padding-bottom: 20px;"><!-- panel -->
-                <img src="{% static "images/logo-LATTours.png" %}" alt="LAT Tours">
-                <ul data-role="listview" class="ui-nodisc-icon"
-                style="margin-top: 10px; border-top: thin solid #FEFEFE;">
-                    <li data-icon="delete"><a href="#" data-rel="close">Cerrar menu</a></li>
-                    <li data-icon="home"><a href="/">Home</a></li>
-                    <li data-icon="gear"><a href="{% url 'transporte_parametro_list' %}" data-ajax="false" onclick="window.location.reload(false);">Parámetros</a></li>
-                    <li data-icon="check"><a href="{% url 'transporte_tipodevehiculo_list' %}" data-ajax="false" onclick="window.location.reload(false);">Tipos de Vehículo</a></li>
-                    <li data-icon="calendar"><a href="{% url 'transporte_vehiculo_list' %}" data-ajax="false" onclick="window.location.reload(false);">Vehículos</a></li>
-                    <li data-icon="bullets"><a href="{% url 'transporte_niveldeprecio_list' %}" data-ajax="false" onclick="window.location.reload(false);">Niveles de Precio</a></li>
-                    <li data-icon="bars"><a href="{% url 'transporte_item_list' %}" data-ajax="false" onclick="window.location.reload(false);">Items</a></li>
-                    <li data-icon="comment"><a href="{% url 'transporte_cliente_list' %}" data-ajax="false" onclick="window.location.reload(false);">Clientes</a></li>
-                    <li data-icon="grid"><a href="{% url 'transporte_itinerario_list' %}" data-ajax="false" onclick="window.location.reload(false);">Itinerarios</a></li>
-                    <li data-icon="tag"><a href="{% url 'transporte_cotizacion_list' %}" data-ajax="false" onclick="window.location.reload(false);">Cotizaciones</a></li>
-                    <li data-icon="navigation"><a href="{% url 'transporte_tramo_list' %}" data-ajax="false" onclick="window.location.reload(false);">Tramos</a></li>
-                    <li data-icon="location"><a href="{% url 'transporte_lugar_list' %}" data-ajax="false" onclick="window.location.reload(false);">Lugares</a></li>
-                    <li data-icon="user"><a href="{% url 'transporte_conductor_list' %}" data-ajax="false" onclick="window.location.reload(false);">Conductores</a></li>
+            <div data-role="panel" data-display="overlay" data-theme="b" id="nav-panel"><!-- panel -->
+{#                <img src="{% static "images/logo-LATTours.png" %}" alt="LAT Tours">#}
+                <ul data-role="listview" class="ui-nodisc-icon">
+{#                    <li data-icon="none"><a href="#" data-rel="close"><i#}
+{#                            class="material-icons menu-icons">close</i></a></li>#}
+                    <li data-icon="none"><a href="/"><i
+                            class="material-icons menu-icons">home</i>Home</a></li>
+                    <li data-icon="none"><a href="{% url 'transporte_parametro_list' %}" data-ajax="false"
+                                            onclick="window.location.reload(false);"><i
+                            class="material-icons menu-icons">settings</i>Parámetros</a></li>
+                    <li data-icon="none"><a href="{% url 'transporte_tipodevehiculo_list' %}" data-ajax="false"
+                                             onclick="window.location.reload(false);"><i
+                            class="material-icons menu-icons">directions_bus</i>Tipos de Vehículo</a></li>
+                    <li data-icon="none"><a href="{% url 'transporte_vehiculo_list' %}" data-ajax="false"
+                                                onclick="window.location.reload(false);"><i
+                            class="material-icons menu-icons">airport_shuttle</i>Vehículos</a></li>
+                    <li data-icon="none"><a href="{% url 'transporte_niveldeprecio_list' %}" data-ajax="false"
+                                               onclick="window.location.reload(false);"><i
+                            class="material-icons menu-icons">local_offer</i>Niveles de Precio</a></li>
+                    <li data-icon="none"><a href="{% url 'transporte_item_list' %}" data-ajax="false"
+                                            onclick="window.location.reload(false);"><i
+                            class="material-icons menu-icons">toc</i>Items</a></li>
+                    <li data-icon="none"><a href="{% url 'transporte_itemgrupo_list' %}" data-ajax="false"
+                                            onclick="window.location.reload(false);"><i
+                            class="material-icons menu-icons">apps</i>Grupos</a></li>
+                    <li data-icon="none"><a href="{% url 'transporte_cliente_list' %}" data-ajax="false"
+                                               onclick="window.location.reload(false);"><i
+                            class="material-icons menu-icons">recent_actors</i>Clientes</a></li>
+                    <li data-icon="none"><a href="{% url 'transporte_itinerario_list' %}" data-ajax="false"
+                                            onclick="window.location.reload(false);"><i
+                            class="material-icons menu-icons">date_range</i>Itinerarios</a></li>
+                    <li data-icon="none"><a href="{% url 'transporte_cotizacion_list' %}" data-ajax="false"
+                                           onclick="window.location.reload(false);"><i
+                            class="material-icons menu-icons">assignment_turned_in</i>Cotizaciones</a></li>
+                    <li data-icon="none"><a href="{% url 'transporte_tramo_list' %}" data-ajax="false"
+                                                  onclick="window.location.reload(false);"><i
+                            class="material-icons menu-icons">directions</i>Tramos</a></li>
+                    <li data-icon="none"><a href="{% url 'transporte_lugar_list' %}" data-ajax="false"
+                                                onclick="window.location.reload(false);"><i
+                            class="material-icons menu-icons">place</i>Lugares</a></li>
+                    <li data-icon="none"><a href="{% url 'transporte_conductor_list' %}" data-ajax="false"
+                                            onclick="window.location.reload(false);"><i
+                            class="material-icons menu-icons">group</i>Conductores</a></li>
                 </ul>
             </div><!-- /panel -->
             <div style="padding-left: 4px !important;" data-role="footer" data-position="fixed" data-theme="a"><!-- footer -->{% block footer %}
@@ -72,6 +97,7 @@
             </div><!-- /footer -->
         </div><!-- /page -->
         <script src="{% static "rest_framework/js/jquery-1.12.4.min.js" %}"></script>
-        <script src="{% static "js/jquery.mobile-1.4.5.min.js" %}"></script>{% block extlibs %}{% endblock %}{% block scripts %}{% endblock %}{% block scripts2 %}{% endblock %}
+        <script src="{% static "js/jquery.mobile-1.4.5.min.js" %}"></script>{% block extlibs %}{% endblock %}{% block scripts %}{% endblock %}
+        {% block scripts2 %}{% endblock %}
     </body>
 </html>

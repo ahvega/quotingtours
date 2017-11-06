@@ -3,7 +3,8 @@
 {% block title %}Vehículo{% endblock %}
 {% block page-title %}Vehículo{% endblock %}
 {% block thead %}
-    <th colspan="2" class="izquierda">{{ vehiculo.tipo_nombre }} {{ vehiculo.nombre }}{% if request.user.is_superuser %}
+    <th colspan="2" class="izquierda"><i
+            class="material-icons text-lime">airport_shuttle</i>{{ vehiculo.tipo_nombre }} {{ vehiculo.nombre }}{% if request.user.is_superuser %}
         <div class="ui-nodisc-icon mininav3r">
             <a class="ui-btn ui-btn-inline ui-btn-a ui-icon-edit ui-btn-icon-notext ui-btncito"
                title="Editar Vehículo {{ vehiculo.nombre }}" href="{{ vehiculo.get_update_url }}">edit</a>

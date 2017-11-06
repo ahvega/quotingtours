@@ -1,12 +1,13 @@
-{% extends "_table.html" %}{% load humanize %}{% load misformatos %}
+{% extends "_table.html" %}{% load static %}
+{% load humanize %}{% load misformatos %}
 {% block title %}Ítems{% endblock %}
 {% block page-title %}Ítems{% endblock %}{% block theader %}
                                 <th class="center">Ítem</th>
-                                <th class="derecha">Acciones</th>
+                                <th data-priority="5" class="derecha">Acciones</th>
                                 <th data-priority="2" class="derecha">Costo</th>
                                 <th data-priority="1" class="derecha">Precio</th>
-                                <th data-priority="4" class="izquierda">Descripción</th>
-                                <th data-priority="5" class="centrado">Tipo</th>{% endblock %}{% block tbody %}{% for item in item_list %}
+                                <th data-priority="3" class="izquierda">Descripción</th>
+                                <th data-priority="4" class="centrado">Tipo</th>{% endblock %}{% block tbody %}{% for item in item_list %}
                             <tr>
                                 <td data-search="{{ item.nombre }}">
                                     <a title="Ver Ítem {{ item.nombre }}"
@@ -30,11 +31,34 @@
                                 <td class="izquierda">{{ item.descripcion_venta }}</td>
                                 <td class="centrado">{{ item.tipo_item }}</td>
                             </tr>{% endfor %}{% endblock %}{% block footer %}{% if request.user.is_superuser %}
-                <div class="fixed-action-btn">
-                    <a class="btn-floating btn-large waves-effect waves-light red darken-2"
-                       title="Crear Ítem"
-                       href="{% url "transporte_item_create" %}"
-                       data-ajax="false" onclick="window.location.reload(false);">
-                        <i class="material-icons">add</i></a>
-                </div>{% endif %}{% endblock %}
-
+    <div class="kc_fab_wrapper"></div>
+{% endif %}
+{% endblock %}
+{% block scripts2 %}
+    <script src="{% static "js/kc.fab.min.js" %}"></script>
+    <script>
+        $(document).ready(function () {
+            var links = [
+                {
+                    "bgcolor": "#D32F2F",
+                    "icon": "+"
+                },
+                {
+                    "url": '{% url "transporte_itemgrupo_create" %}',
+                    "bgcolor": "#3B5998",
+                    "color": "#fffff",
+                    "icon": "<i class='material-icons' style='vertical-align: middle;'>apps</i>",
+                    "title": "Agregar Grupo"
+                },
+                {
+                    "url": '{% url "transporte_item_create" %}',
+                    "bgcolor": "#263238",
+                    "tooltip": "Agregar Item",
+                    "color": "white",
+                    "icon": "<i class='material-icons' style='vertical-align: middle;'>toc</i>",
+                    "title": "Agregar Item"
+                }
+            ];
+            $('.kc_fab_wrapper').kc_fab(links);
+        })
+    </script>{% endblock %}

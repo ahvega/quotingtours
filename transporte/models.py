@@ -11,6 +11,8 @@ from django.contrib.contenttypes.models import ContentType
 from django.core.urlresolvers import reverse
 from django.db import models as models
 from django.db.models import *
+from django.db.models.signals import post_delete
+from django.dispatch import receiver
 from django.utils.timezone import now
 from django.utils.translation import ugettext as _
 from django_extensions.db import fields as extension_fields
@@ -94,50 +96,6 @@ minimoKms = param('2017-minimo-kms')
 minimoHrs = param('2017-tiempo-minimo')
 
 
-# minimoHrs = 12
-
-
-class Item(models.Model):
-    # Choices
-    class TipoItem(DjangoChoices):
-        Insumo = ChoiceItem("Insumo")
-        Servicio = ChoiceItem("Servicio")
-        Subcontratado = ChoiceItem("Subcontratado")
-        Cargo = ChoiceItem("Cargo")
-        Descuento = ChoiceItem("Descuento")
-        Impuesto = ChoiceItem("Impuesto")
-        Grupo = ChoiceItem("Grupo")
-
-    # Fields
-    nombre = models.CharField(max_length=100)
-    slug = extension_fields.AutoSlugField(populate_from='nombre', blank=True)
-    tipo_item = models.CharField(max_length=13, choices=TipoItem.choices, validators=[TipoItem.validator],
-                                 default=TipoItem.Servicio)
-    costo = models.DecimalField(max_digits=10, decimal_places=2)
-    precio = models.DecimalField(max_digits=10, decimal_places=2)
-    descripcion_compra = models.CharField(max_length=50)
-    descripcion_venta = models.CharField(max_length=50)
-    creado = models.DateTimeField(auto_now_add=True, editable=False)
-    actualizado = models.DateTimeField(auto_now=True, editable=False)
-
-    class Meta:
-        ordering = ('nombre',)
-        verbose_name = _('Item')
-        verbose_name_plural = _('Items')
-
-    def __str__(self):
-        return self.nombre
-
-    def __unicode__(self):
-        return u'%s' % self.nombre
-
-    def get_absolute_url(self):
-        return reverse('transporte_item_detail', args=(self.slug,))
-
-    def get_update_url(self):
-        return reverse('transporte_item_update', args=(self.slug,))
-
-
 class NivelDePrecio(models.Model):
     # Choices
     class Tipo(DjangoChoices):
@@ -182,6 +140,197 @@ class NivelDePrecio(models.Model):
         return reverse('transporte_niveldeprecio_update', args=(self.slug,))
 
 
+class Item(models.Model):
+    # Choices
+    class TipoItem(DjangoChoices):
+        Insumo = ChoiceItem("Insumo")
+        Servicio = ChoiceItem("Servicio")
+        Subcontratado = ChoiceItem("Subcontratado")
+        Cargo = ChoiceItem("Cargo")
+        Descuento = ChoiceItem("Descuento")
+        Impuesto = ChoiceItem("Impuesto")
+        Grupo = ChoiceItem("Grupo")
+
+    # Fields
+    nombre = models.CharField(max_length=100, unique=True)
+    slug = extension_fields.AutoSlugField(populate_from='nombre', blank=True)
+    tipo_item = models.CharField(max_length=13, choices=TipoItem.choices, validators=[TipoItem.validator],
+                                 default=TipoItem.Servicio)
+    costo = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
+    precio = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
+    descripcion_compra = models.CharField(max_length=255, blank=True, null=True)
+    descripcion_venta = models.CharField(max_length=255, blank=True, null=True)
+    creado = models.DateTimeField(auto_now_add=True, editable=False)
+    actualizado = models.DateTimeField(auto_now=True, editable=False)
+
+    class Meta:
+        ordering = ('nombre',)
+        verbose_name = _('Ítem')
+        verbose_name_plural = _('Ítems')
+
+    def __str__(self):
+        return self.nombre
+
+    def __unicode__(self):
+        return u'%s' % self.nombre
+
+    def get_absolute_url(self):
+        if self.tipo_item == 'Grupo':
+            return reverse('transporte_itemgrupo_detail', args=(self.slug,))
+        else:
+            return reverse('transporte_item_detail', args=(self.slug,))
+
+    def get_update_url(self):
+        if self.tipo_item == 'Grupo':
+            return reverse('transporte_itemgrupo_update', args=(self.slug,))
+        else:
+            return reverse('transporte_item_update', args=(self.slug,))
+
+    def get_delete_url(self):
+        return reverse('transporte_item_delete', args=(self.slug,))
+
+    def save(self, *args, **kwargs):
+        if self.descripcion_venta is None:
+            self.descripcion_venta = self.descripcion_compra
+        if self.descripcion_compra is None:
+            self.descripcion_compra = self.descripcion_venta
+        super(Item, self).save(*args, **kwargs)
+
+
+class ItemGrupo(Item):
+    imprimir_detalle = models.BooleanField(default=False)
+
+    class Meta:
+        verbose_name = 'Grupo'
+        verbose_name_plural = 'Grupos'
+
+    @property
+    def subtotal(self):
+        if self.grupo_lineas.exists():
+            subtotal_agregado = self.grupo_lineas.aggregate(subtotal=Coalesce(Sum('costo_total'), 0))
+            return subtotal_agregado['subtotal']
+        else:
+            return 0
+
+    @property
+    def total(self):
+        if self.grupo_lineas.exists():
+            total_agregado = self.grupo_lineas.aggregate(total=Coalesce(Sum('total'), 0))
+            return Decimal(math.ceil(float(total_agregado['total']) / redondeoLps) * redondeoLps).quantize(
+                Decimal("0.00"))
+        else:
+            return 0
+
+    @property
+    def utilidad(self):
+        if self.grupo_lineas.exists():
+            subtotal_agregado = self.grupo_lineas.aggregate(subtotal=Coalesce(Sum('costo_total'), 0))
+            total_agregado = self.grupo_lineas.aggregate(total=Coalesce(Sum('total'), 0))
+            if total_agregado:
+                redondeado = (math.ceil(float(total_agregado['total']) / redondeoLps)) * redondeoLps
+                redondeado = Decimal(redondeado).quantize(Decimal("0.00"))
+            else:
+                redondeado = 0.00
+            if redondeado == 0.00:
+                return 0.0000
+            else:
+                utilidad_porcentual = (redondeado - Decimal(subtotal_agregado['subtotal'])) / redondeado
+                return Decimal(utilidad_porcentual).quantize(Decimal("0.0000"))
+        else:
+            return 0
+
+    @property
+    def utilidad_valor(self):
+        if self.precio is None:
+            return 0
+        else:
+            self.precio - self.costo
+
+    def save(self, *args, **kwargs):
+        self.costo = self.subtotal
+        self.precio = self.total
+        self.tipo_item = 'Grupo'
+        super(ItemGrupo, self).save(*args, **kwargs)
+
+
+def allowed_choices():
+    return Q(tipo_item='Insumo') | Q(tipo_item='Servicio') | Q(tipo_item='Subcontratado') | \
+           Q(tipo_item='Cargo') | Q(tipo_item='Descuento') | Q(tipo_item='Impuesto')
+
+
+class ItemGrupoLinea(models.Model):
+    nombre = models.CharField(max_length=100, null=True, blank=True)
+    descripcion = models.CharField(max_length=255, null=True, blank=True)
+    cantidad = models.DecimalField(max_digits=10, decimal_places=2)
+    costo = models.DecimalField(max_digits=10, decimal_places=2, default=0, editable=False)
+    costo_total = models.DecimalField(max_digits=10, decimal_places=2, default=0, editable=False)
+    markup = models.DecimalField(max_digits=6, decimal_places=4, default=0, editable=False)
+    utilidad = models.DecimalField(max_digits=6, decimal_places=4, default=0, editable=False)
+    total = models.DecimalField(max_digits=10, decimal_places=2, default=0, editable=False)
+    slug = extension_fields.AutoSlugField(populate_from='forslug', blank=True, overwrite=True)
+    creado = models.DateTimeField(auto_now_add=True, editable=False)
+    actualizado = models.DateTimeField(auto_now=True, editable=False)
+
+    # Relationship Fields
+    item = models.ForeignKey(Item, verbose_name='item', related_name='grupo_item',
+                             limit_choices_to=allowed_choices, on_delete=models.PROTECT)
+    item_grupo = models.ForeignKey(ItemGrupo, verbose_name='grupo', related_name='grupo_lineas')
+    nivel_de_precio = models.ForeignKey(NivelDePrecio, verbose_name='nivel de precio',
+                                        on_delete=models.PROTECT, null=True, blank=True)
+
+    class Meta:
+        ordering = ('id',)
+        verbose_name = _('Grupo Ítem')
+        verbose_name_plural = _('Grupo Ítems')
+
+    def forslug(self):
+        return self.item_grupo.slug + '_' + self.nombre
+
+    def save(self, *args, **kwargs):
+        nivel_default = NivelDePrecio.objects.get(nombre='Prepago 15%')
+        elgrupo = ItemGrupo.objects.get(id=self.item_grupo.pk)
+
+        self.nombre = self.item.nombre
+        self.descripcion = self.item.descripcion_venta
+        self.costo = self.item.costo
+        self.costo_total = self.cantidad * self.costo
+        if self.nivel_de_precio is None:
+            self.nivel_de_precio = nivel_default
+        self.markup = Decimal(round(self.nivel_de_precio.factor - 1, 4)).quantize(Decimal("0.0000"))
+        self.utilidad = Decimal(self.nivel_de_precio.valor).quantize(Decimal("0.0000"))
+        self.total = Decimal(self.costo_total) * (1 + Decimal(self.markup))
+        super(ItemGrupoLinea, self).save(*args, **kwargs)
+        elgrupo.save()
+
+    @property
+    def utilidad_valor(self):
+        return self.total - self.costo_total
+
+    def __str__(self):
+        return str(self.descripcion)
+
+    def __unicode__(self):
+        return u'%s' % self.slug
+
+    def get_absolute_url(self):
+        return reverse('transporte_itemgrupolinea_detail', args=(self.slug,))
+
+    def get_update_url(self):
+        return reverse('transporte_itemgrupolinea_update', args=(self.slug,))
+
+    def get_delete_url(self):
+        return reverse('transporte_itemgrupolinea_delete', args=(self.slug,))
+
+    def get_itemgrupo_url(self):
+        return reverse('transporte_itemgrupo_detail', args=(self.item_grupo.slug,))
+
+
+@receiver(post_delete, sender=ItemGrupoLinea)
+def update_grupo_after_delete_linea(sender, instance, **kwargs):
+    elgrupo = ItemGrupo.objects.get(id=instance.item_grupo.pk)
+    elgrupo.save()
+
+
 class Cliente(models.Model):
     # Fields
     nombre = models.CharField(max_length=100)
@@ -193,6 +342,9 @@ class Cliente(models.Model):
     ciudad = models.CharField(max_length=50, default='San Pedro Sula')
     pais = models.CharField(max_length=50, default='Honduras')
     rtn = models.CharField(default='Consum. Final', max_length=16, verbose_name='RTN')
+    subtotal_cotizado = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, default=0)
+    utilidad_cotizada = models.DecimalField(max_digits=6, decimal_places=4, null=True, blank=True, default=0)
+    total_cotizado = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, default=0)
     creado = models.DateTimeField(auto_now_add=True, editable=False)
     actualizado = models.DateTimeField(auto_now=True, editable=False)
 
@@ -211,7 +363,46 @@ class Cliente(models.Model):
     def __unicode__(self):
         return u'%s' % self.nombre
 
+    @property
+    def sum_subtotal_cotizado(self):
+        subtotal_agregado = self.itinerarios.aggregate(subtotal=Coalesce(Sum('subtotal_cotizado'), 0))
+        return subtotal_agregado['subtotal']
+
+    @property
+    def sum_total_cotizado(self):
+        if self.itinerarios.exists():
+            total_agregado = self.itinerarios.aggregate(total=Coalesce(Sum('total_cotizado'), 0))
+            return Decimal(math.ceil(float(total_agregado['total']) / redondeoLps) * redondeoLps).quantize(
+                Decimal("0.00"))
+        else:
+            return 0
+
+    @property
+    def sum_utilidad_cotizada(self):
+        if self.itinerarios.exists():
+            subtotal_agregado = self.itinerarios.aggregate(subtotal=Coalesce(Sum('subtotal_cotizado'), 0))
+            total_agregado = self.itinerarios.aggregate(total=Coalesce(Sum('total_cotizado'), 0))
+            if total_agregado:
+                redondeado = (math.ceil(float(total_agregado['total']) / redondeoLps)) * redondeoLps
+                redondeado = Decimal(redondeado).quantize(Decimal("0.00"))
+            else:
+                redondeado = 0.00
+            if redondeado == 0.00:
+                return 0.0000
+            else:
+                utilidad_porcentual = (redondeado - Decimal(subtotal_agregado['subtotal'])) / redondeado
+                return Decimal(utilidad_porcentual).quantize(Decimal("0.0000"))
+        else:
+            return 0
+
+    @property
+    def utilidad_cotizada_valor(self):
+        return self.total_cotizado - self.subtotal_cotizado
+
     def save(self, *args, **kwargs):
+        self.subtotal_cotizado = self.sum_subtotal_cotizado
+        self.utilidad_cotizada = self.sum_utilidad_cotizada
+        self.total_cotizado = self.sum_total_cotizado
         self.codigo = self.codigo.upper()
         super(Cliente, self).save()
 
@@ -237,13 +428,19 @@ class Itinerario(models.Model):
     slug = extension_fields.AutoSlugField(populate_from='nombre', blank=True, overwrite=True)
     fecha_desde = models.DateField(verbose_name='Fecha Inicio')
     fecha_hasta = models.DateField(verbose_name='Fecha Final')
+    _dias = models.IntegerField(db_column='dias', null=True, blank=True, default=1)
+
     estatus = models.CharField(max_length=10, choices=Status.choices,
                                validators=[Status.validator], default=Status.Solicitado)
+    subtotal_cotizado = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, default=0)
+    utilidad_cotizada = models.DecimalField(max_digits=6, decimal_places=4, null=True, blank=True, default=0)
+    total_cotizado = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, default=0)
     creado = models.DateTimeField(auto_now_add=True, editable=False)
     actualizado = models.DateTimeField(auto_now=True, editable=False)
 
     # Relationship Fields
-    cliente = models.ForeignKey(Cliente, on_delete=CASCADE, verbose_name='cliente')
+    cliente = models.ForeignKey(Cliente, on_delete=CASCADE, verbose_name='cliente',
+                                related_name='itinerarios')
     nivel_de_precio = models.ForeignKey(NivelDePrecio, verbose_name='nivel de precio',
                                         on_delete=models.PROTECT, null=True)
 
@@ -252,6 +449,50 @@ class Itinerario(models.Model):
         verbose_name = _('Itinerario')
         verbose_name_plural = _('Itinerarios')
         unique_together = ('cliente', 'nombre')
+
+    @property
+    def dias(self):
+        return (self.fecha_hasta - self.fecha_desde).days + 1
+
+    @dias.setter
+    def dias(self, value):
+        self._dias = value
+
+    @property
+    def sum_subtotal_cotizado(self):
+        subtotal_agregado = self.cotizaciones.aggregate(subtotal=Coalesce(Sum('subtotal'), 0))
+        return subtotal_agregado['subtotal']
+
+    @property
+    def sum_total_cotizado(self):
+        if self.cotizaciones.exists():
+            total_agregado = self.cotizaciones.aggregate(total=Coalesce(Sum('total'), 0))
+            return Decimal(math.ceil(float(total_agregado['total']) / redondeoLps) * redondeoLps).quantize(
+                Decimal("0.00"))
+        else:
+            return 0
+
+    @property
+    def sum_utilidad_cotizada(self):
+        if self.cotizaciones.exists():
+            subtotal_agregado = self.cotizaciones.aggregate(subtotal=Coalesce(Sum('subtotal'), 0))
+            total_agregado = self.cotizaciones.aggregate(total=Coalesce(Sum('total'), 0))
+            if total_agregado:
+                redondeado = (math.ceil(float(total_agregado['total']) / redondeoLps)) * redondeoLps
+                redondeado = Decimal(redondeado).quantize(Decimal("0.00"))
+            else:
+                redondeado = 0.00
+            if redondeado == 0.00:
+                return 0.0000
+            else:
+                utilidad_porcentual = (redondeado - Decimal(subtotal_agregado['subtotal'])) / redondeado
+                return Decimal(utilidad_porcentual).quantize(Decimal("0.0000"))
+        else:
+            return 0
+
+    @property
+    def utilidad_cotizada_valor(self):
+        return self.total_cotizado - self.subtotal_cotizado
 
     def __str__(self):
         return self.nombre
@@ -273,6 +514,9 @@ class Itinerario(models.Model):
                unicode(self.codigo_cliente) + '-' + unicode(self.nombre)
 
     def save(self, *args, **kwargs):
+        self.subtotal_cotizado = self.sum_subtotal_cotizado
+        self.utilidad_cotizada = self.sum_utilidad_cotizada
+        self.total_cotizado = self.sum_total_cotizado
         if self.nombre[:10] != self.nombre_expandido[:10]:
             self.nombre = self.nombre_expandido
         if self.nivel_de_precio is None:
@@ -297,7 +541,7 @@ class Lugar(models.Model):
     nombre = models.CharField(max_length=50)
     pais = models.CharField(max_length=30)
     zona = models.CharField(max_length=4, choices=Zona.choices, validators=[Zona.validator], default=Zona.Uno)
-    slug = extension_fields.AutoSlugField(populate_from='codigo', blank=True)
+    slug = extension_fields.AutoSlugField(populate_from='codigo', blank=True, overwrite=True)
     creado = models.DateTimeField(auto_now_add=True, editable=False)
     actualizado = models.DateTimeField(auto_now=True, editable=False)
 
@@ -368,10 +612,10 @@ class Tramo(models.Model):
         return self.hacia_lugar.nombre
 
     def __str__(self):
-        return self.codigo
+        return self.desde_hacia
 
     def __unicode__(self):
-        return u'%s' % self.codigo
+        return u'%s' % self.desde_hacia
 
     def get_absolute_url(self):
         return reverse('transporte_tramo_detail', args=(self.slug,))
@@ -389,21 +633,19 @@ class Cotizacion(models.Model):
     _dias = models.IntegerField(db_column='dias', null=True, blank=True, default=1)
     fecha_vence = models.DateField(default=date(now().year, 12, 31))
     descripcion = models.CharField(default=' - ', max_length=255)
-    _kmstotal = models.DecimalField(max_digits=5, decimal_places=1, db_column='kms_total', null=True,
-                                    blank=True, default=0)
-    _hrstotal = models.DecimalField(max_digits=3, decimal_places=1, db_column='hrs_total', null=True,
-                                    blank=True, default=0)
-    _subtotal = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True,
-                                    db_column='subtotal', default=0)
-    _utilidad = models.DecimalField(max_digits=6, decimal_places=4, null=True, blank=True,
-                                    db_column='utilidad', default=0)
-    _total = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True,
-                                 db_column='total', default=0)
+    _kmstotal = models.DecimalField(max_digits=5, decimal_places=1, db_column='kms_total', null=True, blank=True,
+                                    default=0)
+    _hrstotal = models.DecimalField(max_digits=3, decimal_places=1, db_column='hrs_total', null=True, blank=True,
+                                    default=0)
+    subtotal = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, default=0)
+    utilidad = models.DecimalField(max_digits=6, decimal_places=4, null=True, blank=True, default=0)
+    total = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, default=0)
     creado = models.DateTimeField(auto_now_add=True, editable=False)
     actualizado = models.DateTimeField(auto_now=True, editable=False)
 
     # Relationship Fields
-    itinerario = models.ForeignKey(Itinerario, on_delete=CASCADE, verbose_name='itinerario')
+    itinerario = models.ForeignKey(Itinerario, on_delete=CASCADE, verbose_name='itinerario',
+                                   related_name='cotizaciones')
     nivel_de_precio = models.ForeignKey(NivelDePrecio, verbose_name='nivel de precio',
                                         on_delete=models.PROTECT, null=True, blank=True)
 
@@ -453,44 +695,47 @@ class Cotizacion(models.Model):
         self._hrs_total = value
 
     @property
-    def subtotal(self):
-        subtotal_agregado = self.lineas.aggregate(subtotal=Coalesce(Sum('monto'), 0))
+    def sum_subtotal(self):
+        subtotal_agregado = self.lineas.aggregate(subtotal=Coalesce(Sum('costo_total'), 0))
         return subtotal_agregado['subtotal']
 
-    @subtotal.setter
-    def subtotal(self, value):
-        self._subtotal = value
+    @property
+    def sum_total(self):
+        if self.lineas.exists():
+            total_agregado = self.lineas.aggregate(total=Coalesce(Sum('total'), 0))
+            return Decimal(math.ceil(float(total_agregado['total']) / redondeoLps) * redondeoLps).quantize(
+                Decimal("0.00"))
+        else:
+            return 0
 
     @property
-    def total(self):
-        total_agregado = self.lineas.aggregate(total=Coalesce(Sum('total'), 0))
-        return Decimal(math.ceil(float(total_agregado['total']) / redondeoLps) * redondeoLps).quantize(Decimal("0.00"))
-
-    @total.setter
-    def total(self, value):
-        self._total = value
+    def sum_utilidad(self):
+        if self.lineas.exists():
+            subtotal_agregado = self.lineas.aggregate(subtotal=Coalesce(Sum('costo_total'), 0))
+            total_agregado = self.lineas.aggregate(total=Coalesce(Sum('total'), 0))
+            if total_agregado:
+                redondeado = (math.ceil(float(total_agregado['total']) / redondeoLps)) * redondeoLps
+                redondeado = Decimal(redondeado).quantize(Decimal("0.00"))
+            else:
+                redondeado = 0.00
+            if redondeado == 0.00:
+                return 0.0000
+            else:
+                utilidad_porcentual = (redondeado - Decimal(subtotal_agregado['subtotal'])) / redondeado
+                return Decimal(utilidad_porcentual).quantize(Decimal("0.0000"))
+        else:
+            return 0
 
     @property
-    def utilidad(self):
-        subtotal_agregado = self.lineas.aggregate(subtotal=Coalesce(Sum('monto'), 0))
-        total_agregado = self.lineas.aggregate(total=Coalesce(Sum('total'), 0))
-        if total_agregado:
-            redondeado = (math.ceil(float(total_agregado['total']) / redondeoLps)) * redondeoLps
-            redondeado = Decimal(redondeado).quantize(Decimal("0.00"))
-        else:
-            redondeado = 0.00
-        if redondeado == 0.00:
-            return 0.0000
-        else:
-            utilidad_porcentual = (redondeado - Decimal(subtotal_agregado['subtotal'])) / redondeado
-            return Decimal(utilidad_porcentual).quantize(Decimal("0.0000"))
-
-    @utilidad.setter
-    def utilidad(self, value):
-        self._utilidad = value
+    def utilidad_valor(self):
+        return self.total - self.subtotal
 
     def save(self, *args, **kwargs):
+        elitinerario = Itinerario.objects.get(id=self.itinerario.pk)
         self.nombre = self.nombre.upper()
+        self.subtotal = self.sum_subtotal
+        self.utilidad = self.sum_utilidad
+        self.total = self.sum_total
         if self.itinerario is None:
             self.itinerario = 1
         if self.nombre[:4] != self.itinerario.codigo_cliente:
@@ -498,6 +743,7 @@ class Cotizacion(models.Model):
         if self.nivel_de_precio is None:
             self.nivel_de_precio = self.itinerario.nivel_de_precio
         super(Cotizacion, self).save(*args, **kwargs)
+        elitinerario.save()
 
     def get_absolute_url(self):
         return reverse('transporte_cotizacion_detail', args=(self.slug,))
@@ -508,6 +754,7 @@ class Cotizacion(models.Model):
 
 class RutaDetalle(models.Model):
     # Fields
+    orden = models.IntegerField(null=True, blank=True)
     desde = models.TextField(max_length=100, null=True, blank=True)
     hacia = models.TextField(max_length=100, null=True, blank=True)
     kms = models.DecimalField(max_digits=5, null=True, blank=True, decimal_places=1)
@@ -518,12 +765,12 @@ class RutaDetalle(models.Model):
 
     # Relationship fields
     cotizacion = models.ForeignKey(Cotizacion, on_delete=CASCADE, verbose_name='cotizacion', related_name='tramos')
-    tramo = models.ForeignKey(Tramo, on_delete=CASCADE, verbose_name='tramo', related_name='tramo')
+    tramo = models.ForeignKey(Tramo, on_delete=CASCADE, verbose_name='tramo', related_name='rutas')
 
     class Meta:
-        ordering = ('id',)
-        verbose_name = _('Tramo en Cotización')
-        verbose_name_plural = _('Tramos en Cotización')
+        ordering = ('orden',)
+        verbose_name = _('Cotización Ruta')
+        verbose_name_plural = _('Cotización Rutas')
 
     def save(self, *args, **kwargs):
         self.kms = self.tramo.kms
@@ -550,10 +797,11 @@ class RutaDetalle(models.Model):
 
 class CotizacionDetalle(models.Model):
     # Fields
+    nombre = models.CharField(max_length=100, null=True, blank=True)
     descripcion = models.CharField(max_length=255, null=True, blank=True)
     cantidad = models.DecimalField(max_digits=10, decimal_places=2)
     costo = models.DecimalField(max_digits=10, decimal_places=2, default=0, editable=False)
-    monto = models.DecimalField(max_digits=10, decimal_places=2, default=0, editable=False)
+    costo_total = models.DecimalField(max_digits=10, decimal_places=2, default=0, editable=False)
     markup = models.DecimalField(max_digits=6, decimal_places=4, default=0, editable=False)
     utilidad = models.DecimalField(max_digits=6, decimal_places=4, default=0, editable=False)
     total = models.DecimalField(max_digits=10, decimal_places=2, default=0, editable=False)
@@ -569,8 +817,8 @@ class CotizacionDetalle(models.Model):
 
     class Meta:
         ordering = ('id',)
-        verbose_name = _('Ítem en Cotización')
-        verbose_name_plural = _('Ítems en Cotización')
+        verbose_name = _('Cotización Ítem')
+        verbose_name_plural = _('Cotización Ítems')
 
     @property
     def cliente(self):
@@ -584,16 +832,29 @@ class CotizacionDetalle(models.Model):
     def forslug(self):
         return self.cotizacion.nombre + '-' + self.item.slug
 
+    @property
+    def precio_redondeado(self):
+        precio = Decimal(self.costo) * (1 + Decimal(self.markup))
+        return Decimal(math.ceil(float(precio) / redondeoLps) * redondeoLps).quantize(Decimal("0.00"))
+
     def save(self, *args, **kwargs):
+        lacotizacion = Cotizacion.objects.get(id=self.cotizacion.pk)
+        
+        self.nombre = self.item.nombre
         self.descripcion = self.item.descripcion_venta
         self.costo = self.item.costo
-        self.monto = self.cantidad * self.costo
+        self.costo_total = self.cantidad * self.costo
         if self.nivel_de_precio is None:
             self.nivel_de_precio = self.cotizacion.nivel_de_precio
         self.markup = Decimal(round(self.nivel_de_precio.factor - 1, 4)).quantize(Decimal("0.0000"))
         self.utilidad = Decimal(self.nivel_de_precio.valor).quantize(Decimal("0.0000"))
-        self.total = Decimal(self.monto) * (1 + Decimal(self.markup))
+        self.total = Decimal(self.costo_total) * (1 + Decimal(self.markup))
         super(CotizacionDetalle, self).save(*args, **kwargs)
+        lacotizacion.save()
+
+    @property
+    def utilidad_valor(self):
+        return self.total - self.costo_total
 
     def __str__(self):
         return str(self.descripcion)
@@ -615,6 +876,24 @@ class CotizacionDetalle(models.Model):
 
     def cotizacion_slug(self):
         return self.cotizacion.slug
+
+
+@receiver(post_delete, sender=CotizacionDetalle)
+def update_cotizacion_after_delete_cotiaciondetalle(sender, instance, **kwargs):
+    lacotizacion = Cotizacion.objects.get(id=instance.cotizacion.pk)
+    lacotizacion.save()
+
+
+@receiver(post_delete, sender=Cotizacion)
+def update_itinerario_after_delete_cotizacion(sender, instance, **kwargs):
+    elitinerario = Itinerario.objects.get(id=instance.itinerario.pk)
+    elitinerario.save()
+
+
+@receiver(post_delete, sender=Itinerario)
+def update_cliente_after_delete_itinerario(sender, instance, **kwargs):
+    elcliente = Cliente.objects.get(id=instance.cliente.pk)
+    elcliente.save()
 
 
 class Vehiculo(models.Model):
@@ -705,8 +984,8 @@ class TramoEnVehiculo(models.Model):
 
     class Meta:
         ordering = ('tramo',)
-        verbose_name = 'Tramo en Vehículos'
-        verbose_name_plural = 'Tramos En Vehículos'
+        verbose_name = 'Tramo Vehículo'
+        verbose_name_plural = 'Tramo Vehículos'
         unique_together = ('tramo', 'vehiculo')
 
     def __str__(self):

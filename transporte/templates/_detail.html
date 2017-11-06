@@ -15,10 +15,10 @@
                     </tbody>
                 </table>
             </div>{% block detalle %}{% endblock %}<br/><br/><br/><br/>
-            {% endblock %}{% block footer %}{% endblock %}{% block scripts2 %}
-    <script type="text/javascript"
+            {% endblock %}{% block footer %}{% endblock %}{% block scripts %}
+    <script defer type="text/javascript"
             src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
-    <script type="text/javascript"
+    <script defer type="text/javascript"
             src="https://cdn.datatables.net/1.10.15/js/dataTables.material.min.js"></script>
-    <script type="text/javascript"
+    <script defer type="text/javascript"
             src="{% static "js/tablelocale.js" %}"></script>{% endblock %}

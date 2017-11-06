@@ -2,17 +2,18 @@
 {% load humanize %}
 {% block title %}Detalle de Parámetro{% endblock %}
 {% block page-title %}Parámetro{% endblock %}{% block thead %}
-    <th colspan="2" class="izquierda">{{ parametro.nombre }}{% if request.user.is_superuser %}
+    <th colspan="2" class="izquierda"><i
+        class="material-icons text-lime">settings</i>{{ parametro }}{% if request.user.is_superuser %}
         <div class="ui-nodisc-icon mininav3r">
             <a class="ui-btn ui-btn-inline ui-btn-a ui-icon-edit ui-btn-icon-notext ui-btncito"
-               title="Editar Parámetro {{ parametro.nombre }}" href="{{ parametro.get_update_url }}"
+               title="Editar Parámetro {{ parametro }}" href="{{ parametro.get_update_url }}"
                data-ajax="false" onclick="window.location.reload(false);">edit</a>
             <a class="ui-btn ui-btn-inline ui-btn-a ui-icon-plus ui-btn-icon-notext ui-btncito"
                title="Agregar Nuevo Parámetro"
                href="{% url "transporte_parametro_create" %}"
                data-ajax="false" onclick="window.location.reload(false);">add</a>
             <a class="ui-btn ui-btn-inline ui-btn-a ui-icon-delete ui-btn-icon-notext ui-btncito"
-               title="Borrar Parámetro {{ parametro.nombre }}" href="{{ parametro.get_delete_url }}">delete</a></div>
+               title="Borrar Parámetro {{ parametro }}" href="{{ parametro.get_delete_url }}">delete</a></div>
     {% endif %}</th>{% endblock %}{% block tbody %}
     <tr>
         <td class="derecha">Valor</td>
@@ -28,11 +29,11 @@
     </tr>
     <tr>
         <td class="derecha">Creado</td>
-        <td><strong>{{ parametro.creado|date:'D d/M/Y' }}</strong></td>
+        <td><em>{{ parametro.creado|date }}</em></td>
     </tr>
     <tr>
         <td class="derecha">Actualizado</td>
-        <td><strong>{{ parametro.ultima_actualizacion|date:'D d/M/Y' }}</strong></td>
+        <td><em>{{ parametro.ultima_actualizacion|date }}</em></td>
     </tr>{% endblock %}{% block footer %}{% if request.user.is_superuser %}
         <div class="fixed-action-btn">
             <a class="btn-floating btn-large waves-effect waves-light red darken-2"

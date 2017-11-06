@@ -1,10 +1,10 @@
 {% extends "_detail.html" %}
 {% load humanize %}
 {% load misformatos %}
-{% block title %}Detalle de Cotización{% endblock %}
-{% block page-title %}Detalle de Cotización{% endblock %}
+{% block title %}Eliminación de Item{% endblock %}
+{% block page-title %}Eliminación de Item{% endblock %}
 {% block thead %}
-    <th class="derecha">Item</th>
+    <th class="derecha">Eliminando Item</th>
     <th class="izquierda">{{ cotizaciondetalle.item }}</th>
 {% endblock %}
 {% block tbody %}
@@ -26,7 +26,7 @@
     </tr>
     <tr>
         <td class="derecha">Subtotal</td>
-        <td><strong>{{ cotizaciondetalle.monto }}</strong></td>
+        <td><strong>{{ cotizaciondetalle.costo_total }}</strong></td>
     </tr>
     <tr>
         <td class="derecha">Margen</td>

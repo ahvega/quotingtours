@@ -5,8 +5,8 @@
 {% block page-title %}Cotizaciones{% endblock %}
 {% block theader %}
             <th class="centrado">Cotización</th>
-            <th class="derecha">Acciones</th>
-            <th data-priority="6" class="izquierda">Cliente</th>
+            <th data-priority="7" class="derecha">Acciones</th>
+            <th data-priority="6" class="izquierda">Cliente: Itinerario</th>
             <th data-priority="4" class="centrado">Fecha</th>
             <th data-priority="5" class="centrado">Vence</th>
             <th data-priority="2" class="derecha">Subtotal</th>
@@ -17,7 +17,7 @@
                     <td data-search="{{ cotizacion.nombre }}">
                         <a title="Ver Cotización {{ cotizacion.nombre }}"
                            href="{{ cotizacion.get_absolute_url }}"
-                           data-ajax="false" onclick="window.location.reload(false);">{{ cotizacion.nombre }}</a>: {{ cotizacion.descripcion }}</td>
+                           data-ajax="false" onclick="window.location.reload(false);">{{ cotizacion.nombre }}</a>:<br> cotizacion.descripcion }}</td>
                     <td><div class="ui-alt-icon ui-nodisc-icon mininav3r">
                         <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-action ui-btn-icon-notext ui-btncito"
                            title="Ver Cotización {{ cotizacion.nombre }}" href="{{ cotizacion.get_absolute_url }}"
@@ -32,7 +32,8 @@
                     <td class="centrado"><a href="#" title="{{ cotizacion.creado|date:"D d/b" }}">{{ cotizacion.creado|date:"Y/m/d" }}</a></td>
                     <td class="centrado">{{ cotizacion.fecha_vence|date:"D d/b" }}</td>
                     <td class="derecha">{{ cotizacion.subtotal|intcomma }}</td>
-                    <td class="derecha">{{ cotizacion.utilidad|porciento }}</td>
+                    <td class="derecha">{{ cotizacion.utilidad_valor|intcomma }}
+                        <small style="color: #4385F5"><em>{{ cotizacion.utilidad|porciento }}</em></small></td>
                     <td class="derecha">{{ cotizacion.total|intcomma }}</td>
                 </tr>
             {% endfor %}{% endblock %}

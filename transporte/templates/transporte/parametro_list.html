@@ -3,9 +3,9 @@
 {% block page-title %}Parámetros{% endblock %}
 {% block theader %}
                                 <th class="center">Parámetro</th>
-                                <th class="derecha">Acciones</th>
-                                <th data-priority="1" class="derecha">Valor</th>
-                                <th data-priority="2" class="izquierda">Unidad</th>{% endblock %}{% block tbody %}{% for parametro in object_list %}
+                                <th data-priority="3" class="derecha">Acciones</th>
+                                <th class="derecha">Valor</th>
+                                <th class="izquierda">Unidad</th>{% endblock %}{% block tbody %}{% for parametro in object_list %}
                             <tr>
                                 <td data-search="{{ parametro.nombre }}">
                                     <a title="Ver Parámetro {{ paramero.nombre }}"

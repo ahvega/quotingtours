@@ -1,19 +1,19 @@
 {% extends "_detail.html" %}
-{% load humanize %}
+{% load humanize %}{% load misformatos %}
 {% load bootstrap3 %}
 {% block title %}Cliente{% endblock %}
 {% block page-title %}Cliente{% endblock %}{% block thead %}<tr>
-    <th colspan="2" class="izquierda">{{ cliente.nombre }}{% if request.user.is_superuser %}
+    <th colspan="2" class="izquierda"><i class="material-icons text-lime">recent_actors</i>&nbsp;  {{ cliente }}{% if request.user.is_superuser %}
         <div class="ui-nodisc-icon mininav3r">
             <a class="ui-btn ui-btn-inline ui-btn-a ui-icon-edit ui-btn-icon-notext ui-btncito"
-               title="Editar Cliente {{ cliente.nombre }}" href="{{ cliente.get_update_url }}"
+               title="Editar Cliente {{ cliente }}" href="{{ cliente.get_update_url }}"
                data-ajax="false" onclick="window.location.reload(false);">edit</a>
             <a class="ui-btn ui-btn-inline ui-btn-a ui-icon-plus ui-btn-icon-notext ui-btncito"
                title="Agregar Nuevo Cliente"
                href="{% url "transporte_cliente_create" %}"
                data-ajax="false" onclick="window.location.reload(false);">add</a>
             <a class="ui-btn ui-btn-inline ui-btn-a ui-icon-delete ui-btn-icon-notext ui-btncito"
-               title="Borrar Cliente {{ cliente.nombre }}" href="{{ cliente.get_delete_url }}">delete</a></div>
+               title="Borrar Cliente {{ cliente }}" href="{{ cliente.get_delete_url }}">delete</a></div>
     {% endif %}</th></tr>{% endblock %}{% block tbody %}
     <tr>
         <td class="derecha">Contacto</td>
@@ -22,16 +22,14 @@
     <tr>
         <td class="derecha">Tel</td>
         <td>
-            <a title="Llamar" href="tel:{{ cliente.tel }}"
-               class="ui-btn ui-btn-a ui-btn-inline ui-icon-phone ui-btncito ui-nodisc-icon ui-alt-icon ui-btn-icon-notext">call</a>
-            <a style="text-decoration: none;" href="tel:{{ cliente.tel }}">{{ cliente.tel }}</a>
+            <a title="Llamar" style="text-decoration: none;" href="tel:{{ cliente.tel }}"><i
+                    class='material-icons text-green md-18'>phone</i> {{ cliente.tel }}</a>
         </td>
     </tr>
     <tr>
         <td class="derecha">Email</td>
-        <td><a title="Enviar email" href="mailto:{{ cliente.email }}"
-               class="ui-btn ui-btn-a ui-btn-inline ui-icon-mail ui-btncito ui-nodisc-icon ui-alt-icon ui-btn-icon-notext">email</a>
-            <a style="text-decoration: none;" href="mailto:{{ cliente.email }}">{{ cliente.email }}</a>
+        <td><a title="Enviar email" style="text-decoration: none;" href="mailto:{{ cliente.email }}"><i
+                class='material-icons text-green md-18'>mail_outline</i> {{ cliente.email }}</a>
         </td>
     </tr>
     <tr>
@@ -42,13 +40,17 @@
         <td class="derecha">Nivel de Precio</td>
         <td><strong>{{ cliente.nivel_de_precio }}</strong></td>
     </tr>
+    <tr>
+        <td class="derecha">Total Cotizado</td>
+        <td><strong>{{ cliente.total_cotizado|intcomma }}</strong></td>
+    </tr>
         <tr>
             <td class="derecha">Creado</td>
-            <td><strong>{{ cliente.creado|date:'D d/M/Y' }}</strong></td>
+            <td><em>{{ cliente.creado|date:'D d/M/Y' }}</em></td>
         </tr>
         <tr>
             <td class="derecha">Actualizado</td>
-            <td><strong>{{ cliente.actualizado|date:'D d/M/Y' }}</strong></td>
+            <td><em>{{ cliente.actualizado|date:'D d/M/Y' }}</em></td>
         </tr>{% endblock %}
 {% block detalle %}
     <div class="topcontainer">
@@ -57,32 +59,55 @@
             <thead>
             <tr>
                 <th class="izquierda">Itinerario</th>
-                <th class="derecha">Acciones</th>
+                <th data-priority="5" class="derecha">Acciones</th>
                 <th data-priority="1" class="centrado">Inicia</th>
                 <th data-priority="2" class="centrado">Termina</th>
+                <th data-priority="4" class="derecha">Subtotal Cotizado</th>
+                <th data-priority="4" class="derecha">Utilidad Cotizada</th>
+                <th data-priority="4" class="derecha">Total Cotizado</th>
                 <th data-priority="3" class="centrado">Estatus</th>
             </tr>
             </thead>
             <tbody>
-            {% for itinerario in cliente.itinerario_set.all %}
+            {% for itinerario in cliente.itinerarios.all %}
                 <tr>
-                    <td data-search="{{ itinerario.nombre }}">
-                        <a title="Ver Itinerario {{ itinerario.tipo.nombre }} {{ itinerario.nombre }}"
-                           href="{{ itinerario.get_absolute_url }}">{{ itinerario.nombre }}</a></td>
+                    <td data-search="{{ itinerario }}">
+                        <a title="Ver Itinerario {{ itinerario.tipo.nombre }} {{ itinerario }}"
+                           data-ajax="false" onclick="window.location.reload(false);"
+                           href="{{ itinerario.get_absolute_url }}">{{ itinerario }}</a></td>
                     <td class="izquierda" width="1"><div class="ui-alt-icon ui-nodisc-icon mininav3r">
                         <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-action ui-btn-icon-notext ui-btncito"
-                           title="Ir a Itinerario {{ itinerario.nombre }}" href="{{ itinerario.get_absolute_url }}">goto</a>{% if request.user.is_superuser %}
+                           data-ajax="false" onclick="window.location.reload(false);"
+                           title="Ir a Itinerario {{ itinerario }}" href="{{ itinerario.get_absolute_url }}">goto</a>{% if request.user.is_superuser %}
                         <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-edit ui-btn-icon-notext ui-btncito"
-                           title="Editar Itinerario {{ itinerario.nombre }}" href="{{ itinerario.get_update_url }}"
+                           title="Editar Itinerario {{ itinerario }}" href="{{ itinerario.get_update_url }}"
                            data-ajax="false">edit</a>
                         <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-delete ui-btn-icon-notext ui-btncito"
                            title="Eliminar Itinerario {{ itinerario.nombre }}" href="{{ itinerario.get_delete_url }}">delete</a>{% endif %}</div></td>
                     <td class="centrado">{{ itinerario.fecha_desde|date:"D d/b" }}</td>
                     <td class="centrado">{{ itinerario.fecha_hasta|date:"D d/b" }}</td>
+                    <td class="derecha">{{ itinerario.subtotal_cotizado|intcomma }}</td>
+                    <td class="derecha">{{ itinerario.utilidad_cotizada_valor|intcomma }}&nbsp;<small
+                            style="color: #4385F5"><em>{{ itinerario.utilidad_cotizada|porciento }}</em></small></td>
+                    <td class="derecha">{{ itinerario.total_cotizado|intcomma }}</td>
                     <td class="centrado">{{ itinerario.get_estatus_display }}</td>
                 </tr>
             {% endfor %}
             </tbody>
+            <tfoot>
+            <tr>
+                <td>TOTALES</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td class="derecha">{{ cliente.subtotal_cotizado|intcomma }}</td>
+                <td class="derecha">{{ cliente.utilidad_cotizada_valor|intcomma }}&nbsp;<small
+                        style="color: #4385F5"><em>{{ cliente.utilidad_cotizada|porciento }}</em></small>
+                </td>
+                <td class="derecha">{{ cliente.total_cotizado|intcomma }}</td>
+                <td></td>
+            </tr>
+            </tfoot>
         </table>
     </div>
 {% endblock %}{% block footer %}
@@ -91,6 +116,6 @@
             <a class="btn-floating btn-large waves-effect waves-light red darken-2"
                href="{% url "transporte_itinerario_create" cliente_id=cliente.pk %}"
                data-ajax="false" onclick="window.location.reload(false);">
-                <i class="material-icons">add</i></a>
+                <i class="material-icons md-28">add</i></a>
         </div>
     {% endif %}{% endblock %}

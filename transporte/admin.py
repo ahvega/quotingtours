@@ -1,5 +1,6 @@
 # coding=utf-8
 from django.contrib import admin, messages
+from django.forms import Textarea
 from django.forms.utils import ErrorList
 from django import forms
 from .filters import DropdownFilterValues, DropdownFilterRelated
@@ -56,6 +57,12 @@ class ItemAdminForm(forms.ModelForm):
 
 
 class ItemAdmin(admin.ModelAdmin):
+    def formfield_for_dbfield(self, db_field, **kwargs):
+        formfield = super(ItemAdmin, self).formfield_for_dbfield(db_field, **kwargs)
+        if db_field.name == 'descripcion_compra' or db_field.name == 'descripcion_venta':
+            formfield.widget = forms.Textarea(attrs={'cols': 80, 'rows': 3})
+        return formfield
+
     form = ItemAdminForm
     list_display = ['nombre', 'tipo_item', 'costo', 'precio', 'descripcion_venta']
     readonly_fields = ['slug', 'creado', 'actualizado']
@@ -63,8 +70,77 @@ class ItemAdmin(admin.ModelAdmin):
     list_filter = (('tipo_item', DropdownFilterValues), 'creado')
     date_hierarchy = 'creado'
 
-
 admin.site.register(Item, ItemAdmin)
+
+
+class ItemGrupoAdminForm(forms.ModelForm):
+    class Meta:
+        model = ItemGrupo
+        fields = ['nombre', 'descripcion_venta', 'imprimir_detalle']
+
+
+class ItemGrupoAdmin(admin.ModelAdmin):
+    def formfield_for_dbfield(self, db_field, **kwargs):
+        formfield = super(ItemGrupoAdmin, self).formfield_for_dbfield(db_field, **kwargs)
+        if db_field.name == 'descripcion_compra' or db_field.name == 'descripcion_venta':
+            formfield.widget = forms.Textarea(attrs={'cols': 80, 'rows': 3})
+        return formfield
+
+    form = ItemGrupoAdminForm
+    list_display = ['nombre', 'costo', 'precio', 'descripcion_venta']
+    readonly_fields = ['slug', 'creado', 'actualizado']
+    search_fields = ['nombre', 'descripcion_venta']
+    list_filter = ('creado',)
+    date_hierarchy = 'creado'
+
+
+admin.site.register(ItemGrupo, ItemGrupoAdmin)
+
+
+def make_cambiar_nivel(nivel):
+    def cambiar_nivel(modeladmin, request, queryset):
+        for item in queryset:
+            item.nivel_de_precio = nivel
+            item.save()
+            messages.info(request, u"{0} cambiado Nivel de Precio a {1}".format(item.descripcion,
+                                                                                nivel.nombre))
+
+    cambiar_nivel.short_description = "Cambiar Nivel de Precio a {0:.1f}%%".format(nivel.valor * 100)
+    # We need a different '__name__' for each action - Django
+    # uses this as a key in the drop-down box.
+    cambiar_nivel.__name__ = "nivel_{0:s}".format(nivel.slug)
+
+    return cambiar_nivel
+
+
+class ItemGrupoLineaAdminForm(forms.ModelForm):
+    class Meta:
+        model = ItemGrupoLinea
+        fields = '__all__'
+
+
+class ItemGrupoLineaAdmin(admin.ModelAdmin):
+    form = ItemGrupoLineaAdminForm
+    list_display = ['nombre', 'descripcion', 'cantidad', 'costo', 'costo_total', 'utilidad', 'markup', 'total']
+    list_display_links = ['descripcion']
+    list_filter = ('creado', 'item_grupo')
+    readonly_fields = ['nombre', 'descripcion', 'costo', 'costo_total', 'utilidad', 'markup', 'total', 'slug', 'creado', 'actualizado']
+    search_fields = ['descripcion']
+    ordering = ['id']
+
+    def get_actions(self, request):
+        actions = super(ItemGrupoLineaAdmin, self).get_actions(request)
+
+        for nivel in NivelDePrecio.objects.all():
+            action = make_cambiar_nivel(nivel)
+            actions[action.__name__] = (action,
+                                        action.__name__,
+                                        "Cambiar Nivel de Precio a {0:.1f}%%".format(nivel.valor * 100))
+
+        return actions
+
+
+admin.site.register(ItemGrupoLinea, ItemGrupoLineaAdmin)
 
 
 class NivelDePrecioAdminForm(forms.ModelForm):
@@ -88,22 +164,6 @@ class CotizacionAdminForm(forms.ModelForm):
         model = Cotizacion
         fields = ['itinerario', 'nombre', 'descripcion', 'nivel_de_precio',
                   'fecha_ida', 'fecha_regreso', 'fecha_vence']
-
-
-def make_cambiar_nivel(nivel):
-    def cambiar_nivel(modeladmin, request, queryset):
-        for item in queryset:
-            item.nivel_de_precio = nivel
-            item.save()
-            messages.info(request, u"{0} cambiado Nivel de Precio a {1}".format(item.descripcion,
-                                                                                     nivel.nombre))
-
-    cambiar_nivel.short_description = "Cambiar Nivel de Precio a {0:.1f}%%".format(nivel.valor * 100)
-    # We need a different '__name__' for each action - Django
-    # uses this as a key in the drop-down box.
-    cambiar_nivel.__name__ = "nivel_{0:s}".format(nivel.slug)
-
-    return cambiar_nivel
 
 
 def copy_cotizacion(modeladmin, request, queryset):
@@ -142,7 +202,7 @@ class CotizacionAdmin(admin.ModelAdmin):
     def formfield_for_dbfield(self, db_field, **kwargs):
         formfield = super(CotizacionAdmin, self).formfield_for_dbfield(db_field, **kwargs)
         if db_field.name == 'descripcion':
-            formfield.widget = forms.Textarea(attrs=formfield.widget.attrs)
+            formfield.widget = forms.Textarea(attrs={'cols': 80, 'rows': 3})
         return formfield
 
     form = CotizacionAdminForm
@@ -179,7 +239,7 @@ class ClienteAdminForm(forms.ModelForm):
 
 class ClienteAdmin(admin.ModelAdmin):
     form = ClienteAdminForm
-    list_display = ['nombre', 'codigo', 'contacto', 'email', 'tel', 'rtn', 'nivel_de_precio']
+    list_display = ['nombre', 'codigo', 'total_cotizado', 'contacto', 'email', 'tel', 'rtn', 'nivel_de_precio']
     readonly_fields = ['slug', 'creado', 'actualizado',]
     search_fields = ['nombre', 'contacto', 'email', 'tel']
 
@@ -215,8 +275,9 @@ class ItinerarioAdmin(admin.ModelAdmin):
         return dict(create_action_estatus(e) for e in statuses)
 
     form = ItinerarioAdminForm
-    list_display = ['nombre', 'cliente', 'fecha_desde', 'fecha_hasta', 'estatus']
-    readonly_fields = ['slug', 'creado', 'actualizado']
+    list_display = ['nombre', 'cliente', 'fecha_desde', 'fecha_hasta',
+                    'subtotal_cotizado', 'utilidad_cotizada', 'total_cotizado', 'estatus']
+    readonly_fields = ['slug', 'creado', 'actualizado', 'subtotal_cotizado', 'utilidad_cotizada', 'total_cotizado']
     search_fields = ['cliente', 'nombre', 'fecha_desde']
     list_filter = (('estatus', DropdownFilterValues), ('cliente', DropdownFilterRelated), 'fecha_desde',)
     ordering = ['cliente', 'fecha_desde']
@@ -230,17 +291,17 @@ admin.site.register(Itinerario, ItinerarioAdmin)
 class RutaDetalleAdminForm(forms.ModelForm):
     class Meta:
         model = RutaDetalle
-        fields = ['tramo', 'cotizacion']
+        fields = ['orden', 'tramo', 'cotizacion']
 
 
 class RutaDetalleAdmin(admin.ModelAdmin):
     save_as = True
     form = RutaDetalleAdminForm
-    list_display = ['tramo', 'desde', 'hacia', 'kms', 'hrs']
+    list_display = ['orden', 'tramo', 'desde', 'hacia', 'kms', 'hrs']
     readonly_fields = ['desde', 'hacia', 'kms', 'hrs', 'creado', 'actualizado']
     search_fields = ['tramo', 'desde', ' hacia']
     list_filter = (('cotizacion', DropdownFilterRelated),)
-    ordering = ['id']
+    ordering = ['orden']
 
 
 admin.site.register(RutaDetalle, RutaDetalleAdmin)
@@ -255,9 +316,9 @@ class CotizacionDetalleAdminForm(forms.ModelForm):
 class CotizacionDetalleAdmin(admin.ModelAdmin):
     form = CotizacionDetalleAdminForm
     list_display = ['cliente', 'itinerario', 'cotizacion', 'descripcion',
-                    'cantidad', 'costo', 'monto', 'utilidad', 'markup', 'total']
+                    'cantidad', 'costo', 'costo_total', 'utilidad', 'markup', 'total']
     list_display_links = ['descripcion']
-    readonly_fields = ['descripcion', 'costo', 'monto', 'utilidad', 'markup', 'total', 'slug', 'creado', 'actualizado']
+    readonly_fields = ['descripcion', 'costo', 'costo_total', 'utilidad', 'markup', 'total', 'slug', 'creado', 'actualizado']
     search_fields = ['descripcion']
     list_filter = (('cotizacion__itinerario__cliente', DropdownFilterRelated),
                    ('cotizacion__itinerario', DropdownFilterRelated),

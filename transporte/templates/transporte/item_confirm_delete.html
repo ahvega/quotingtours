@@ -1,0 +1,62 @@
+{% extends "_detail.html" %}
+{% load humanize %}
+{% load misformatos %}
+{% block title %}Detalle de Item{% endblock %}
+{% block page-title %}Detalle de Item{% endblock %}
+{% block thead %}
+    <th colspan="2" class="izquierda"><a style="color:white;" title="Ver Cotización {{ item.nombre }}"
+                                         href="{{ item.get_absolute_url }}" data-ajax="false"
+                                         onclick="window.location.reload(false);">
+        {{ item.nombre }}{% if request.user.is_superuser %}
+            <div class="ui-nodisc-icon mininav3r">
+                <a class="ui-btn ui-btn-inline ui-btn-a ui-icon-edit ui-btn-icon-notext ui-btncito"
+                   title="Editar Ítem {{ item.nombre }}" href="{{ item.get_update_url }}"
+                   data-ajax="false" onclick="window.location.reload(false);">edit</a>
+                <a class="ui-btn ui-btn-inline ui-btn-a ui-icon-plus ui-btn-icon-notext ui-btncito"
+                   title="Agregar Nuevo Ítem"
+                   href="{% url "transporte_item_create" %}"
+                   data-ajax="false" onclick="window.location.reload(false);">add</a>
+                <a class="ui-btn ui-btn-inline ui-btn-a ui-icon-delete ui-btn-icon-notext ui-btncito"
+                   title="Borrar Ítem {{ item.nombre }}" href="{{ item.get_delete_url }}">delete</a></div>
+        {% endif %}</th>
+{% endblock %}
+{% block tbody %}
+    <tr>
+        <td class="derecha">Tipo Item</td>
+        <td><strong>{{ item.get_tipo_item_display }}</strong></td>
+    </tr>
+    <tr>
+        <td class="derecha">Costo</td>
+        <td><strong>{{ item.costo|intcomma }}</strong></td>
+    </tr>
+    <tr>
+        <td class="derecha">Precio</td>
+        <td><strong>{{ item.precio|intcomma }}</strong></td>
+    </tr>
+    <tr>
+        <td class="derecha">Descripción Compra</td>
+        <td><strong>{{ item.descripcion_compra }}</td>
+    </tr>
+    <tr>
+        <td class="derecha">Descripción Venta</td>
+        <td><strong>{{ item.descripcion_venta }}</strong></td>
+    </tr>
+    <tr>
+        <td class="derecha">Creado</td>
+        <td><strong>{{ item.creado }}</strong></td>
+    </tr>
+    <tr>
+        <td class="derecha">Actualizado</td>
+        <td><strong>{{ item.actualizado }}</strong></td>
+    </tr>
+{% endblock %}
+{% block footer %}
+    {% if request.user.is_superuser %}
+        <form action="" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="after" value="{% url 'transporte_item_list' %}"/>
+            <input type="submit" value="CONFIRMAR ELIMINACION DE ÍTEM" name="DeleteAndShowParent"
+                   class="ui-btn ui-btn-b ui-btn-icon-left ui-btn-inline ui-shadow ui-link ui-icon-delete ui-btn-icon-left"/>
+        </form>
+    {% endif %}
+{% endblock %}

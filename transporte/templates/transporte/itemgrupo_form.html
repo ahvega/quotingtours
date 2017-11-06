@@ -1,0 +1,15 @@
+{% extends "base.html" %}{% load staticfiles %}
+{% load bootstrap3 %}
+{% load staticfiles %}
+{% block title %}Grupo{% endblock %}
+{% block page-title %}Grupo{% endblock %}
+{% block content %}
+    <div class="topcontainer" style="padding: 10px;">
+        <form id="laforma" method="post" class="form form-horizontal">
+            {% csrf_token %}
+            {% bootstrap_form form exclude=descripcion_compra%}
+            <button id="submit" class="ui-btn ui-btn-b ui-btn-icon-left ui-btn-inline ui-corner-all"
+                    type="submit">Guardar Grupo
+            </button>
+        </form>
+    </div>{% endblock %}

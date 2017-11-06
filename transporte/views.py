@@ -7,9 +7,9 @@ from .filters import UserFilter
 
 from .forms import TipoDeVehiculoForm, ParametroForm, ItemForm, NivelDePrecioForm, CotizacionForm, ClienteForm, \
     ItinerarioForm, CotizacionDetalleForm, VehiculoForm, LugarForm, TramoForm, ConductorForm, TramoEnVehiculoForm, \
-    RutaDetalleForm
+    RutaDetalleForm, ItemGrupoForm, ItemGrupoLineaForm
 from .models import TipoDeVehiculo, Parametro, Item, NivelDePrecio, Cotizacion, Cliente, Itinerario, \
-    CotizacionDetalle, Vehiculo, Tramo, Lugar, Conductor, TramoEnVehiculo, RutaDetalle
+    CotizacionDetalle, Vehiculo, Tramo, Lugar, Conductor, TramoEnVehiculo, RutaDetalle, ItemGrupo, ItemGrupoLinea
 
 
 def indice(request):
@@ -80,6 +80,103 @@ class ItemDetailView(DetailView):
 class ItemUpdateView(UpdateView):
     model = Item
     form_class = ItemForm
+
+
+class ItemDeleteView(DeleteView):
+    model = Item
+
+    def get_success_url(self):
+        if 'after' in self.request.POST:
+            return self.request.POST.get('after')
+        else:
+            slug = self.object.item.slug
+
+        return reverse('transporte_item_list')
+
+
+class ItemGrupoListView(ListView):
+    model = ItemGrupo
+
+
+class ItemGrupoCreateView(CreateView):
+    model = ItemGrupo
+    form_class = ItemGrupoForm
+
+class ItemGrupoDetailView(DetailView):
+    model = ItemGrupo
+
+
+class ItemGrupoUpdateView(UpdateView):
+    model = ItemGrupo
+    form_class = ItemGrupoForm
+
+
+class ItemGrupoDeleteView(DeleteView):
+    model = ItemGrupo
+
+    def get_success_url(self):
+        if 'after' in self.request.POST:
+            return self.request.POST.get('after')
+        else:
+            slug = self.object.item_grupo.slug
+
+        return reverse('transporte_itemgrupo_list')
+
+
+class ItemGrupoLineaListView(ListView):
+    model = ItemGrupoLinea
+
+
+class ItemGrupoLineaCreateView(CreateView):
+    model = ItemGrupoLinea
+    form_class = ItemGrupoLineaForm
+
+    def form_valid(self, form):
+        itemgrupolinea = form.save(commit=False)
+        itemgrupo_id = form.data['itemgrupo']
+        itemgrupo = get_object_or_404(ItemGrupo, id=itemgrupo_id)
+        itemgrupolinea.item_grupo = itemgrupo
+        return super(ItemGrupoLineaCreateView, self).form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super(ItemGrupoLineaCreateView, self).get_context_data(**kwargs)
+        context['g_id'] = self.kwargs['itemgrupo_id']
+        return context
+
+    def get_success_url(self):
+        if 'after' in self.request.POST:
+            return self.request.POST.get('after')
+        else:
+            slug = self.object.item_grupo.slug
+        return reverse('transporte_itemgrupo_detail', kwargs={'slug': slug})
+
+
+class ItemGrupoLineaDetailView(DetailView):
+    model = ItemGrupoLinea
+
+
+class ItemGrupoLineaUpdateView(UpdateView):
+    model = ItemGrupoLinea
+    form_class = ItemGrupoLineaForm
+
+    def get_success_url(self):
+        if 'after' in self.request.POST:
+            return self.request.POST.get('after')
+        else:
+            slug = self.object.item_grupo.slug
+        return reverse('transporte_itemgrupo_detail', kwargs={'slug': slug})
+
+
+class ItemGrupoLineaDeleteView(DeleteView):
+    model = ItemGrupoLinea
+
+    def get_success_url(self):
+        if 'after' in self.request.POST:
+            return self.request.POST.get('after')
+        else:
+            slug = self.object.item_grupo.slug
+
+        return reverse('transporte_itemgrupo_detail', kwargs={'slug': slug})
 
 
 class NivelDePrecioListView(ListView):
