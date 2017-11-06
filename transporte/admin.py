@@ -121,10 +121,10 @@ class ItemGrupoLineaAdminForm(forms.ModelForm):
 
 class ItemGrupoLineaAdmin(admin.ModelAdmin):
     form = ItemGrupoLineaAdminForm
-    list_display = ['nombre', 'descripcion', 'cantidad', 'costo', 'costo_total', 'utilidad', 'markup', 'total']
+    list_display = ['nombre', 'descripcion', 'cantidad', 'costo', 'costo_total', 'utilidad_valor', 'utilidad', 'markup', 'total']
     list_display_links = ['descripcion']
     list_filter = ('creado', 'item_grupo')
-    readonly_fields = ['nombre', 'descripcion', 'costo', 'costo_total', 'utilidad', 'markup', 'total', 'slug', 'creado', 'actualizado']
+    readonly_fields = ['nombre', 'descripcion', 'costo', 'costo_total', 'utilidad', 'utilidad_valor', 'markup', 'total', 'slug', 'creado', 'actualizado']
     search_fields = ['descripcion']
     ordering = ['id']
 

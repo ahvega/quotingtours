@@ -5,20 +5,20 @@
 {% block page-title %}Detalle de Grupo{% endblock %}
 {% block thead %}
     <th colspan="2" class="izquierda">
-        <a class="text-white" title="Ver Grupo {{ itemgrupo.nombre }}"
+        <a class="text-white" title="Ver Grupo {{ itemgrupo }}"
             href="{{ itemgrupo.get_absolute_url }}" data-ajax="false"
             onclick="window.location.reload(false);">
-            <i class="material-icons text-lime">apps</i>{{ itemgrupo.nombre }}</a>{% if request.user.is_superuser %}
+            <i class="material-icons text-lime">apps</i>{{ itemgrupo }}</a>{% if request.user.is_superuser %}
         <div class="ui-nodisc-icon mininav3r">
             <a class="ui-btn ui-btn-inline ui-btn-a ui-icon-edit ui-btn-icon-notext ui-btncito"
-               title="Editar Ítem {{ itemgrupo.nombre }}" href="{{ itemgrupo.get_update_url }}"
+               title="Editar Grupo {{ itemgrupo }}" href="{{ itemgrupo.get_update_url }}"
                data-ajax="false" onclick="window.location.reload(false);">edit</a>
             <a class="ui-btn ui-btn-inline ui-btn-a ui-icon-plus ui-btn-icon-notext ui-btncito"
-               title="Agregar Nuevo Ítem"
+               title="Agregar Nuevo Grupo"
                href="{% url "transporte_itemgrupo_create" %}"
                data-ajax="false" onclick="window.location.reload(false);">add</a>
             <a class="ui-btn ui-btn-inline ui-btn-a ui-icon-delete ui-btn-icon-notext ui-btncito"
-               title="Borrar Ítem {{ itemgrupo.nombre }}" href="{{ itemgrupo.get_delete_url }}">delete</a></div>
+               title="Borrar Grupo {{ itemgrupo }}" href="{{ itemgrupo.get_delete_url }}">delete</a></div>
     {% endif %}</th>
 {% endblock %}
 {% block tbody %}

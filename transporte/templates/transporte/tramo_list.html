@@ -5,31 +5,33 @@
 {% block page-title %}Tramos{% endblock %}
 {% block theader %}
             <th class="centrado">Tramo</th>
+            <th data-priority="5" class="centrado">Nombre</th>
             <th data-priority="6" class="derecha">Acciones</th>
-            <th data-priority="5" class="centrado">Descripción</th>
             <th data-priority="4" class="centrado">Desde</th>
             <th data-priority="3" class="centrado">Hacia</th>
             <th data-priority="1" class="centrado">Kms</th>
             <th data-priority="2" class="centrado">Hrs</th>{% endblock %}
 {% block tbody %}{% for tramo in tramo_list %}
                     <tr>
-                    <td data-search="{{ tramo.codigo }}">
-                        <a title="Ver Tramo {{ tramo.codigo|upper }}"
-                           href="{{ tramo.get_absolute_url }}">{{ tramo.codigo }}</td>
+                        <td class="centrado" data-search="{{ tramo.codigo }}">
+                            <a title="Ver Tramo {{ tramo }}"
+                               href="{{ tramo.get_absolute_url }}">{{ tramo.codigo }}</a></td>
+                    <td class="izquierda">
+                        <a title="Ver Tramo {{ tramo }}"
+                           href="{{ tramo.get_absolute_url }}">{{ tramo }}</a></td>
                     <td><div class="ui-alt-icon ui-nodisc-icon mininav4r">
-                        <a title="Mapa de {{ tramo.desde_hacia }}" target="_blank"
+                        <a title="Mapa de {{ tramo }}" target="_blank"
                            href="https://www.google.com/maps/dir/{{ tramo.desde_lugar }}/{{ tramo.hacia_lugar }}"><i
                                 class="material-icons text-green">directions</i></a>
                         <a class="ui-btn ui-btn-inline ui-btn-c ui-btncito ui-btn-icon-notext ui-icon-action"
-                           title="Ver Tramo {{ tramo.codigo|upper }}"
+                           title="Ver Tramo {{ tramo }}"
                            href="{{ tramo.get_absolute_url }}">goto</a>{% if request.user.is_superuser %}
                         <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-edit ui-btn-icon-notext ui-btncito"
                            title="Editar Tramo {{ tramo.codigo|upper }}" href="{{ tramo.get_update_url }}"
                            data-ajax="false" onclick="window.location.reload(false);">edit</a>
                         <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-delete ui-btn-icon-notext ui-btncito"
-                           title="Eliminar Tramo {{ tramo.codigo|upper }}" href="{{ tramo.get_delete_url }}">delete</a>{% endif %}
+                           title="Eliminar Tramo {{ tramo }}" href="{{ tramo.get_delete_url }}">delete</a>{% endif %}
                     </div></td>
-                    <td class="izquierda">{{ tramo.descripcion }}</td>
                     <td class="izquierda"><a title="Mapa de {{ tramo.desde_lugar }}" target="_blank"
                                             href="https://www.google.com/maps/place/{{ tramo.desde_lugar }}"><i
                             class="material-icons text-green">place</i></a>{{ tramo.desde_lugar }}</td>

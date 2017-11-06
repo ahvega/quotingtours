@@ -225,17 +225,8 @@ class ItemGrupo(Item):
     def utilidad(self):
         if self.grupo_lineas.exists():
             subtotal_agregado = self.grupo_lineas.aggregate(subtotal=Coalesce(Sum('costo_total'), 0))
-            total_agregado = self.grupo_lineas.aggregate(total=Coalesce(Sum('total'), 0))
-            if total_agregado:
-                redondeado = (math.ceil(float(total_agregado['total']) / redondeoLps)) * redondeoLps
-                redondeado = Decimal(redondeado).quantize(Decimal("0.00"))
-            else:
-                redondeado = 0.00
-            if redondeado == 0.00:
-                return 0.0000
-            else:
-                utilidad_porcentual = (redondeado - Decimal(subtotal_agregado['subtotal'])) / redondeado
-                return Decimal(utilidad_porcentual).quantize(Decimal("0.0000"))
+            utilidad_porcentual = (self.total - Decimal(subtotal_agregado['subtotal'])) / self.total
+            return Decimal(utilidad_porcentual).quantize(Decimal("0.0000"))
         else:
             return 0
 
@@ -244,7 +235,7 @@ class ItemGrupo(Item):
         if self.precio is None:
             return 0
         else:
-            self.precio - self.costo
+            return self.total - self.subtotal
 
     def save(self, *args, **kwargs):
         self.costo = self.subtotal
@@ -273,7 +264,8 @@ class ItemGrupoLinea(models.Model):
 
     # Relationship Fields
     item = models.ForeignKey(Item, verbose_name='item', related_name='grupo_item',
-                             limit_choices_to=allowed_choices, on_delete=models.PROTECT)
+                             # limit_choices_to=allowed_choices,
+                             on_delete=models.PROTECT)
     item_grupo = models.ForeignKey(ItemGrupo, verbose_name='grupo', related_name='grupo_lineas')
     nivel_de_precio = models.ForeignKey(NivelDePrecio, verbose_name='nivel de precio',
                                         on_delete=models.PROTECT, null=True, blank=True)
@@ -365,8 +357,11 @@ class Cliente(models.Model):
 
     @property
     def sum_subtotal_cotizado(self):
-        subtotal_agregado = self.itinerarios.aggregate(subtotal=Coalesce(Sum('subtotal_cotizado'), 0))
-        return subtotal_agregado['subtotal']
+        if self.itinerarios.exists():
+            subtotal_agregado = self.itinerarios.aggregate(subtotal=Coalesce(Sum('subtotal_cotizado'), 0))
+            return subtotal_agregado['subtotal']
+        else:
+            return 0
 
     @property
     def sum_total_cotizado(self):
@@ -397,7 +392,10 @@ class Cliente(models.Model):
 
     @property
     def utilidad_cotizada_valor(self):
-        return self.total_cotizado - self.subtotal_cotizado
+        if self.itinerarios.exists():
+            return self.sum_total_cotizado - self.sum_subtotal_cotizado
+        else:
+            return 0
 
     def save(self, *args, **kwargs):
         self.subtotal_cotizado = self.sum_subtotal_cotizado
@@ -492,7 +490,10 @@ class Itinerario(models.Model):
 
     @property
     def utilidad_cotizada_valor(self):
-        return self.total_cotizado - self.subtotal_cotizado
+        if self.cotizaciones.exists():
+            return self.total_cotizado - self.subtotal_cotizado
+        else:
+            return 0
 
     def __str__(self):
         return self.nombre
@@ -662,6 +663,10 @@ class Cotizacion(models.Model):
     def dias(self, value):
         self._dias = value
 
+    @property
+    def is_past_due(self):
+        return date.today() > self.fecha_vence
+
     def __str__(self):
         return str(self.nombre)
 
@@ -728,7 +733,10 @@ class Cotizacion(models.Model):
 
     @property
     def utilidad_valor(self):
-        return self.total - self.subtotal
+        if self.lineas.exists():
+            return self.sum_total - self.sum_subtotal
+        else:
+            return 0
 
     def save(self, *args, **kwargs):
         elitinerario = Itinerario.objects.get(id=self.itinerario.pk)

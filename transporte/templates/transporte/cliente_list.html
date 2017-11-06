@@ -10,29 +10,29 @@
                                 <th data-priority="4" class="centrado">RTN</th>{% endblock %}{% block tbody %}{% for cliente in cliente_list %}
                             <tr>
                                 <td class="centrado">{{ cliente.codigo }}</td>
-                                <td class="izquierda" data-search="{{ cliente.nombre }}">
-                                    <a title="Ver Cliente {{ cliente.nombre }}"
-                                       href="{{ cliente.get_absolute_url }}">{{ cliente.nombre }}</a></td>
+                                <td class="izquierda" data-search="{{ cliente }}">
+                                    <a title="Ver Cliente {{ cliente }}"
+                                       href="{{ cliente.get_absolute_url }}">{{ cliente }}</a></td>
                                 <td class="izquierda" width="1">
                                     <div class="ui-alt-icon ui-nodisc-icon mininav4r">
-                                        <a title="Enviar email a {{ cliente.nombre }} <{{ cliente.email }}>"
+                                        <a title="Enviar email a {{ cliente }} <{{ cliente.email }}>"
                                            href="mailto:{{ cliente.email }}">
                                             <i class='material-icons text-green md-18'>mail_outline</i></a>
                                         <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-action ui-btn-icon-notext ui-btncito"
-                                           title="Ver Cliente {{ cliente.nombre }}"
+                                           title="Ver Cliente {{ cliente }}"
                                            href="{{ cliente.get_absolute_url }}">goto</a>{% if request.user.is_superuser %}
                                         <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-edit ui-btn-icon-notext ui-btncito"
-                                           title="Editar Cliente {{ cliente.nombre }}"
+                                           title="Editar Cliente {{ cliente }}"
                                            href="{{ cliente.get_update_url }}">edit</a>
                                         <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-delete ui-btn-icon-notext ui-btncito"
-                                           title="Eliminar Cliente {{ cliente.nombre }}"
+                                           title="Eliminar Cliente {{ cliente }}"
                                            href="{{ cliente.get_delete_url }}">delete</a>{% endif %}
                                     </div>
                                 </td>
                                 <td class="derecha">{{ cliente.total_cotizado|intcomma }}</td>
                                 <td class="izquierda">{{ cliente.contacto }}</td>
                                 <td class="centrado">
-                                    <a title="Llamar a {{ cliente.nombre }}" href="tel:{{ cliente.tel }}"><i
+                                    <a title="Llamar a {{ cliente }}" href="tel:{{ cliente.tel }}"><i
                                             class='material-icons text-green md-18'>phone</i>{{ cliente.tel }}</a>
                                 </td>
                                 <td class="centrado">{{ cliente.rtn }}</td>
@@ -40,5 +40,5 @@
                 <div class="fixed-action-btn">
                     <a class="btn-floating btn-large waves-effect waves-light red darken-2"
                        title="Agregar Cliente"
-                       href="{% url "transporte_cliente_create" %}"><i class="material-icons">add</i></a>
+                       href="{% url "transporte_cliente_create" %}"><i class="material-icons md-28">add</i></a>
                 </div>{% endif %}{% endblock %}

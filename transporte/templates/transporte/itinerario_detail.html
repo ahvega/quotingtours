@@ -34,7 +34,7 @@
                             <td><strong>{{ itinerario.fecha_desde|date:"D d/M/Y" }}</strong></td>
                         </tr>
                         <tr>
-                            <td class="derecha">Subtotal Cotizado</td>
+                            <td class="derecha">Costo Cotizado</td>
                             <td><strong>{{ itinerario.subtotal_cotizado|intcomma }}</strong></td>
                         </tr>
                         <tr>
@@ -66,7 +66,7 @@
                         <th class="izquierda">Cotización</th>
                         <th class="derecha">Acciones</th>
                         <th data-priority="4" class="centrado">Vence</th>
-                        <th data-priority="2" class="derecha">Subtotal</th>
+                        <th data-priority="2" class="derecha">Costo</th>
                         <th data-priority="3" class="derecha">Utilidad</th>
                         <th data-priority="1" class="derecha">Total</th>
                     </tr>
@@ -76,7 +76,7 @@
                             <td data-search="{{ cotizacion }}" class="izquierda">
                                 <a title="Ver Cotización {{ cotizacion }}" data-ajax="false"
                                    onclick="window.location.reload(false);"
-                                   href="{{ cotizacion.get_absolute_url }}">{{ cotizacion }}</a>: {{ cotizacion.descripcion }}</td>
+                                   href="{{ cotizacion.get_absolute_url }}">{{ cotizacion }}</a>:<br>{{ cotizacion.descripcion }}</td>
                             <td><div class="ui-alt-icon ui-nodisc-icon mininav3r">
                                 <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-action ui-btn-icon-notext ui-btncito"
                                    title="Ver Cotización {{ cotizacion }}"
@@ -89,7 +89,7 @@
                                    title="Eliminar Cotización {{ cotizacion }}"
                                    href="{{ cotizacion.get_delete_url }}">delete</a>{% endif %}
                             </div></td>
-                            <td class="centrado">{{ cotizacion.fecha_vence|date:"D d/M/Y" }}</td>
+                            <td class="centrado {% if cotizacion.is_past_due %}text-red{% endif %}">{{ cotizacion.fecha_vence|date:"D d/M/Y" }}</td>
                             <td class="derecha">{{ cotizacion.subtotal|intcomma }}</td>
                             <td class="derecha">{{ cotizacion.utilidad_valor|intcomma }}&nbsp;<small
                                     class="text-purple"><em>{{ cotizacion.utilidad|porciento }}</em></small></td>
@@ -115,6 +115,6 @@
                title="Agregar Cotización"
                href="{% url "transporte_cotizacion_create" itinerario_id=itinerario.pk %}"
                data-ajax="false" onclick="window.location.reload(false);">
-                <i class="material-icons">add</i></a>
+                <i class="material-icons md-28">add</i></a>
         </div>
     {% endif %}{% endblock %}

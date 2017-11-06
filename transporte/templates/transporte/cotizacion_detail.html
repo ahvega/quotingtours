@@ -47,7 +47,8 @@
     </tr>
     <tr>
         <td class="derecha">Vence</td>
-        <td><strong>{{ cotizacion.fecha_vence|date:"D D/M/Y" }}</strong></td>
+        <td><strong>{{ cotizacion.fecha_vence|date:"D d/M/Y" }}</strong> {% if cotizacion.is_past_due %}
+            <small class="text-red"><em>(Vencida)</em></small>{% endif %}</td>
     </tr>{% if cotizacion.tramos.exists %}
     <tr>
         <td class="derecha">Kilómetros</td>
@@ -63,7 +64,9 @@
     </tr>
     <tr>
         <td class="derecha">Utilidad</td>
-        <td><strong>{{ cotizacion.utilidad_valor|intcomma }} <small style="color: #4385F5"><em>{{ cotizacion.utilidad|porciento }}</em></small></strong></td>
+        <td><strong>{{ cotizacion.utilidad_valor|intcomma }} <small class="text-purple">
+            <em>{{ cotizacion.utilidad|porciento }}</em></small>
+        </strong></td>
     </tr>
     <tr>
         <td class="derecha">Precio</td>
@@ -71,11 +74,11 @@
     </tr>
     <tr>
         <td class="derecha">Creada</td>
-        <td><strong>{{ cotizacion.creado }}</strong></td>
+        <td><em>{{ cotizacion.creado }}</em></td>
     </tr>
     <tr>
         <td class="derecha">Actualizada</td>
-        <td><strong>{{ cotizacion.actualizado }}</strong></td>
+        <td><em>{{ cotizacion.actualizado }}</em></td>
     </tr>
 {% endblock %}
 {% block detalle %}{% if cotizacion.tramos.exists %}
@@ -131,7 +134,7 @@
                 <td>TOTAL</td>
                 <td class="derecha"><a title="Mapa de la Ruta" target="_blank"
                        href="https://www.google.com/maps/dir/{% for tramo in cotizacion.tramos.all %}{{ tramo.desde }}/{% if forloop.last %}{{ tramo.hacia }}/{% endif %}{% endfor %}"
-                ><i class="material-icons text-green" style="vertical-align: middle;">directions</i>Ruta</a></td>
+                ><i class="material-icons text-green">directions</i>Ruta</a></td>
                 <td></td>
                 <td></td>
                 <td class="derecha">{{ cotizacion.kms_total|intcomma }}</td>
@@ -188,11 +191,11 @@
                                    title="Eliminar Item {{ linea.descripcion }}" href="{{ linea.get_delete_url }}">delete</a>{% endif %}
                         </div>
                     </td>
-                    <td class="derecha">{{ linea.cantidad }}</td>
+                    <td class="derecha">{{ linea.cantidad|intcomma }}</td>
                     <td class="derecha">{{ linea.costo|intcomma }}</td>
                     <td class="derecha">{{ linea.costo_total|intcomma }}</td>
                     <td class="derecha">{{ linea.utilidad_valor|intcomma }}
-                        <small style="color: #4385F5"><em>{{ linea.utilidad|porciento }}</em></small></td>
+                        <small class="text-purple"><em>{{ linea.utilidad|porciento }}</em></small></td>
                     <td class="derecha">{{ linea.markup|porciento }}</td>
                     <td class="derecha">{{ linea.total|intcomma }}</td>
                 </tr>
@@ -206,7 +209,7 @@
                 <td></td>
                 <td class="derecha">{{ cotizacion.subtotal|intcomma }}</td>
                 <td class="derecha">{{ cotizacion.utilidad_valor|intcomma }}
-                    <small style="color: #4385F5"><em>{{ cotizacion.utilidad|porciento }}</em></small></td>
+                    <small class="text-purple"><em>{{ cotizacion.utilidad|porciento }}</em></small></td>
                 <td class="derecha"></td>
                 <td class="derecha">{{ cotizacion.total|intcomma }}</td>
             </tr>

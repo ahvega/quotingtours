@@ -435,12 +435,16 @@ td i, th i {
 .material-icons.md-18 {
     font-size: 18px;
     line-height: 18px;
-    vertical-align: -3px;
+    vertical-align: -6px;
     margin-right: 2px;
 }
 
 .material-icons.md-24 {
     font-size: 24px;
+}
+
+.material-icons.md-28 {
+    font-size: 28px;
 }
 
 .material-icons.md-36 {
@@ -567,6 +571,14 @@ div#nav-panel ul li a {
 
 .text-purple {
     color: #6849F6;
+}
+
+.text-red {
+    color: #7d1313;
+}
+
+.text-yellow {
+    color: #FFB632;
 }
 
 .red, .red.darken-2:hover {
@@ -812,7 +824,8 @@ tfoot tr {
     font-family: "Fira Sans", sans-serif;
     font-weight: 300 !important;
     text-transform: none;
-    font-size: 1.1em;
+    letter-spacing: -0.5px;
+    /*font-size: 1.1em;*/
 }
 
 #table-list {

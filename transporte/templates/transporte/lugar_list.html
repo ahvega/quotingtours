@@ -4,27 +4,27 @@
 {% block title %}Lugares{% endblock %}
 {% block page-title %}Lugares{% endblock %}
 {% block theader %}
+            <th data-priority="1" class="centrado" style="width: 100px;">Código</th>
             <th class="centrado">Lugar</th>
             <th data-priority="3" class="derecha">Acciones</th>
-            <th data-priority="1" class="centrado">Código</th>
             <th data-priority="2" class="centrado">País</th>{% endblock %}
 {% block tbody %}{% for lugar in lugar_list %}
                     <tr>
-                    <td data-search="{{ lugar.nombre }}">
-                        <a title="Ver Lugar {{ lugar.nombre }}"
+                    <td class="centrado">{{ lugar.codigo|upper }}</td>
+                    <td data-search="{{ lugar }}">
+                        <a title="Ver Lugar {{ lugar }}"
                            href="{{ lugar.get_absolute_url }}">{{ lugar.nombre }}</a></td>
                     <td><div class="ui-alt-icon ui-nodisc-icon mininav4r">
-                        <a title="Ver Mapa de {{ lugar.nombre }}" target="_blank" style="line-height: 24px;"
-                           href="https://www.google.com/maps/place/{{ lugar.nombre }}"><i
+                        <a title="Mapa de {{ lugar }}" target="_blank" style="line-height: 24px;"
+                           href="https://www.google.com/maps/place/{{ lugar }}"><i
                            class="material-icons text-green">place</i></a>
                         <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-action ui-btn-icon-notext ui-btncito"
-                           title="Ver Tramo {{ lugar.nombre }}" href="{{ lugar.get_absolute_url }}">goto</a>{% if request.user.is_superuser %}
+                           title="Ver Lugar {{ lugar }}" href="{{ lugar.get_absolute_url }}">goto</a>{% if request.user.is_superuser %}
                         <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-edit ui-btn-icon-notext ui-btncito"
-                           title="Editar Tramo {{ lugar.nombre }}" href="{{ lugar.get_update_url }}">edit</a>
+                           title="Editar Lugar {{ lugar }}" href="{{ lugar.get_update_url }}">edit</a>
                         <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-delete ui-btn-icon-notext ui-btncito"
-                           title="Eliminar Tramo {{ lugar.nombre }}" href="{{ lugar.get_delete_url }}">delete</a>{% endif %}
+                           title="Eliminar Lugar {{ lugar }}" href="{{ lugar.get_delete_url }}">delete</a>{% endif %}
                     </div></td>
-                    <td class="centrado">{{ lugar.codigo|upper }}</td>
                     <td class="centrado">{{ lugar.pais }}</td>
                 </tr>
             {% endfor %}{% endblock %}{% block footer %}
@@ -32,6 +32,6 @@
         <div class="fixed-action-btn">
             <a class="btn-floating btn-large waves-effect waves-light red darken-2"
                href="{% url "transporte_lugar_create" %}">
-                <i class="material-icons">add</i></a>
+                <i class="material-icons md-28">add</i></a>
         </div>
     {% endif %}{% endblock %}

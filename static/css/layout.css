@@ -48,13 +48,13 @@ ul.pagination li a:hover, ul.pagination li button:hover {
 }
 
 thead {
-    background-color: #cbcbcb;
-    border-color: #ECECEC;
+    background-color: #9FBEF499;
+    border-color: #9FBEF499;
     color: #333;
     box-shadow: 0 1px 2px 1px #0000001a, 0 3px 6px #0000001a;
     /*text-shadow:      0 1px 0 #000;*/
     font-size: 1.1em;
-    text-transform: uppercase;
+    /*text-transform: uppercase;*/
     font-weight: bold;
     height: 44px;
 }
@@ -84,7 +84,8 @@ thead {
 
 .ui-title {
     font-family: 'Fira Sans', sans-serif;
-    line-height: 23px;
+    font-weight: 200;
+    line-height: 15px;
 }
 
 tr, td, thead, th {
@@ -423,7 +424,7 @@ div.dtr-modal div.dtr-modal-background {
     vertical-align: middle;
 }
 
-.ui-link i {
+td i, th i {
     margin: -3px 4px 0 0;
 }
 
@@ -434,12 +435,16 @@ div.dtr-modal div.dtr-modal-background {
 .material-icons.md-18 {
     font-size: 18px;
     line-height: 18px;
-    vertical-align: -7px;
+    vertical-align: -3px;
     margin-right: 2px;
 }
 
 .material-icons.md-24 {
     font-size: 24px;
+}
+
+.material-icons.md-28 {
+    font-size: 28px;
 }
 
 .material-icons.md-36 {
@@ -568,6 +573,14 @@ div#nav-panel ul li a {
     color: #6849F6;
 }
 
+.text-red {
+    color: #7d1313;
+}
+
+.text.yellow {
+    color: #FFB632;
+}
+
 .red, .red.darken-2:hover {
     background-color: #F44336 !important;
 }
@@ -654,7 +667,7 @@ div#titulodetalle {
 }
 
 div.mininav4r {
-    width: 108px;
+    width: 112px;
     float: right;
     text-align: right;
 }
@@ -694,7 +707,8 @@ div.rutacontainer {
 #table-detail thead {
     background-color: #0859E5;
     color: #fff;
-    text-transform: uppercase;
+    font-weight: 600;
+    /*text-transform: uppercase;*/
 }
 
 /*  Datatables icons */
@@ -784,8 +798,8 @@ html .ui-page-theme-a .ui-table-columntoggle-btn {
 #table-detail a {
     color: #4385F5;
     text-decoration: none;
-    text-transform: uppercase;
-    font-weight: bold;
+    /*text-transform: uppercase;*/
+    /*font-weight: 300;*/
 }
 
 table.dataTable thead > tr > th.sorting_asc,
@@ -800,11 +814,21 @@ table.dataTable thead > tr > td.sorting {
 #tabladedatos tfoot,
 #tabladedatosruta tfoot,
 #table-list tfoot {
-    background-color: #dedede;
+    background-color: #9FBEF433;
     font-weight: bold;
-    border-top: 3px double #BCBCBC;
+    border-top: 3px double #9FBEF4;
+}
+
+thead tr th,
+tfoot tr {
+    font-family: "Fira Sans", sans-serif;
+    font-weight: 300 !important;
+    text-transform: none;
+    letter-spacing: -0.5px;
+    /*font-size: 1.1em;*/
 }
 
 #table-list {
     margin-bottom: 40px;
 }
+
