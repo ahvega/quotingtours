@@ -5,7 +5,11 @@
 @import url('https://fonts.googleapis.com/css?family=PT+Sans+Narrow:400,700');
 
 html, body, p, .ui-checkbox .ui-btn, .ui-radio .ui-btn, td a.boton, .ui-btn {
-    font-family: 'Fira Sans', 'Segoe UI', 'sans-serif' !important;
+    font-family: 'Fira Sans', 'Segoe UI', 'Roboto', 'Helvetica', sans-serif !important;
+}
+
+.mdl-cell--6-col, .mdl-cell--6-col-phone.mdl-cell--6-col-phone, .mdl-cell--7-col {
+    width: unset !important;
 }
 
 table {
@@ -13,8 +17,17 @@ table {
     font-family: "PT Sans Narrow", sans-serif;
 }
 
+.ui-mobile label, .ui-controlgroup-label {
+    display: inline-flex;
+    margin: 0;
+}
+
 a.ui-table-columntoggle-btn.ui-btn.ui-btn-a.ui-corner-all.ui-shadow.ui-mini {
-    margin: 16px;
+    margin: 16px 16px 16pxnduras 0;
+}
+
+div#tabladedatos_filter.dataTables_filter label input.form-control.input-sm {
+    min-width: 40%;
 }
 
 .btn, h2, h3 {

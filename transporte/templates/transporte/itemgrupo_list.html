@@ -8,33 +8,31 @@
     <th data-priority="4" class="derecha">Utilidad</th>
     <th data-priority="1" class="derecha">Precio</th>{% endblock %}{% block tbody %}{% for item in itemgrupo_list %}
     <tr>
-        <td data-search="{{ item.nombre }}">
-            <a title="Ver Ítem {{ item.nombre }}"
-               href="{{ item.get_absolute_url }}">{{ item.nombre }}</a></td>
+        <td data-search="{{ item }}">
+            <a title="Ver Ítem {{ item }}" data-ajax="false" onclick="window.location.reload(false);"
+               href="{{ item.get_absolute_url }}">{{ item }}</a></td>
         <td class="izquierda" width="1">
             <div class="ui-alt-icon ui-nodisc-icon mininav3r">
                 <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-action ui-btn-icon-notext ui-btncito"
-                   title="Ver {{ item.nombre }}"
+                   title="Ver {{ item }}" data-ajax="false" onclick="window.location.reload(false);"
                    href="{{ item.get_absolute_url }}">goto</a>{% if request.user.is_superuser %}
                 <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-edit ui-btn-icon-notext ui-btncito"
-                   title="Editar {{ item.nombre }}"
-                   href="{{ item.get_update_url }}"
-                   data-ajax="false" onclick="window.location.reload(false);">edit</a>
+                   title="Editar {{ item }}"
+                   href="{{ item.get_update_url }}" data-ajax="false" onclick="window.location.reload(false);">edit</a>
                 <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-delete ui-btn-icon-notext ui-btncito"
-                   title="Eliminar {{ item.nombre }}"
+                   title="Eliminar {{ item }}"
                    href="{{ item.get_delete_url }}">delete</a>{% endif %}
             </div>
         </td>
         <td class="izquierda">{{ item.descripcion_venta }}</td>
         <td class="derecha">{{ item.costo|intcomma }}</td>
-        <td class="derecha">{{ item.utilidad_valor|intcomma }}&nbsp;<small
-                style="color: #7d1313"><em>&nbsp;{{ item.utilidad|porciento }}</em></small></td>
+        <td class="derecha">{{ item.utilidad_valor|intcomma }}&nbsp;<small class="text-purple">
+            <em>&nbsp;{{ item.utilidad|porciento }}</em></small></td>
         <td class="derecha">{{ item.precio|intcomma }}</td>
     </tr>{% endfor %}{% endblock %}{% block footer %}{% if request.user.is_superuser %}
     <div class="fixed-action-btn">
         <a class="btn-floating btn-large waves-effect waves-light red darken-2"
-           title="Crear Ítem"
-           href="{% url "transporte_itemgrupo_create" %}"
+           title="Crear Grupo" href="{% url "transporte_itemgrupo_create" %}"
            data-ajax="false" onclick="window.location.reload(false);">
             <i class="material-icons md-28">add</i></a>
     </div>{% endif %}{% endblock %}

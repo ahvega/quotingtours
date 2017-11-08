@@ -16,6 +16,15 @@ es_formats.NUMBER_GROUPING = 3
 admin.site.site_title = "Cotizaciones de Transporte"
 admin.site.site_header = "Administración - Cotizaciones de Transporte"
 
+
+def regrabar(modeladmin, request, queryset):
+    for objeto in queryset:
+        objeto.save()
+
+
+regrabar.short_description = "Regrabar"
+
+
 class TipoDeVehiculoAdminForm(forms.ModelForm):
     class Meta:
         model = TipoDeVehiculo
@@ -295,6 +304,7 @@ class RutaDetalleAdminForm(forms.ModelForm):
 
 
 class RutaDetalleAdmin(admin.ModelAdmin):
+    actions = [regrabar]
     save_as = True
     form = RutaDetalleAdminForm
     list_display = ['orden', 'tramo', 'desde', 'hacia', 'kms', 'hrs']
@@ -388,7 +398,7 @@ copy_tramo_regreso.short_description = "Crear Tramo de Regreso"
 
 
 class TramoAdmin(admin.ModelAdmin):
-    actions = [copy_tramo_regreso]
+    actions = [copy_tramo_regreso, regrabar]
     save_on_top = True
 
     form = TramoAdminForm

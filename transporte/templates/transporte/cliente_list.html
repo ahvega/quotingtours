@@ -1,9 +1,9 @@
 {% extends "_table.html" %}{% load humanize %}
 {% block title %}Clientes{% endblock %}
 {% block page-title %}Clientes{% endblock %}{% block theader %}
-                                <th data-priority="6" class="centrado">Código</th>
+                                <th data-priority="6" class="centrado" style="width: 100px; ">Código</th>
                                 <th class="centrado">Cliente</th>
-                                <th data-priority="7" class="derecha">Acciones</th>
+                                <th data-priority="99" class="derecha">Acciones</th>
                                 <th data-priority="5" class="derecha">Cotizado</th>
                                 <th data-priority="2" class="centrado">Contacto</th>
                                 <th data-priority="1" class="centrado">Tel</th>
@@ -11,15 +11,16 @@
                             <tr>
                                 <td class="centrado">{{ cliente.codigo }}</td>
                                 <td class="izquierda" data-search="{{ cliente }}">
-                                    <a title="Ver Cliente {{ cliente }}"
+                                    <a title="Ver Cliente {{ cliente }}" data-ajax="false" onclick="window.location.reload(false);"
                                        href="{{ cliente.get_absolute_url }}">{{ cliente }}</a></td>
                                 <td class="izquierda" width="1">
                                     <div class="ui-alt-icon ui-nodisc-icon mininav4r">
                                         <a title="Enviar email a {{ cliente }} <{{ cliente.email }}>"
                                            href="mailto:{{ cliente.email }}">
-                                            <i class='material-icons text-green md-18'>mail_outline</i></a>
+                                            <i class='material-icons text-purple md-18'>contact_mail</i></a>
                                         <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-action ui-btn-icon-notext ui-btncito"
-                                           title="Ver Cliente {{ cliente }}"
+                                           title="Ver Cliente {{ cliente }}" data-ajax="false"
+                                           onclick="window.location.reload(false);"
                                            href="{{ cliente.get_absolute_url }}">goto</a>{% if request.user.is_superuser %}
                                         <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-edit ui-btn-icon-notext ui-btncito"
                                            title="Editar Cliente {{ cliente }}"
@@ -33,12 +34,12 @@
                                 <td class="izquierda">{{ cliente.contacto }}</td>
                                 <td class="centrado">
                                     <a title="Llamar a {{ cliente }}" href="tel:{{ cliente.tel }}"><i
-                                            class='material-icons text-green md-18'>phone</i>{{ cliente.tel }}</a>
+                                            class='material-icons text-purple md-18'>contact_phone</i>{{ cliente.tel }}</a>
                                 </td>
                                 <td class="centrado">{{ cliente.rtn }}</td>
                             </tr>{% endfor %}{% endblock %}{% block footer %}{% if request.user.is_superuser %}
                 <div class="fixed-action-btn">
                     <a class="btn-floating btn-large waves-effect waves-light red darken-2"
-                       title="Agregar Cliente"
+                       title="Agregar Cliente" data-ajax="false" onclick="window.location.reload(false);"
                        href="{% url "transporte_cliente_create" %}"><i class="material-icons md-28">add</i></a>
                 </div>{% endif %}{% endblock %}

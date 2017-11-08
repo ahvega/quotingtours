@@ -13,10 +13,10 @@ $(document).ready(function () {
                 zeroRecords:    "No se encontraron registros",
                 emptyTable:     "No hay datos en esta tabla",
                 paginate: {
-                    first:      "Primero",
-                    previous:   "Anterior",
-                    next:       "Siguiente",
-                    last:       "Ultimo"
+                    first:      "<<",
+                    previous:   "<",
+                    next:       ">",
+                    last:       ">>"
                 },
                 aria: {
                     sortAscending:  ": ordenar columna en forma ascendente",

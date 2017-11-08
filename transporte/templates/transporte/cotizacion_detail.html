@@ -91,16 +91,16 @@
                 <th class="derecha">#</th>
                 <th class="izquierda">Tramo</th>
                 <th data-priority="5" class="derecha">Acciones</th>
-                <th data-priority="1" class="derecha">
+                <th data-priority="3" class="derecha">
                     <small>Desde</small>
                 </th>
-                <th data-priority="4" class="derecha">
+                <th data-priority="4" class="izquierda">
                     <small>Hacia</small>
                 </th>
-                <th data-priority="2" class="derecha">
+                <th data-priority="1" class="derecha">
                     <small>Kms.</small>
                 </th>
-                <th data-priority="3" class="derecha">
+                <th data-priority="2" class="derecha">
                     <small>Horas</small>
                 </th>
             </tr>
@@ -122,7 +122,7 @@
                         </div>
                     </td>
                     <td class="derecha">{{ tramo.desde }}</td>
-                    <td class="derecha">{{ tramo.hacia }}</td>
+                    <td class="izquierda">{{ tramo.hacia }}</td>
                     <td class="derecha">{{ tramo.kms|intcomma }}</td>
                     <td class="derecha">{{ tramo.hrs|intcomma }}</td>
                 </tr>

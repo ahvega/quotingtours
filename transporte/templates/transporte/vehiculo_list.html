@@ -7,27 +7,27 @@
                                 <th data-priority="2" class="derecha">Creado</th>
                                 <th data-priority="3" class="derecha">Actualizado</th>{% endblock %}{% block tbody %}{% for vehiculo in vehiculo_list %}
                             <tr>
-                                <td data-search="{{ vehiculo.nombre }}">
-                                    <a title="Ver Vehículo {{ vehiculo.tipo.nombre }} {{ vehiculo.nombre }}"
-                                       href="{{ vehiculo.get_absolute_url }}">{{ vehiculo.tipo.nombre }} {{ vehiculo.nombre }}</a>
+                                <td data-search="{{ vehiculo.tipo }}, {{ vehiculo }}">
+                                    <a title="Ver Vehículo {{ vehiculo.tipo }} {{ vehiculo }}"
+                                       href="{{ vehiculo.get_absolute_url }}">{{ vehiculo.tipo }} {{ vehiculo }}</a>
                                 </td>
                                 <td class="izquierda" width="1">
                                     <div class="ui-alt-icon ui-nodisc-icon mininav3r">
                                         <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-action ui-btn-icon-notext ui-btncito"
-                                           title="Ver {{ vehiculo.tipo.nombre }} {{ vehiculo.nombre }}"
+                                           title="Ver {{ vehiculo.tipo }} {{ vehiculo }}"
                                            href="{{ vehiculo.get_absolute_url }}">goto</a>{% if request.user.is_superuser %}
                                         <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-edit ui-btn-icon-notext ui-btncito"
-                                           title="Editar {{ vehiculo.tipo.nombre }} {{ vehiculo.nombre }}"
+                                           title="Editar {{ vehiculo.tipo }} {{ vehiculo }}"
                                            href="{{ vehiculo.get_update_url }}"
                                            data-ajax="false" onclick="window.location.reload(false);">edit</a>
                                         <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-delete ui-btn-icon-notext ui-btncito"
-                                           title="Eliminar {{ vehiculo.tipo.nombre }} {{ vehiculo.nombre }}"
+                                           title="Eliminar {{ vehiculo.tipo }} {{ vehiculo }}"
                                            href="{{ vehiculo.get_delete_url }}">delete</a>{% endif %}
                                     </div>
                                 </td>
                                 <td class="derecha">{{ vehiculo.placa }}</td>
                                 <td class="derecha">{{ vehiculo.creado|date:"D d/b" }}</td>
-                                <td class="derecha">{{ vehiculo.actualizado|date:"D d/b" }}</td>
+                                <td class="derecha">{{ vehiculo.actualizado }}</td>
                             </tr>{% endfor %}{% endblock %}{% block footer %}{% if request.user.is_superuser %}
                 <div class="fixed-action-btn">
                     <a class="btn-floating btn-large waves-effect waves-light red darken-2"

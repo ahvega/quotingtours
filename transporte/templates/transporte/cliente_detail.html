@@ -22,14 +22,14 @@
     <tr>
         <td class="derecha">Tel</td>
         <td>
-            <a title="Llamar" style="text-decoration: none;" href="tel:{{ cliente.tel }}"><i
-                    class='material-icons text-green md-18'>phone</i> {{ cliente.tel }}</a>
+            <a title="Llamar a {{ cliente.contacto }}" style="text-decoration: none;" href="tel:{{ cliente.tel }}"><i
+                    class='material-icons text-purple md-18'>contact_phone</i> {{ cliente.tel }}</a>
         </td>
     </tr>
     <tr>
         <td class="derecha">Email</td>
-        <td><a title="Enviar email" style="text-decoration: none;" href="mailto:{{ cliente.email }}"><i
-                class='material-icons text-green md-18'>mail_outline</i> {{ cliente.email }}</a>
+        <td><a title="Enviar email a {{ cliente.contacto }} <{{ cliente.email }}>" style="text-decoration: none;" href="mailto:{{ cliente.contacto }} <{{ cliente.email }}>"><i
+                class='material-icons text-purple md-18'>contact_mail</i> {{ cliente.email }}</a>
         </td>
     </tr>
     <tr>

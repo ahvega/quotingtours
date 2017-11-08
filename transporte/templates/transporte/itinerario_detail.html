@@ -73,7 +73,7 @@
                     </thead>
                     <tbody>{% for cotizacion in itinerario.cotizaciones.all %}
                         <tr>
-                            <td data-search="{{ cotizacion }}" class="izquierda">
+                            <td data-search="{{ cotizacion }}, {{ cotizacion.descripcion }}" class="izquierda">
                                 <a title="Ver Cotización {{ cotizacion }}" data-ajax="false"
                                    onclick="window.location.reload(false);"
                                    href="{{ cotizacion.get_absolute_url }}">{{ cotizacion }}</a>:<br>{{ cotizacion.descripcion }}</td>

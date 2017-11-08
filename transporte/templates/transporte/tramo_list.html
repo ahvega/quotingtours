@@ -14,15 +14,14 @@
 {% block tbody %}{% for tramo in tramo_list %}
                     <tr>
                         <td class="centrado" data-search="{{ tramo.codigo }}">
-                            <a title="Ver Tramo {{ tramo }}"
-                               href="{{ tramo.get_absolute_url }}">{{ tramo.codigo }}</a></td>
+                            <a title="Mapa de {{ tramo }}" target="_blank"
+                               href="https://www.google.com/maps/dir/{{ tramo.desde_lugar }}/{{ tramo.hacia_lugar }}">{{ tramo.codigo }} <i
+                                    class="material-icons text-purple md-18"
+                                    style="vertical-align: -4px;">directions</i></a></td>
                     <td class="izquierda">
                         <a title="Ver Tramo {{ tramo }}"
                            href="{{ tramo.get_absolute_url }}">{{ tramo }}</a></td>
-                    <td><div class="ui-alt-icon ui-nodisc-icon mininav4r">
-                        <a title="Mapa de {{ tramo }}" target="_blank"
-                           href="https://www.google.com/maps/dir/{{ tramo.desde_lugar }}/{{ tramo.hacia_lugar }}"><i
-                                class="material-icons text-green">directions</i></a>
+                    <td><div class="ui-alt-icon ui-nodisc-icon mininav3r">
                         <a class="ui-btn ui-btn-inline ui-btn-c ui-btncito ui-btn-icon-notext ui-icon-action"
                            title="Ver Tramo {{ tramo }}"
                            href="{{ tramo.get_absolute_url }}">goto</a>{% if request.user.is_superuser %}
@@ -32,12 +31,17 @@
                         <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-delete ui-btn-icon-notext ui-btncito"
                            title="Eliminar Tramo {{ tramo }}" href="{{ tramo.get_delete_url }}">delete</a>{% endif %}
                     </div></td>
-                    <td class="izquierda"><a title="Mapa de {{ tramo.desde_lugar }}" target="_blank"
-                                            href="https://www.google.com/maps/place/{{ tramo.desde_lugar }}"><i
-                            class="material-icons text-green">place</i></a>{{ tramo.desde_lugar }}</td>
-                    <td class="izquierda"><a title="Mapa de {{ tramo.hacia_lugar }}" target="_blank"
-                                            href="https://www.google.com/maps/place/{{ tramo.hacia_lugar }}"><i
-                            class="material-icons text-green">place</i></a>{{ tramo.hacia_lugar }}</td>
+                    <td class="izquierda">
+                        <a title="Ver Mapa de {{ tramo.desde_lugar }}" target="_blank"
+                           href="https://www.google.com/maps/place/{{ tramo.desde_lugar }}"><i
+                                class="material-icons text-purple md-18"
+                                style="vertical-align: -4px;">place</i>{{ tramo.desde_lugar }}
+                        </a></td>
+                    <td class="izquierda">
+                        <a title="Ver Mapa de {{ tramo.hacia_lugar }}" target="_blank"
+                           href="https://www.google.com/maps/place/{{ tramo.hacia_lugar }}"><i
+                                class="material-icons text-purple md-18"
+                                style="vertical-align: -4px;">place</i>{{ tramo.hacia_lugar }}</a></td>
                     <td class="centrado">{{ tramo.kms|intcomma }}</td>
                     <td class="centrado">{{ tramo.hrs }}</td>
                 </tr>

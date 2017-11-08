@@ -14,7 +14,11 @@ table {
 }
 
 a.ui-table-columntoggle-btn.ui-btn.ui-btn-a.ui-corner-all.ui-shadow.ui-mini {
-    margin: 16px;
+    margin: 16px 16px 0 0;
+}
+
+div#tabladedatos_filter.dataTables_filter label input.form-control.input-sm {
+    min-width: 80%;
 }
 
 .btn, h2, h3 {
@@ -435,7 +439,7 @@ td i, th i {
 .material-icons.md-18 {
     font-size: 18px;
     line-height: 18px;
-    vertical-align: -3px;
+    vertical-align: -6px;
     margin-right: 2px;
 }
 
@@ -577,7 +581,7 @@ div#nav-panel ul li a {
     color: #7d1313;
 }
 
-.text.yellow {
+.text-yellow {
     color: #FFB632;
 }
 

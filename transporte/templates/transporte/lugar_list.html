@@ -10,14 +10,15 @@
             <th data-priority="2" class="centrado">País</th>{% endblock %}
 {% block tbody %}{% for lugar in lugar_list %}
                     <tr>
-                    <td class="centrado">{{ lugar.codigo|upper }}</td>
+                    <td class="centrado">
+                        <a title="Mapa de {{ lugar }}" target="_blank"
+                           href="https://www.google.com/maps/place/{{ lugar }}">{{ lugar.codigo|upper }} <i
+                                class="material-icons text-purple md-18" style="vertical-align: -4px;">place</i></a>
+                    </td>
                     <td data-search="{{ lugar }}">
                         <a title="Ver Lugar {{ lugar }}"
                            href="{{ lugar.get_absolute_url }}">{{ lugar.nombre }}</a></td>
-                    <td><div class="ui-alt-icon ui-nodisc-icon mininav4r">
-                        <a title="Mapa de {{ lugar }}" target="_blank" style="line-height: 24px;"
-                           href="https://www.google.com/maps/place/{{ lugar }}"><i
-                           class="material-icons text-green">place</i></a>
+                    <td><div class="ui-alt-icon ui-nodisc-icon mininav3r">
                         <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-action ui-btn-icon-notext ui-btncito"
                            title="Ver Lugar {{ lugar }}" href="{{ lugar.get_absolute_url }}">goto</a>{% if request.user.is_superuser %}
                         <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-edit ui-btn-icon-notext ui-btncito"

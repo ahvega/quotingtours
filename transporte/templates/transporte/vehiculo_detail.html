@@ -30,11 +30,11 @@
     </tr>
     <tr>
         <td class="derecha">Creado</td>
-        <td><strong>{{ vehiculo.creado|date:"D d/b" }}</strong></td>
+        <td><em>{{ vehiculo.creado }}</em></td>
     </tr>
     <tr>
         <td class="derecha">Actualizado</td>
-        <td><strong>{{ vehiculo.actualizado|date:"D d/b" }}</strong></td>
+        <td><em>{{ vehiculo.actualizado }}</em></td>
     </tr>
 {% endblock %}
 {% block footer %}{% if request.user.is_superuser %}

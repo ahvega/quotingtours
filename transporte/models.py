@@ -19,6 +19,7 @@ from django_extensions.db import fields as extension_fields
 from djchoices import DjangoChoices, ChoiceItem
 from django.db.models.functions import Coalesce
 
+from transporte import countries
 from .directions import distancia, duracion, verbage
 
 
@@ -458,8 +459,11 @@ class Itinerario(models.Model):
 
     @property
     def sum_subtotal_cotizado(self):
-        subtotal_agregado = self.cotizaciones.aggregate(subtotal=Coalesce(Sum('subtotal'), 0))
-        return subtotal_agregado['subtotal']
+        if self.cotizaciones.exists():
+            subtotal_agregado = self.cotizaciones.aggregate(subtotal=Coalesce(Sum('subtotal'), 0))
+            return subtotal_agregado['subtotal']
+        else:
+            return 0
 
     @property
     def sum_total_cotizado(self):
@@ -515,6 +519,7 @@ class Itinerario(models.Model):
                unicode(self.codigo_cliente) + '-' + unicode(self.nombre)
 
     def save(self, *args, **kwargs):
+        elcliente = Cliente.objects.get(id=self.cliente.pk)
         self.subtotal_cotizado = self.sum_subtotal_cotizado
         self.utilidad_cotizada = self.sum_utilidad_cotizada
         self.total_cotizado = self.sum_total_cotizado
@@ -523,6 +528,7 @@ class Itinerario(models.Model):
         if self.nivel_de_precio is None:
             self.nivel_de_precio = self.cliente.nivel_de_precio
         super(Itinerario, self).save()
+        elcliente.save()
 
     def get_absolute_url(self):
         return reverse('transporte_itinerario_detail', args=(self.slug,))
@@ -556,8 +562,24 @@ class Lugar(models.Model):
     def __unicode__(self):
         return u'%s' % self.nombre
 
+    @property
+    def codigo_pais2(self):
+        return countries.info_pais('codigo2',self.pais)
+
+    @property
+    def nombre_pais(self):
+        return countries.info_pais('nombre', self.pais)
+
     def save(self, *args, **kwargs):
         self.codigo = self.codigo.upper()
+        self.pais = self.nombre_pais
+        try:
+            lacomma = self.nombre.rindex(',')
+            self.nombre = self.nombre[:lacomma]
+        except:
+            self.nombre = self.nombre
+
+        self.nombre = self.nombre + ', ' + self.codigo_pais2
         super(Lugar, self).save()
 
     def get_absolute_url(self):
@@ -594,6 +616,10 @@ class Tramo(models.Model):
         self.zona_destino = self.hacia_lugar.zona
         self.desde_hacia = self.desde_lugar.nombre + ' - ' + self.hacia_lugar.nombre
         if self.desde_lugar == self.hacia_lugar:
+            minimoKms = param('2017-minimo-kms')
+            if self.desde_lugar.pais != 'Honduras':
+                minimoKms = '100'
+            minimoHrs = param('2017-tiempo-minimo')
             self.kms = minimoKms
             self.hrs = minimoHrs
             self.desde_hacia = "Movimientos en " + self.desde_lugar.nombre
@@ -701,8 +727,11 @@ class Cotizacion(models.Model):
 
     @property
     def sum_subtotal(self):
-        subtotal_agregado = self.lineas.aggregate(subtotal=Coalesce(Sum('costo_total'), 0))
-        return subtotal_agregado['subtotal']
+        if self.lineas.exists():
+            subtotal_agregado = self.lineas.aggregate(subtotal=Coalesce(Sum('costo_total'), 0))
+            return subtotal_agregado['subtotal']
+        else:
+            return 0
 
     @property
     def sum_total(self):

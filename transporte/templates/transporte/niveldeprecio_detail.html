@@ -5,15 +5,15 @@
 {% block page-title %}Nivel de Precio{% endblock %}
 {% block thead %}
     <th colspan="2" class="izquierda"><i
-            class="material-icons text-lime">local_offer</i>{{ niveldeprecio.nombre }}{% if request.user.is_superuser %}
+            class="material-icons text-lime">local_offer</i>{{ niveldeprecio }}{% if request.user.is_superuser %}
         <div class="ui-nodisc-icon mininav3r">
             <a class="ui-btn ui-btn-inline ui-btn-a ui-icon-edit ui-btn-icon-notext ui-btncito"
-               title="Editar Nivel de Precio {{ niveldeprecio.nombre }}" href="{{ niveldeprecio.get_update_url }}">edit</a>
+               title="Editar Nivel de Precio {{ niveldeprecio }}" href="{{ niveldeprecio.get_update_url }}">edit</a>
             <a class="ui-btn ui-btn-inline ui-btn-a ui-icon-plus ui-btn-icon-notext ui-btncito"
                title="Agregar Nuevo Nivel de Precio"
                href="{% url "transporte_niveldeprecio_create" %}">add</a>
             <a class="ui-btn ui-btn-inline ui-btn-a ui-icon-delete ui-btn-icon-notext ui-btncito"
-               title="Borrar Nivel de Precio {{ niveldeprecio.nombre }}" href="{{ niveldeprecio.get_delete_url }}">delete</a></div>
+               title="Borrar Nivel de Precio {{ niveldeprecio }}" href="{{ niveldeprecio.get_delete_url }}">delete</a></div>
     {% endif %}</th>
 {% endblock %}
 {% block tbody %}
@@ -39,11 +39,11 @@
     </tr>
     <tr>
         <td class="derecha">Creado</td>
-        <td><strong>{{ niveldeprecio.creado|date:'D d/M/Y' }}</strong></td>
+        <td><em>{{ niveldeprecio.creado }}</em></td>
     </tr>
     <tr>
         <td class="derecha">Actualizado</td>
-        <td><strong>{{ niveldeprecio.actualizado|date:'D d/M/Y' }}</strong></td>
+        <td><em>{{ niveldeprecio.actualizado }}</em></td>
     </tr>
 {% endblock %}
 {% block footer %}{% if request.user.is_superuser %}
