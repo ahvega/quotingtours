@@ -4,25 +4,37 @@
 {% block title %}Detalle de Ítem{% endblock %}
 {% block page-title %}Detalle de Ítem{% endblock %}
 {% block thead %}
-    <th colspan="2" class="izquierda"><a style="color:white;" title="Ver Item {{ item.nombre }}"
-        href="{{ item.get_absolute_url }}" data-ajax="false"
-        onclick="window.location.reload(false);"><i
-            class="material-icons text-lime">toc</i>{{ item.nombre }}{% if request.user.is_superuser %}
-        <div class="ui-nodisc-icon mininav3r">
-            <a class="ui-btn ui-btn-inline ui-btn-a ui-icon-edit ui-btn-icon-notext ui-btncito"
-               title="Editar Ítem {{ item.nombre }}" href="{{ item.get_update_url }}"
-               data-ajax="false" onclick="window.location.reload(false);">edit</a>
-            <a class="ui-btn ui-btn-inline ui-btn-a ui-icon-plus ui-btn-icon-notext ui-btncito"
-               title="Agregar Nuevo Ítem"
-               href="{% url "transporte_item_create" %}"
-               data-ajax="false" onclick="window.location.reload(false);">add</a>
-            <a class="ui-btn ui-btn-inline ui-btn-a ui-icon-delete ui-btn-icon-notext ui-btncito"
-               title="Borrar Ítem {{ item.nombre }}" href="{{ item.get_delete_url }}">delete</a></div>
+    <th colspan="2" class="izquierda">
+        <i class="material-icons">toc</i>{{ item }}{% if request.user.is_superuser %}
+        <span class="minipopuplink">
+            <a href="#popup{{ item.slug }}" data-rel="popup">
+                <i class="material-icons">more_horiz</i></a>
+        </span>
+        <div class="minipopup3" data-role="popup" id="popup{{ item.slug }}">
+            <ul class="ui-listview">
+                <li>
+                    <a title="Agregar Ítem Nuevo" data-ajax="false"
+                       onclick="window.location.reload(false);"
+                       href="{% url 'transporte_item_create' %}">
+                        <i class="material-icons">add</i> Agregar</a></li>
+                <li>
+                    <a title="Editar Ítem {{ item }}"
+                       href="{{ item.get_update_url }}">
+                        <i class="material-icons">edit</i> Editar</a></li>
+                <li>
+                    <a title="Eliminar Ítem {{ item }}"
+                       href="{{ item.get_delete_url }}">
+                        <i class="material-icons">delete</i> Borrar</a></li>
+            </ul>
+            <div class="ui-popup-arrow-container ui-popup-arrow-t">
+                <div class="ui-popup-arrow ui-body-a ui-overlay-shadow"></div>
+            </div>
+        </div>
     {% endif %}</th>
 {% endblock %}
 {% block tbody %}
     <tr>
-        <td class="derecha">Tipo Item</td>
+        <td class="derecha">Tipo Ítem</td>
         <td><strong>{{ item.get_tipo_item_display }}</strong></td>
     </tr>
     <tr>
@@ -52,7 +64,7 @@
 {% endblock %}
 {% block footer %}{% if request.user.is_superuser %}
         <div class="fixed-action-btn">
-            <a class="btn-floating btn-large waves-effect waves-light purple darken-2"
+            <a class="btn-floating btn-large waves-effect waves-light"
                href="{{ item.get_update_url }}"
                data-ajax="false" onclick="window.location.reload(false);">
                 <i class="material-icons">edit</i></a>

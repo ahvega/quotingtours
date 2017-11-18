@@ -4,16 +4,33 @@
 {% block page-title %}Vehículo{% endblock %}
 {% block thead %}
     <th colspan="2" class="izquierda"><i
-            class="material-icons text-lime">airport_shuttle</i>{{ vehiculo.tipo_nombre }} {{ vehiculo.nombre }}{% if request.user.is_superuser %}
-        <div class="ui-nodisc-icon mininav3r">
-            <a class="ui-btn ui-btn-inline ui-btn-a ui-icon-edit ui-btn-icon-notext ui-btncito"
-               title="Editar Vehículo {{ vehiculo.nombre }}" href="{{ vehiculo.get_update_url }}">edit</a>
-            <a class="ui-btn ui-btn-inline ui-btn-a ui-icon-plus ui-btn-icon-notext ui-btncito"
-               title="Agregar Nuevo Vehículo"
-               href="{% url "transporte_vehiculo_create" %}">add</a>
-            <a class="ui-btn ui-btn-inline ui-btn-a ui-icon-delete ui-btn-icon-notext ui-btncito"
-               title="Borrar Vehículo {{ vehiculo.nombre }}" href="{{ vehiculo.get_delete_url }}">delete</a></div>
-    {% endif %}</th>
+            class="material-icons">airport_shuttle</i>{{ vehiculo.tipo_nombre }} {{ vehiculo.nombre }}
+            {% if request.user.is_superuser %}
+                <span class="minipopuplink">
+            <a href="#popup{{ vehiculo.slug }}" data-rel="popup">
+                <i class="material-icons">more_horiz</i></a>
+        </span>
+                <div class="minipopup3" data-role="popup" id="popup{{ vehiculo.slug }}">
+                    <ul class="ui-listview">
+                        <li>
+                            <a title="Agregar Vehículo Nuevo" data-ajax="false"
+                               onclick="window.location.reload(false);"
+                               href="{% url 'transporte_vehiculo_create' %}">
+                                <i class="material-icons">add</i> Agregar</a></li>
+                        <li>
+                            <a title="Editar Vehículo {{ vehiculo.tipo_nombre }} {{ vehiculo }}"
+                               href="{{ vehiculo.get_update_url }}">
+                                <i class="material-icons">edit</i> Editar</a></li>
+                        <li>
+                            <a title="Eliminar Vehículo {{ vehiculo.tipo_nombre }} {{ vehiculo }}"
+                               href="{{ vehiculo.get_delete_url }}">
+                                <i class="material-icons">delete</i> Borrar</a></li>
+                    </ul>
+                    <div class="ui-popup-arrow-container ui-popup-arrow-t">
+                        <div class="ui-popup-arrow ui-body-a ui-overlay-shadow"></div>
+                    </div>
+                </div>
+            {% endif %}</th>
 {% endblock %}
 {% block tbody %}
     <tr>
@@ -39,7 +56,7 @@
 {% endblock %}
 {% block footer %}{% if request.user.is_superuser %}
         <div class="fixed-action-btn">
-            <a class="btn-floating btn-large waves-effect waves-light red darken-2"
+            <a class="btn-floating btn-large waves-effect waves-light"
                href="{{ vehiculo.get_update_url }}">
                 <i class="material-icons">edit</i></a>
         </div>{% endif %}{% endblock %}

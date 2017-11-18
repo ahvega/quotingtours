@@ -5,82 +5,94 @@
 {% block title %}Cotización{% endblock %}
 {% block page-title %}Cotización{% endblock %}
 {% block thead %}
-    <tr>
-        <th colspan="2" class="izquierda">
-            <a class="text-white" title="Ver Cotización {{ cotizacion }}"
-                href="{{ cotizacion.get_absolute_url }}" data-ajax="false"
-                onclick="window.location.reload(false);"><i
-                class="material-icons text-lime">assignment_turned_in</i>{{ cotizacion }}
-            {% if request.user.is_superuser %}
-            <div class="ui-nodisc-icon mininav3r">
-                <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-edit ui-btn-icon-notext ui-btncito"
-                   title="Editar Cotización {{ cotizacion.nombre }}" href="{{ cotizacion.get_update_url }}"
-                   data-ajax="false" onclick="window.location.reload(false);">edit</a>
-                <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-plus ui-btn-icon-notext ui-btncito"
-                   title="Agregar Cotización Nueva"
-                   href="{% url "transporte_cotizacion_create" itinerario_id=cotizacion.itinerario.pk %}"
-                   data-ajax="false" onclick="window.location.reload(false);">>add</a>
-                <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-delete ui-btn-icon-notext ui-btncito"
-                   title="Borrar Cotización {{ cotizacion.nombre }}" href="{{ cotizacion.get_delete_url }}">delete</a>
-            </div>
-        {% endif %}</th>
-    </tr>
-{% endblock %}
-{% block tbody %}
-    <tr>
-        <td class="derecha"><strong>Cliente: </strong></td>
-        <td><a href="{{ cotizacion.itinerario.cliente.get_absolute_url }}"
-               title="Ver Cliente: {{ cotizacion.itinerario.cliente }}">
-            <i class="material-icons text-green md-18">recent_actors</i><strong>
-            {{ cotizacion.itinerario.cliente }}</strong></a>
-        </td>
-    </tr>
-    <tr>
-        <td class="derecha"><strong>Itinerario:</strong></td>
-        <td><a href="{{ cotizacion.itinerario.get_absolute_url }}" title="Ver Itinerario: {{ cotizacion.itinerario }}">
-            <i class="material-icons text-green md-18">date_range</i><strong>{{ cotizacion.itinerario }}</strong></a>
-        </td>
-    </tr>
-    <tr>
-        <td class="derecha">Descripción</td>
-        <td>{{ cotizacion.descripcion }}</td>
-    </tr>
-    <tr>
-        <td class="derecha">Vence</td>
-        <td><strong>{{ cotizacion.fecha_vence|date:"D d/M/Y" }}</strong> {% if cotizacion.is_past_due %}
-            <small class="text-red"><em>(Vencida)</em></small>{% endif %}</td>
-    </tr>{% if cotizacion.tramos.exists %}
-    <tr>
-        <td class="derecha">Kilómetros</td>
-        <td><strong>{{ cotizacion.kms_total|intcomma }}</strong></td>
-    </tr>
-    <tr>
-        <td class="derecha">Horas</td>
-        <td><strong>{{ cotizacion.hrs_total|intcomma }}</strong></td>
-    </tr>{% endif %}
-    <tr>
-        <td class="derecha">Costo</td>
-        <td><strong>{{ cotizacion.subtotal|intcomma }}</strong></td>
-    </tr>
-    <tr>
-        <td class="derecha">Utilidad</td>
-        <td><strong>{{ cotizacion.utilidad_valor|intcomma }} <small class="text-purple">
-            <em>{{ cotizacion.utilidad|porciento }}</em></small>
-        </strong></td>
-    </tr>
-    <tr>
-        <td class="derecha">Precio</td>
-        <td><strong>{{ cotizacion.total|intcomma }}</strong></td>
-    </tr>
-    <tr>
-        <td class="derecha">Creada</td>
-        <td><em>{{ cotizacion.creado }}</em></td>
-    </tr>
-    <tr>
-        <td class="derecha">Actualizada</td>
-        <td><em>{{ cotizacion.actualizado }}</em></td>
-    </tr>
-{% endblock %}
+                    <tr>
+                        <th colspan="2" class="izquierda">
+                            <a class="text-white" title="Seleccionar Cotización {{ cotizacion }}"
+                                href="{{ cotizacion.get_absolute_url }}" data-ajax="false"
+                                onclick="window.location.reload(false);"><i
+                                    class="material-icons">assignment_turned_in</i>{{ cotizacion }}</a>{% if request.user.is_superuser %}
+                                <span class="minipopuplink"><a href="#popup{{ cotizacion }}" data-rel="popup"><i
+                                        class="material-icons">more_horiz</i></a>
+                                            </span>
+                                <div class="minipopup3" data-role="popup" id="popup{{ cotizacion }}">
+                                    <ul class="ui-listview">
+                                        <li><a title="Agregar Cotización Nueva"
+                                               href="{% url "transporte_cotizacion_create" itinerario_id=cotizacion.itinerario.pk %}">
+                                            <i class="material-icons">add</i> Agregar</a></li>
+                                        <li><a title="Editar Cotización {{ cotizacion }}"
+                                               href="{{ cotizacion.get_update_url }}">
+                                            <i class="material-icons">edit</i> Editar</a></li>
+                                        <li><a title="Eliminar Cotización {{ cotizacion }}"
+                                               href="{{ cotizacion.get_delete_url }}">
+                                            <i class="material-icons">delete</i> Borrar</a></li>
+                                    </ul>
+                                    <div class="ui-popup-arrow-container ui-popup-arrow-t">
+                                        <div class="ui-popup-arrow ui-body-a ui-overlay-shadow"></div>
+                                    </div>
+                                </div>{% endif %}
+                        </th>
+                    </tr>{% endblock %}{% block tbody %}
+                    <tr>
+                        <td class="derecha"><strong>Cliente: </strong></td>
+                        <td><a href="{{ cotizacion.itinerario.cliente.get_absolute_url }}"
+                               title="Seleccionar Cliente: {{ cotizacion.itinerario.cliente }}">
+                            <i class="material-icons">recent_actors</i><strong>
+                            {{ cotizacion.itinerario.cliente }}</strong></a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="derecha"><strong>Itinerario:</strong></td>
+                        <td><a href="{{ cotizacion.itinerario.get_absolute_url }}" title="Seleccionar Itinerario: {{ cotizacion.itinerario }}">
+                            <i class="material-icons">date_range</i><strong>{{ cotizacion.itinerario }}</strong></a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="derecha">Descripción</td>
+                        <td>{{ cotizacion.descripcion }}</td>
+                    </tr>
+                    <tr>
+                        <td class="derecha">Fecha Ida</td>
+                        <td><strong>{{ cotizacion.fecha_ida|date:"D d/M/Y" }}</strong></td>
+                    </tr>
+                    <tr>
+                        <td class="derecha">Fecha Regreso</td>
+                        <td><strong>{{ cotizacion.fecha_regreso|date:"D d/M/Y" }}</strong></td>
+                    </tr>
+                    <tr>
+                        <td class="derecha">Vence</td>
+                        <td><strong>{{ cotizacion.fecha_vence|date:"D d/M/Y" }}</strong> {% if cotizacion.is_past_due %}
+                            <small class="text-red"><em>(Vencida)</em></small>{% endif %}</td>
+                    </tr>{% if cotizacion.tramos.exists %}
+                    <tr>
+                        <td class="derecha">Kilómetros</td>
+                        <td><strong>{{ cotizacion.kms_total|intcomma }}</strong></td>
+                    </tr>
+                    <tr>
+                        <td class="derecha">Horas</td>
+                        <td><strong>{{ cotizacion.hrs_total|intcomma }}</strong></td>
+                    </tr>{% endif %}{% if request.user.is_superuser %}
+                    <tr>
+                        <td class="derecha">Costo</td>
+                        <td><strong>{{ cotizacion.subtotal|intcomma }}</strong></td>
+                    </tr>
+                    <tr>
+                        <td class="derecha">Utilidad</td>
+                        <td><strong>{{ cotizacion.utilidad_valor|intcomma }} <small class="text-blue">
+                            <em>{{ cotizacion.utilidad|porciento }}</em></small>
+                        </strong></td>
+                    </tr>{% endif %}
+                    <tr>
+                        <td class="derecha">Precio</td>
+                        <td><strong>{{ cotizacion.total|intcomma }}</strong></td>
+                    </tr>{% if request.user.is_superuser %}
+                    <tr>
+                        <td class="derecha">Creada</td>
+                        <td><em>{{ cotizacion.creado }}</em></td>
+                    </tr>
+                    <tr>
+                        <td class="derecha">Actualizada</td>
+                        <td><em>{{ cotizacion.actualizado }}</em></td>
+                    </tr>{% endif %}{% endblock %}
 {% block detalle %}{% if cotizacion.tramos.exists %}
     {# tramos en cotizacion #}
     <div class="rutacontainer">
@@ -90,7 +102,6 @@
             <tr>
                 <th class="derecha">#</th>
                 <th class="izquierda">Tramo</th>
-                <th data-priority="5" class="derecha">Acciones</th>
                 <th data-priority="3" class="derecha">
                     <small>Desde</small>
                 </th>
@@ -110,17 +121,38 @@
                 <tr>
                     <td class="derecha">{{ tramo.orden }}</td>
                     <td data-search="{{ tramo.tramo }}" class="izquierda">
-                        <a title="Ver Ítem {{ tramo.tramo }}"
-                           href="{{ tramo.get_update_url }}" data-ajax="false"
-                           onclick="window.location.reload(false);">{{ tramo.tramo }}</a></td>
-                    <td>
-                        <div class="ui-alt-icon ui-nodisc-icon mininav3r">{% if request.user.is_superuser %}
-                            <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-edit ui-btn-icon-notext ui-btncito"
-                               title="Editar Tramo {{ tramo.descripcion }}" href="{{ tramo.get_update_url }}">edit</a>
-                            <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-delete ui-btn-icon-notext ui-btncito"
-                               title="Eliminar Tramo {{ tramo.descripcion }}" href="{{ tramo.get_delete_url }}">delete</a>{% endif %}
-                        </div>
-                    </td>
+                        <a title="Seleccionar Tramo {{ tramo }}"
+                           href="{{ tramo.get_absolute_url }}" data-ajax="false"
+                           onclick="window.location.reload(false);">{{ tramo.tramo }}</a>
+                        {% if request.user.is_superuser %}
+                            <span class="minipopuplink"><a href="#popup{{ tramo.tramo.codigo }}" data-rel="popup"><i
+                                    class="material-icons">more_horiz</i></a>
+                            </span>
+                            <div class="minipopup3" data-role="popup" id="popup{{ tramo.tramo.codigo }}">
+                                <ul class="ui-listview">
+                                    <li>
+                                        <a title="Seleccionar Tramo {{ tramo.tramo }}"
+                                           href="{{ tramo.get_absolute_url }}">
+                                            <i class="material-icons">arrow_forward</i> Seleccionar</a></li>
+                                    <li>
+                                        <a title="Editar Tramo {{ tramo.tramo }}"
+                                           href="{{ tramo.get_update_url }}" data-ajax="false"
+                                           onclick="window.location.reload(false);">
+                                            <i class="material-icons">edit</i> Editar</a></li>
+                                    <li>
+                                        <a title="Eliminar Tramo {{ tramo.tramo }}"
+                                           href="{{ tramo.get_delete_url }}">
+                                            <i class="material-icons">delete</i> Borrar</a></li>
+                                    <li>
+                                        <a title="Mapa de Tramo {{ tramo.tramo }}" target="_blank"
+                                           href="https://www.google.com/maps/dir/{{ tramo.desde.strip }}/{{ tramo.hacia.strip }}/">
+                                            <i class="material-icons">directions</i> Ruta</a></li>
+                                </ul>
+                                <div class="ui-popup-arrow-container ui-popup-arrow-t">
+                                    <div class="ui-popup-arrow ui-body-a ui-overlay-shadow"></div>
+                                </div>
+                            </div>
+                        {% endif %}</td>
                     <td class="derecha">{{ tramo.desde }}</td>
                     <td class="izquierda">{{ tramo.hacia }}</td>
                     <td class="derecha">{{ tramo.kms|intcomma }}</td>
@@ -131,10 +163,12 @@
             <tfoot>
             <tr>
                 <td></td>
-                <td>TOTAL</td>
-                <td class="derecha"><a title="Mapa de la Ruta" target="_blank"
-                       href="https://www.google.com/maps/dir/{% for tramo in cotizacion.tramos.all %}{{ tramo.desde }}/{% if forloop.last %}{{ tramo.hacia }}/{% endif %}{% endfor %}"
-                ><i class="material-icons text-green">directions</i>Ruta</a></td>
+                <td>TOTAL<div style="float: right;">
+                    <a title="Mapa de la Ruta" target="_blank"
+                       href="https://www.google.com/maps/dir/{% for tramo in cotizacion.tramos.all %}{{ tramo.desde.strip }}/
+                           {% if forloop.last %}{{ tramo.hacia.strip }}/{% endif %}{% endfor %}">
+                        <i class="material-icons">directions</i>Ruta</a>
+                </div></td>
                 <td></td>
                 <td></td>
                 <td class="derecha">{{ cotizacion.kms_total|intcomma }}</td>
@@ -143,17 +177,16 @@
             </tfoot>
         </table>
     </div>{% endif %}
-    {# Items en cotizacion #}
+    {# Ítems en cotizacion #}{% if request.user.is_superuser %}
     <div class="topcontainer">
         <table data-role="table" id="tabladedatos" data-mode="columntoggle"
-               class="table-stroke ui-shadow table-stripe  ui-responsive">
+               class="table-stroke ui-shadow table-stripe ui-responsive">
             <thead>
             <tr>
                 <th class="izquierda">Ítem</th>
-                <th data-priority="5" class="derecha">Acciones</th>
                 <th data-priority="1" class="derecha">
                     <small>Cantidad</small>
-                </th>
+                </th>{% if request.user.is_superuser %}
                 <th data-priority="4" class="derecha">
                     <small>Costo c/u</small>
                 </th>
@@ -165,7 +198,7 @@
                 </th>
                 <th data-priority="4" class="derecha">
                     <small>Markup</small>
-                </th>
+                </th>{% endif %}
                 <th class="derecha">
                     <small>Precio</small>
                 </th>
@@ -175,28 +208,39 @@
             {% for linea in cotizacion.lineas.all %}
                 <tr>
                     <td data-search="{{ linea.descripcion }}" class="izquierda">
-                        <a title="Ver Ítem {{ linea.descripcion }}" data-ajax="false"
+                        <a title="Seleccionar Ítem {{ linea.descripcion }}" data-ajax="false"
                            onclick="window.location.reload(false);"
-                           href="{{ linea.get_absolute_url }}">{{ linea.descripcion }}</a></td>
-                    <td>
-                        <div class="ui-alt-icon ui-nodisc-icon mininav3r">
-                            <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-action ui-btn-icon-notext ui-btncito"
-                               data-ajax="false" onclick="window.location.reload(false);"
-                               title="Ver Ítem {{ linea.descripcion }}" href="{{ linea.get_absolute_url }}">goto</a>
-                            {% if request.user.is_superuser %}
-                                <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-edit ui-btn-icon-notext ui-btncito"
-                                   title="Editar Ítem {{ linea.descripcion }}" href="{{ linea.get_update_url }}"
-                                   data-ajax="false" onclick="window.location.reload(false);">edit</a>
-                                <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-delete ui-btn-icon-notext ui-btncito"
-                                   title="Eliminar Item {{ linea.descripcion }}" href="{{ linea.get_delete_url }}">delete</a>{% endif %}
-                        </div>
-                    </td>
-                    <td class="derecha">{{ linea.cantidad|intcomma }}</td>
+                           href="{{ linea.get_absolute_url }}">{{ linea.descripcion }}</a>{% if request.user.is_superuser %}
+                            <span class="minipopuplink"><a href="#popup{{ linea }}" data-rel="popup"><i
+                                    class="material-icons">more_horiz</i></a>
+                            </span>
+                            <div class="minipopup3" data-role="popup" id="popup{{ linea }}">
+                                <ul class="ui-listview">
+                                    <li>
+                                        <a title="Seleccionar Ítem {{ linea.descripcion }}"
+                                           href="{{ linea.get_absolute_url }}">
+                                            <i class="material-icons">arrow_forward</i> Seleccionar</a></li>
+                                    <li>
+                                        <a title="Editar Ítem {{ linea.descripcion }}"
+                                           href="{{ linea.get_update_url }}" data-ajax="false"
+                                           onclick="window.location.reload(false);">
+                                            <i class="material-icons">edit</i> Editar</a></li>
+                                    <li>
+                                        <a title="Eliminar Ítem {{ linea.descripcion }}"
+                                           href="{{ linea.get_delete_url }}">
+                                            <i class="material-icons">delete</i> Borrar</a></li>
+                                </ul>
+                                <div class="ui-popup-arrow-container ui-popup-arrow-t">
+                                    <div class="ui-popup-arrow ui-body-a ui-overlay-shadow"></div>
+                                </div>
+                            </div>
+                        {% endif %}</td>
+                    <td class="derecha">{{ linea.cantidad|intcomma }}</td>{% if request.user.is_superuser %}
                     <td class="derecha">{{ linea.costo|intcomma }}</td>
                     <td class="derecha">{{ linea.costo_total|intcomma }}</td>
                     <td class="derecha">{{ linea.utilidad_valor|intcomma }}
-                        <small class="text-purple"><em>{{ linea.utilidad|porciento }}</em></small></td>
-                    <td class="derecha">{{ linea.markup|porciento }}</td>
+                        <small class="text-blue"><em>{{ linea.utilidad|porciento }}</em></small></td>
+                    <td class="derecha">{{ linea.markup|porciento }}</td>{% endif %}
                     <td class="derecha">{{ linea.total|intcomma }}</td>
                 </tr>
             {% endfor %}
@@ -204,18 +248,17 @@
             <tfoot>
             <tr>
                 <td>TOTAL</td>
-                <td></td>
-                <td></td>
+                <td></td>{% if request.user.is_superuser %}
                 <td></td>
                 <td class="derecha">{{ cotizacion.subtotal|intcomma }}</td>
                 <td class="derecha">{{ cotizacion.utilidad_valor|intcomma }}
-                    <small class="text-purple"><em>{{ cotizacion.utilidad|porciento }}</em></small></td>
-                <td class="derecha"></td>
+                    <small class="text-blue"><em>{{ cotizacion.utilidad|porciento }}</em></small></td>
+                <td class="derecha"></td>{% endif %}
                 <td class="derecha">{{ cotizacion.total|intcomma }}</td>
             </tr>
             </tfoot>
         </table>
-    </div>
+    </div>{% endif %}
 {% endblock %}{% block footer %}{% if request.user.is_superuser %}
     <div class="kc_fab_wrapper"></div>
 {% endif %}
@@ -226,13 +269,13 @@
         $(document).ready(function () {
             var links = [
                 {
-                    "bgcolor": "#D32F2F",
+                    "bgcolor": "#204478",
                     "icon": "+"
                 },
                 {
                     "url": '{% url "transporte_rutadetalle_create" cotizacion_id=cotizacion.pk %}',
 {#                    "url": "#",#}
-                    "bgcolor": "#3B5998",
+                    "bgcolor": "#0072C6",
                     "color": "#fffff",
                     "icon": "<i class='material-icons' style='vertical-align: middle;'>directions</i>",
                     "title": "Agregar Tramo"
@@ -240,10 +283,10 @@
                 {
                     "url": '{% url "transporte_cotizaciondetalle_create" cotizacion_id=cotizacion.pk %}',
                     "bgcolor": "#263238",
-                    "tooltip": "Agregar Item",
+                    "tooltip": "Agregar Ítem",
                     "color": "white",
                     "icon": "<i class='material-icons' style='vertical-align: middle;'>toc</i>",
-                    "title": "Agregar Item"
+                    "title": "Agregar Ítem"
                 }
             ];
             $('.kc_fab_wrapper').kc_fab(links);

@@ -203,10 +203,10 @@ class CotizacionListView(ListView):
 
 class CotizacionTable(ListView):
     model = Cotizacion
-    template_name = 'transporte/cotizacion_table.html'
-
-    def get_queryset(self):
-        return Cotizacion.objects.all()
+    # template_name = 'transporte/cotizacion_table.html'
+    #
+    # def get_queryset(self):
+    #     return Cotizacion.objects.all()
 
 
 class CotizacionCreate(CreateView):

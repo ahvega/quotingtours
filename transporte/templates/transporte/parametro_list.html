@@ -3,30 +3,44 @@
 {% block page-title %}Parámetros{% endblock %}
 {% block theader %}
                                 <th class="center">Parámetro</th>
-                                <th data-priority="3" class="derecha">Acciones</th>
-                                <th class="derecha">Valor</th>
-                                <th class="izquierda">Unidad</th>{% endblock %}{% block tbody %}{% for parametro in object_list %}
+                                <th data-priority="1" class="derecha">Valor</th>
+                                <th data-priority="2" class="izquierda">Unidad</th>{% endblock %}
+{% block tbody %}{% for parametro in parametro_list %}
                             <tr>
-                                <td data-search="{{ parametro.nombre }}">
-                                    <a title="Ver Parámetro {{ paramero.nombre }}"
-                                       href="{{ parametro.get_absolute_url }}">{{ parametro.nombre }}</a>
+                                <td data-search="{{ parametro }}">
+                                    <a title="Seleccionar Parámetro {{ paramero }}"
+                                       href="{{ parametro.get_absolute_url }}">{{ parametro }}</a>{% if request.user.is_superuser %}
+                                        <span class="minipopuplink">
+                                            <a href="#popup{{ parametro.slug }}" data-rel="popup">
+                                                <i class="material-icons">more_horiz</i></a>
+                                        </span>
+                                        <div class="minipopup3" data-role="popup" id="popup{{ parametro.slug }}">
+                                            <ul class="ui-listview">
+                                                <li>
+                                                    <a title="Seleccionar Parámetro {{ parametro }}" data-ajax="false"
+                                                       onclick="window.location.reload(false);"
+                                                       href="{{ parametro.get_absolute_url }}">
+                                                        <i class="material-icons">arrow_forward</i> Seleccionar</a></li>
+                                                <li>
+                                                    <a title="Editar Parámetro {{ parametro }}"
+                                                       href="{{ parametro.get_update_url }}">
+                                                        <i class="material-icons">edit</i> Editar</a></li>
+                                                <li>
+                                                    <a title="Eliminar Parámetro {{ parametro }}"
+                                                       href="{{ parametro.get_delete_url }}">
+                                                        <i class="material-icons">delete</i> Borrar</a></li>
+                                            </ul>
+                                            <div class="ui-popup-arrow-container ui-popup-arrow-t">
+                                                <div class="ui-popup-arrow ui-body-a ui-overlay-shadow"></div>
+                                            </div>
+                                        </div>
+                                    {% endif %}
                                 </td>
-                                <td class="izquierda" width="1"><div class="ui-alt-icon ui-nodisc-icon mininav3r">
-                                    <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-action ui-btn-icon-notext ui-btncito"
-                                       title="Ver Parámetro {{ parametro.nombre }}"
-                                       href="{{ parametro.get_absolute_url }}">goto</a>{% if request.user.is_superuser %}
-                                    <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-edit ui-btn-icon-notext ui-btncito"
-                                       title="Editar Parámetro {{ parametro.nombre }}"
-                                       href="{{ parametro.get_update_url }}"
-                                       data-ajax="false" onclick="window.location.reload(false);">edit</a>
-                                    <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-delete ui-btn-icon-notext ui-btncito"
-                                       title="Eliminar Parámetro {{ parametro.nombre }}"
-                                       href="{{ parametro.get_delete_url }}">delete</a>{% endif %}</div></td>
                                 <td class="derecha">{{ parametro.valor }}</td>
                                 <td class="izquierda">{{ parametro.unidad }}</td>
                             </tr>{% endfor %}{% endblock %}{% block footer %}{% if request.user.is_superuser %}
                 <div class="fixed-action-btn">
-                    <a class="btn-floating btn-large waves-effect waves-light red darken-2"
+                    <a class="btn-floating btn-large waves-effect waves-light"
                        title="Agregar Parámetro"
                        href="{% url "transporte_parametro_create" %}"
                        data-ajax="false" onclick="window.location.reload(false);">

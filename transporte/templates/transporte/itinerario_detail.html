@@ -3,26 +3,36 @@
 {% load misformatos %}
 {% block title %}Itinerario{% endblock %}
 {% block page-title %}Itinerario{% endblock %}
-{% block thead %}<tr>
+{% block thead %}
+                    <tr>
                         <th colspan="2" class="izquierda">
-                            <i class="material-icons text-lime">date_range</i>{{ itinerario }}{% if request.user.is_superuser %}
-                            <div class="ui-nodisc-icon mininav3r">
-                                <a class="ui-btn ui-btn-inline ui-btn-a ui-icon-edit ui-btn-icon-notext ui-btncito"
-                                   title="Editar Itinerario {{ itinerario }}" href="{{ itinerario.get_update_url }}"
-                                   data-ajax="false" onclick="window.location.reload(false);">edit</a>
-                                <a class="ui-btn ui-btn-inline ui-btn-a ui-icon-plus ui-btn-icon-notext ui-btncito"
-                                   title="Agregar Nuevo Itinerario"
-                                   href="{% url "transporte_itinerario_create" cliente_id=itinerario.cliente.pk %}"
-                                   data-ajax="false" onclick="window.location.reload(false);">>add</a>
-                                <a class="ui-btn ui-btn-inline ui-btn-a ui-icon-delete ui-btn-icon-notext ui-btncito"
-                                   title="Borrar Itinerario {{ itinerario }}" href="{{ itinerario.get_delete_url }}">delete</a></div>{% endif %}
+                            <i class="material-icons">date_range</i>{{ itinerario }}{% if request.user.is_superuser %}
+                            <span class="minipopuplink"><a href="#popup{{ itinerario }}" data-rel="popup"><i
+                                    class="material-icons">more_horiz</i></a>
+                            </span>
+                            <div class="minipopup3" data-role="popup" id="popup{{ itinerario }}">
+                                <ul class="ui-listview">
+                                    <li><a title="Agregar Itinerario Nuevo"
+                                           href="{% url "transporte_itinerario_create" cliente_id=itinerario.cliente.pk %}">
+                                        <i class="material-icons">add</i> Agregar</a></li>
+                                    <li><a title="Editar Itinerario {{ itinerario }}"
+                                           href="{{ itinerario.get_update_url }}">
+                                            <i class="material-icons">edit</i> Editar</a></li>
+                                    <li><a title="Eliminar Itinerario {{ itinerario }}"
+                                           href="{{ itinerario.get_delete_url }}">
+                                            <i class="material-icons">delete</i> Borrar</a></li>
+                                </ul>
+                                <div class="ui-popup-arrow-container ui-popup-arrow-t">
+                                    <div class="ui-popup-arrow ui-body-a ui-overlay-shadow"></div>
+                                </div>
+                            </div>{% endif %}
                         </th></tr>{% endblock %}{% block tbody %}
                         <tr>
                             <td class="derecha"><strong>Cliente: </strong></td>
                             <td>
-                                <a href="{{ itinerario.cliente.get_absolute_url }}" title="Ver Cliente: {{ itinerario.cliente }}"
+                                <a href="{{ itinerario.cliente.get_absolute_url }}" title="Seleccionar Cliente: {{ itinerario.cliente }}"
                                    data-ajax="false" onclick="window.location.reload(false);">
-                                   <i class="material-icons text-green">recent_actors</i>&nbsp{{ itinerario.cliente }}</a>
+                                   <i class="material-icons">recent_actors</i>&nbsp{{ itinerario.cliente }}</a>
                             </td>
                         </tr>
                         <tr>
@@ -31,8 +41,8 @@
                         </tr>
                         <tr>
                             <td class="derecha">Termina</td>
-                            <td><strong>{{ itinerario.fecha_desde|date:"D d/M/Y" }}</strong></td>
-                        </tr>
+                            <td><strong>{{ itinerario.fecha_hasta|date:"D d/M/Y" }}</strong></td>
+                        </tr>{% if request.user.is_superuser %}
                         <tr>
                             <td class="derecha">Costo Cotizado</td>
                             <td><strong>{{ itinerario.subtotal_cotizado|intcomma }}</strong></td>
@@ -40,16 +50,16 @@
                         <tr>
                             <td class="derecha">Utilidad Cotizada</td>
                             <td><strong>{{ itinerario.utilidad_cotizada_valor|intcomma }}&nbsp;<small
-                                    class="text-purple"><em>{{ itinerario.utilidad_cotizada|porciento }}</em></small></strong></td>
+                                    class="text-blue"><em>{{ itinerario.utilidad_cotizada|porciento }}</em></small></strong></td>
                         </tr>
                         <tr>
                             <td class="derecha">Total Cotizado</td>
                             <td><strong>{{ itinerario.total_cotizado|intcomma }}</strong></td>
-                        </tr>
+                        </tr>{% endif %}
                         <tr>
                             <td class="derecha">Estatus</td>
                             <td><em>{{ itinerario.get_estatus_display }}</em></td>
-                        </tr>
+                        </tr>{% if request.user.is_superuser %}
                         <tr>
                             <td class="derecha">Creado</td>
                             <td><em>{{ itinerario.creado }}</em></td>
@@ -57,61 +67,75 @@
                         <tr>
                             <td class="derecha">Actualizado</td>
                             <td><em>{{ itinerario.actualizado }}</em></td>
-                        </tr>{% endblock %}{% block detalle %}
+                        </tr>{% endif %}{% endblock %}{% block detalle %}
             <div class="topcontainer">
                 <table id="tabladedatos" data-role="table" data-mode="columntoggle"
                        class="table-stroke ui-shadow table-stripe ui-responsive"><!-- tabladedatos -->
                     <thead>
                     <tr>
                         <th class="izquierda">Cotización</th>
-                        <th class="derecha">Acciones</th>
-                        <th data-priority="4" class="centrado">Vence</th>
+                        <th data-priority="4" class="centrado">Vence</th>{% if request.user.is_superuser %}
                         <th data-priority="2" class="derecha">Costo</th>
-                        <th data-priority="3" class="derecha">Utilidad</th>
+                        <th data-priority="3" class="derecha">Utilidad</th>{% endif %}
                         <th data-priority="1" class="derecha">Total</th>
                     </tr>
                     </thead>
                     <tbody>{% for cotizacion in itinerario.cotizaciones.all %}
                         <tr>
                             <td data-search="{{ cotizacion }}, {{ cotizacion.descripcion }}" class="izquierda">
-                                <a title="Ver Cotización {{ cotizacion }}" data-ajax="false"
+                                <a title="Seleccionar Cotización {{ cotizacion }}" data-ajax="false"
                                    onclick="window.location.reload(false);"
-                                   href="{{ cotizacion.get_absolute_url }}">{{ cotizacion }}</a>:<br>{{ cotizacion.descripcion }}</td>
-                            <td><div class="ui-alt-icon ui-nodisc-icon mininav3r">
-                                <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-action ui-btn-icon-notext ui-btncito"
-                                   title="Ver Cotización {{ cotizacion }}"
-                                   href="{{ cotizacion.get_absolute_url }}" data-ajax="false"
-                                   onclick="window.location.reload(false);">goto</a>{% if request.user.is_superuser %}
-                                <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-edit ui-btn-icon-notext ui-btncito"
-                                   title="Editar Cotización {{ cotizacion }}" href="{{ cotizacion.get_update_url }}"
-                                   data-ajax="false" onclick="window.location.reload(false);">>edit</a>
-                                <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-delete ui-btn-icon-notext ui-btncito"
-                                   title="Eliminar Cotización {{ cotizacion }}"
-                                   href="{{ cotizacion.get_delete_url }}">delete</a>{% endif %}
-                            </div></td>
+                                   href="{{ cotizacion.get_absolute_url }}">{{ cotizacion }}</a>:<br>{{ cotizacion.descripcion }}
+                                    {% if request.user.is_superuser %}
+                                        <span class="minipopuplink">
+                                            <a href="#popup{{ cotizacion }}" data-rel="popup">
+                                                <i class="material-icons">more_horiz</i></a>
+                                        </span>
+                                        <div class="minipopup3" data-role="popup" id="popup{{ cotizacion }}">
+                                            <ul class="ui-listview">
+                                                <li>
+                                                    <a title="Seleccionar Cotización {{ cotizacion }}" data-ajax="false"
+                                                       onclick="window.location.reload(false);"
+                                                       href="{{ cotizacion.get_absolute_url }}">
+                                                        <i class="material-icons">arrow_forward</i> Seleccionar</a></li>
+                                                <li>
+                                                    <a title="Editar Cotización {{ cotizacion }}"
+                                                       href="{{ cotizacion.get_update_url }}">
+                                                        <i class="material-icons">edit</i> Editar</a></li>
+                                                <li>
+                                                    <a title="Eliminar Cotización {{ cotizacion }}"
+                                                       href="{{ cotizacion.get_delete_url }}">
+                                                        <i class="material-icons">delete</i> Borrar</a></li>
+                                            </ul>
+                                            <div class="ui-popup-arrow-container ui-popup-arrow-t">
+                                                <div class="ui-popup-arrow ui-body-a ui-overlay-shadow"></div>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                            </td>
                             <td class="centrado {% if cotizacion.is_past_due %}text-red{% endif %}">{{ cotizacion.fecha_vence|date:"D d/M/Y" }}</td>
+                            {% if request.user.is_superuser %}
                             <td class="derecha">{{ cotizacion.subtotal|intcomma }}</td>
                             <td class="derecha">{{ cotizacion.utilidad_valor|intcomma }}&nbsp;<small
-                                    class="text-purple"><em>{{ cotizacion.utilidad|porciento }}</em></small></td>
+                                    class="text-blue"><em>{{ cotizacion.utilidad|porciento }}</em></small></td>{% endif %}
                             <td class="derecha">{{ cotizacion.total|intcomma }}</td>
                         </tr>{% endfor %}
                     </tbody>
-                    <tfoot>
+                    <tfoot>{% if request.user.is_superuser %}
                     <tr>
                         <td>TOTALES</td>
-                        <td></td>
                         <td></td>
                         <td class="derecha">{{ itinerario.subtotal_cotizado|intcomma }}</td>
                         <td class="derecha">{{ itinerario.utilidad_cotizada_valor|intcomma }}&nbsp;<small
                                 style="color: #4385F5"><em>{{ itinerario.utilidad_cotizada|porciento }}</em></small>
                         </td>
                         <td class="derecha">{{ itinerario.total_cotizado|intcomma }}</td>
-                    </tr>
+                    </tr>{% endif %}
                     </tfoot>
                 </table>
             </div>{% endblock %}{% block footer %}{% if request.user.is_superuser %}
          <div class="fixed-action-btn">
-            <a class="btn-floating btn-large waves-effect waves-light red darken-2"
+            <a class="btn-floating btn-large waves-effect waves-light"
                title="Agregar Cotización"
                href="{% url "transporte_cotizacion_create" itinerario_id=itinerario.pk %}"
                data-ajax="false" onclick="window.location.reload(false);">

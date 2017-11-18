@@ -4,16 +4,16 @@
 {% block page-title %}Tramo en Vehículo{% endblock %}
 {% block thead %}
     <th colspan="2" class="izquierda">{{ tramoenvehiculo.nombre }}{% if request.user.is_superuser %}
-        <div class="ui-nodisc-icon mininav3r">
-            <a class="ui-btn ui-btn-inline ui-btn-a ui-icon-edit ui-btn-icon-notext ui-btncito"
-               title="Editar Tramo {{ tramoenvehiculo.nombre }}" href="{{ tramoenvehiculo.get_update_url }}"
-               data-ajax="false" onclick="window.location.reload(false);">edit</a>
-            <a class="ui-btn ui-btn-inline ui-btn-a ui-icon-plus ui-btn-icon-notext ui-btncito"
-               title="Agregar Nuevo Tramo"
+        <div class="mininav3r">
+            <a title="Editar Tramo {{ tramoenvehiculo.nombre }}" href="{{ tramoenvehiculo.get_update_url }}"
+               data-ajax="false" onclick="window.location.reload(false);">
+                <i class="material-icons">edit</i></a>
+            <a title="Agregar Nuevo Tramo"
                href="{% url "transporte_tramoenvehiculo_create" tramo_id=tramoenvehiculo.tramo.pk %}"
-               data-ajax="false" onclick="window.location.reload(false);">add</a>
-            <a class="ui-btn ui-btn-inline ui-btn-a ui-icon-delete ui-btn-icon-notext ui-btncito"
-               title="Borrar Tramo {{ tramoenvehiculo.nombre }}" href="{{ tramoenvehiculo.get_delete_url }}">delete</a></div>
+               data-ajax="false" onclick="window.location.reload(false);">
+                <i class="material-icons">add</i></a>
+            <a title="Borrar Tramo {{ tramoenvehiculo.nombre }}" href="{{ tramoenvehiculo.get_delete_url }}">
+                <i class="material-icons">delete_forever</i></a></div>
     {% endif %}</th>
 {% endblock %}
 {% block tbody %}
@@ -40,7 +40,7 @@
 {% endblock %}
 {% block footer %}{% if request.user.is_superuser %}
         <div class="fixed-action-btn">
-            <a class="btn-floating btn-large waves-effect waves-light red darken-2"
+            <a class="btn-floating btn-large waves-effect waves-light"
                href="{{ tramoenvehiculo.get_update_url }}"
                data-ajax="false" onclick="window.location.reload(false);">
                 <i class="material-icons">edit</i></a>

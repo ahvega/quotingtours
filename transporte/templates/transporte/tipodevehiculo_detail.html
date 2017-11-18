@@ -14,32 +14,46 @@
 {% block page-title %}Tipo de Vehículo{% endblock %}
 {% block thead %}
     <th colspan="2" class="izquierda"><i
-            class="material-icons text-lime">directions_bus</i>{{ tipodevehiculo.nombre }}{% if request.user.is_superuser %}
-        <div class="ui-nodisc-icon mininav3r">
-            <a class="ui-btn ui-btn-inline ui-btn-a ui-icon-edit ui-btn-icon-notext ui-btncito"
-               title="Editar Tipo {{ tipodevehiculo.nombre }}" href="{{ tipodevehiculo.get_update_url }}"
-               data-ajax="false" onclick="window.location.reload(false);">edit</a>
-            <a class="ui-btn ui-btn-inline ui-btn-a ui-icon-plus ui-btn-icon-notext ui-btncito"
-               title="Agregar Nuevo Tipo"
-               href="{% url "transporte_tipodevehiculo_create" %}"
-               data-ajax="false" onclick="window.location.reload(false);">add</a>
-            <a class="ui-btn ui-btn-inline ui-btn-a ui-icon-delete ui-btn-icon-notext ui-btncito"
-               title="Borrar Tipo {{ tipodevehiculo.nombre }}" href="{{ tipodevehiculo.get_delete_url }}">delete</a></div>
+            class="material-icons">directions_bus</i>{{ tipodevehiculo }}{% if request.user.is_superuser %}
+        <span class="minipopuplink">
+            <a href="#popup{{ tipodevehiculo.slug }}" data-rel="popup">
+                <i class="material-icons">more_horiz</i></a>
+        </span>
+        <div class="minipopup3" data-role="popup" id="popup{{ tipodevehiculo.slug }}">
+            <ul class="ui-listview">
+                <li>
+                    <a title="Agregar Tipo Nuevo" data-ajax="false"
+                       onclick="window.location.reload(false);"
+                       href="{% url 'transporte_tipodevehiculo_create' %}">
+                        <i class="material-icons">add</i> Agregar</a></li>
+                <li>
+                    <a title="Editar Tipo {{ tipodevehiculo }}"
+                       href="{{ tipodevehiculo.get_update_url }}">
+                        <i class="material-icons">edit</i> Editar</a></li>
+                <li>
+                    <a title="Eliminar Tipo {{ tipodevehiculo }}"
+                       href="{{ tipodevehiculo.get_delete_url }}">
+                        <i class="material-icons">delete</i> Borrar</a></li>
+            </ul>
+            <div class="ui-popup-arrow-container ui-popup-arrow-t">
+                <div class="ui-popup-arrow ui-body-a ui-overlay-shadow"></div>
+            </div>
+        </div>
     {% endif %}</th>
 {% endblock %}
 {% block tbody %}
     <tr>
         <td class="derecha">Rendimiento</td>
         <td><strong>{{ tipodevehiculo.rendimiento }} Kms/Gal</strong></td>
-    </tr>
+    </tr>{% if request.user.is_superuser %}
     <tr>
         <td class="derecha">Costo/Dia</td>
         <td><strong>Lps. {{ tipodevehiculo.costo_por_dia|intcomma }}</strong></td>
     </tr>
     <tr>
         <td class="derecha">Costo/Km</td>
-        <td><strong>Lps. {{ tipodevehiculo.costo_por_km }}</strong></td>
-    </tr>
+        <td><strong>Lps. {{ tipodevehiculo.costo_por_km|intcomma }}</strong></td>
+    </tr>{% endif %}
     <tr>
         <td class="derecha">Asientos</td>
         <td><strong>{{ tipodevehiculo.capacidad_nominal }}</strong></td>
@@ -55,11 +69,11 @@
     <tr>
         <td class="derecha">Gals/Tanque</td>
         <td><strong>{{ tipodevehiculo.galones_tanque }}</strong></td>
-    </tr>
+    </tr>{% if request.user.is_superuser %}
     <tr>
         <td class="derecha">Activo?</td>
         <td><strong>{{ tipodevehiculo.activo|yesno }}</strong></td>
-    </tr>
+    </tr>{% endif %}
 {% endblock %}
 {% block detalle %}
     <div class="form-group topcontainer">
@@ -69,33 +83,47 @@
                    class="table-stroke ui-shadow table-stripe  ui-responsive">
                 <thead>
                 <tr>
-                    <th class="center">Vehículo</th>
-                    <th></th>
-                    <th data-priority="1" class="derecha">Placa</th>
+                    <th class="izquierda">Vehículo</th>
+                    <th data-priority="1" class="derecha">Placa</th>{% if request.user.is_superuser %}
                     <th data-priority="2" class="derecha">Creado</th>
-                    <th data-priority="3" class="derecha">Actualizado</th>
+                    <th data-priority="3" class="derecha">Actualizado</th>{% endif %}
                 </tr>
                 </thead>
                 <tbody>
                 {% for vehiculo in tipodevehiculo.vehiculos.all %}
                 <tr>
-                    <td data-search="{{ vehiculo.nombre }}">
-                        <a title="Ver Vehículo {{ vehiculo.tipo.nombre }} {{ vehiculo.nombre }}"
-                           href="{{ vehiculo.get_absolute_url }}">{{ vehiculo.tipo.nombre }} {{ vehiculo.nombre }}</a>
+                    <td data-search="{{ vehiculo }}">{% if request.user.is_superuser %}
+                        <a title="Seleccionar Vehículo {{ vehiculo.tipo }} {{ vehiculo }}"
+                           href="{{ vehiculo.get_absolute_url }}">{% endif %}{{ vehiculo.tipo }} {{ vehiculo }}{% if request.user.is_superuser %}</a>
+                            <span class="minipopuplink">
+                                <a href="#popup{{ vehiculo.slug }}" data-rel="popup">
+                                    <i class="material-icons">more_horiz</i></a>
+                            </span>
+                            <div class="minipopup3" data-role="popup" id="popup{{ vehiculo.slug }}">
+                                <ul class="ui-listview">
+                                    <li>
+                                        <a title="Seleccionar Vehículo {{ vehiculo.tipo }} {{ vehiculo }}" data-ajax="false"
+                                           onclick="window.location.reload(false);"
+                                           href="{{ vehiculo.get_absolute_url }}">
+                                            <i class="material-icons">arrow_forward</i> Seleccionar</a></li>
+                                    <li>
+                                        <a title="Editar Vehículo {{ vehiculo.tipo }} {{ vehiculo }}"
+                                           href="{{ vehiculo.get_update_url }}">
+                                            <i class="material-icons">edit</i> Editar</a></li>
+                                    <li>
+                                        <a title="Eliminar Vehículo {{ vehiculo.tipo }} {{ vehiculo }}"
+                                           href="{{ vehiculo.get_delete_url }}">
+                                            <i class="material-icons">delete</i> Borrar</a></li>
+                                </ul>
+                                <div class="ui-popup-arrow-container ui-popup-arrow-t">
+                                    <div class="ui-popup-arrow ui-body-a ui-overlay-shadow"></div>
+                                </div>
+                            </div>
+                        {% endif %}
                     </td>
-                    <td class="izquierda" width="1"><div class="ui-alt-icon ui-nodisc-icon mininav3r">
-                        <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-action ui-btn-icon-notext ui-btncito"
-                           title="Ver {{ vehiculo.tipo.nombre }} {{ vehiculo.nombre }}"
-                           href="{{ vehiculo.get_absolute_url }}">goto</a>{% if request.user.is_superuser %}
-                        <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-edit ui-btn-icon-notext ui-btncito"
-                           title="Editar {{ vehiculo.tipo.nombre }} {{ vehiculo.nombre }}"
-                           href="{{ vehiculo.get_update_url }}">edit</a>
-                        <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-delete ui-btn-icon-notext ui-btncito"
-                           title="Eliminar {{ vehiculo.tipo.nombre }} {{ vehiculo.nombre }}"
-                           href="{{ vehiculo.get_delete_url }}">delete</a>{% endif %}</div></td>
-                        <td class="derecha">{{ vehiculo.placa }}</td>
+                        <td class="derecha">{{ vehiculo.placa }}</td>{% if request.user.is_superuser %}
                     <td class="derecha">{{ vehiculo.creado|date:"D d/b" }}</td>
-                    <td class="derecha">{{ vehiculo.actualizado|date:"D d/b" }}</td>
+                    <td class="derecha">{{ vehiculo.actualizado|date:"D d/b" }}</td>{% endif %}
                 </tr>
                 {% endfor %}
                 </tbody>
@@ -105,7 +133,7 @@
 {% endblock %}
 {% block footer %}{% if request.user.is_superuser %}
         <div class="fixed-action-btn">
-            <a class="btn-floating btn-large waves-effect waves-light red darken-2"
+            <a class="btn-floating btn-large waves-effect waves-light"
                href="{{ tipodevehiculo.get_update_url }}"
                data-ajax="false" onclick="window.location.reload(false);">
                 <i class="material-icons">edit</i></a>

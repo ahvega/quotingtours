@@ -5,17 +5,35 @@
 {% block thead %}
     <th colspan="2" class="izquierda"><a target="_blank" class="text-white"
            href="https://www.google.com/maps/dir/{{ tramo.desde_lugar }}/{{ tramo.hacia_lugar }}">
-        <i class="material-icons text-lime">directions</i>&nbsp;  {{ tramo.desde_hacia }}</a>{% if request.user.is_superuser %}
-        <div class="ui-nodisc-icon mininav3r">
-            <a class="ui-btn ui-btn-inline ui-btn-a ui-icon-edit ui-btn-icon-notext ui-btncito"
-               title="Editar Tramo {{ tramo.desde_hacia }}" href="{{ tramo.get_update_url }}"
-               data-ajax="false" onclick="window.location.reload(false);">edit</a>
-            <a class="ui-btn ui-btn-inline ui-btn-a ui-icon-plus ui-btn-icon-notext ui-btncito"
-               title="Agregar Nuevo Tramo"
-               href="{% url "transporte_tramo_create" %}"
-               data-ajax="false" onclick="window.location.reload(false);">add</a>
-            <a class="ui-btn ui-btn-inline ui-btn-a ui-icon-delete ui-btn-icon-notext ui-btncito"
-               title="Borrar Tramo {{ tramo.desde_hacia }}" href="{{ tramo.get_delete_url }}">delete</a></div>
+        <i class="material-icons">directions</i>{{ tramo.desde_hacia }}</a>{% if request.user.is_superuser %}
+        <span class="minipopuplink">
+            <a href="#popup{{ tramo.slug }}" data-rel="popup">
+                <i class="material-icons">more_horiz</i></a>
+        </span>
+        <div class="minipopup3" data-role="popup" id="popup{{ tramo.slug }}">
+            <ul class="ui-listview">
+                <li>
+                    <a title="Agregar Tramo Nuevo" data-ajax="false"
+                       onclick="window.location.reload(false);"
+                       href="{% url 'transporte_tramo_create' %}">
+                        <i class="material-icons">add</i> Agregar</a></li>
+                <li>
+                    <a title="Editar Tramo {{ tramo }}"
+                       href="{{ tramo.get_update_url }}">
+                        <i class="material-icons">edit</i> Editar</a></li>
+                <li>
+                    <a title="Eliminar Tramo {{ tramo }}"
+                       href="{{ tramo.get_delete_url }}">
+                        <i class="material-icons">delete</i> Borrar</a></li>
+                <li>
+                    <a title="Direcciones Ruta {{ tramo }}" target="_blank"
+                       href="https://www.google.com/maps/dir/{{ tramo.desde_lugar }}/{{ tramo.hacia_lugar }}">
+                        <i class="material-icons">directions</i> Direcciones</a></li>
+            </ul>
+            <div class="ui-popup-arrow-container ui-popup-arrow-t">
+                <div class="ui-popup-arrow ui-body-a ui-overlay-shadow"></div>
+            </div>
+        </div>
     {% endif %}</th>
 {% endblock %}
 {% block tbody %}
@@ -53,66 +71,71 @@
                     <thead><!-- header row -->
                     <tr>
                         <th class="centrado">Cotización</th>
-                        <th data-priority="7" class="derecha">Acciones</th>
                         <th data-priority="6" class="izquierda">Cliente: Itinerario</th>
                         <th data-priority="4" class="centrado">Fecha</th>
-                        <th data-priority="5" class="centrado">Vence</th>
-                        <th data-priority="2" class="derecha">Subtotal</th>
-                        <th data-priority="3" class="derecha">Utilidad</th>
+                        <th data-priority="5" class="centrado">Vence</th>{% if request.user.is_superuser %}
+                        <th data-priority="2" class="derecha">Costo</th>
+                        <th data-priority="3" class="derecha">Utilidad</th>{% endif %}
                         <th data-priority="1" class="derecha">Total</th>
                     </tr>
                     </thead><!-- /header row -->
                     <tbody><!-- data  -->
-                    {% for ruta in tramo.rutas.all %}
+{% for ruta in tramo.rutas.all %}
                             <tr>
                                 <td data-search="{{ ruta.cotizacion.nombre }}">
-                                    <a title="Ver Cotización {{ ruta.cotizacion.nombre }}"
+                                    <a title="Seleccionar Cotización {{ ruta.cotizacion.nombre }}"
                                        href="{{ ruta.cotizacion.get_absolute_url }}"
                                        data-ajax="false"
                                        onclick="window.location.reload(false);">
-                                        <i class="material-icons text-green md-16">assignment_turned_in</i>&nbsp;
-                                        {{ ruta.cotizacion.nombre }}</a>:<br>{{ ruta.cotizacion.descripcion }}
-                                </td>
-                                <td>
-                                    <div class="ui-alt-icon ui-nodisc-icon mininav3r">
-                                        <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-action ui-btn-icon-notext ui-btncito"
-                                           title="Ver Cotización {{ ruta.cotizacion.nombre }}"
-                                           href="{{ ruta.cotizacion.get_absolute_url }}"
-                                           data-ajax="false" onclick="window.location.reload(false);">goto</a>
-                                        {% if request.user.is_superuser %}
-                                            <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-edit ui-btn-icon-notext ui-btncito"
-                                               title="Editar Cotización {{ ruta.cotizacion.nombre }}"
-                                               href="{{ ruta.cotizacion.get_update_url }}"
-                                               data-ajax="false" onclick="window.location.reload(false);">edit</a>
-                                            <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-delete ui-btn-icon-notext ui-btncito"
-                                               title="Eliminar Cotización {{ ruta.cotizacion.nombre }}"
-                                               href="{{ ruta.cotizacion.get_delete_url }}">delete</a>{% endif %}
-                                    </div>
+                                        <i class="material-icons md-16">assignment_turned_in</i>&nbsp;
+                                        {{ ruta.cotizacion.nombre }}</a>:<br>{{ ruta.cotizacion.descripcion }}{% if request.user.is_superuser %}
+                                        <span class="minipopuplink">
+                                        <a href="#popup{{ ruta.cotizacion.slug }}" data-rel="popup">
+                                            <i class="material-icons">more_horiz</i></a>
+                                        </span>
+                                            <div class="minipopup3" data-role="popup" id="popup{{ ruta.cotizacion.slug }}">
+                                                <ul class="ui-listview">
+                                                    <li>
+                                                        <a title="Seleccionar Cotización {{ ruta.cotizacion }}"
+                                                           data-ajax="false"
+                                                           onclick="window.location.reload(false);"
+                                                           href="{{ ruta.cotizacion.get_absolute_url }}">
+                                                            <i class="material-icons">arrow_forward</i> Seleccionar</a></li>
+                                                    <li>
+                                                        <a title="Editar Cotización {{ ruta.cotizacion }}"
+                                                           href="{{ ruta.cotizacion.get_update_url }}">
+                                                            <i class="material-icons">edit</i> Editar</a></li>
+                                                    <li>
+                                                        <a title="Eliminar Cotización {{ ruta.cotizacion }}"
+                                                           href="{{ ruta.cotizacion.get_delete_url }}">
+                                                            <i class="material-icons">delete</i> Borrar</a></li>
+                                                </ul>
+                                                <div class="ui-popup-arrow-container ui-popup-arrow-t">
+                                                    <div class="ui-popup-arrow ui-body-a ui-overlay-shadow"></div>
+                                                </div>
+                                            </div>{% endif %}
                                 </td>
                                 <td class="izquierda">
                                     <strong><a href="{{ ruta.cotizacion.itinerario.cliente.get_absolute_url }}">
-                                        <i class="material-icons md-16 text-green">recent_actors</i>&nbsp;
-                                        {{ ruta.cotizacion.itinerario.cliente.nombre }}</a></strong>:<br/>
-                                    <a href="{{ ruta.cotizacion.itinerario.get_absolute_url }}"><i class="material-icons text-green md-16">date_range</i>&nbsp;
+                                        <i class="material-icons md-16">recent_actors</i>&nbsp;
+                                        {{ ruta.cotizacion.itinerario.cliente }}</a></strong>:<br/>
+                                    <a href="{{ ruta.cotizacion.itinerario.get_absolute_url }}">
+                                        <i class="material-icons md-16">date_range</i>&nbsp;
                                         {{ ruta.cotizacion.itinerario }}</a></td>
                                 <td class="centrado">{{ ruta.cotizacion.creado|date }}</td>
-                                <td class="centrado">{{ ruta.cotizacion.fecha_vence|date }}</td>
+                                <td class="centrado">{{ ruta.cotizacion.fecha_vence|date }}</td>{% if request.user.is_superuser %}
                                 <td class="derecha">{{ ruta.cotizacion.subtotal|intcomma }}</td>
                                 <td class="derecha">{{ ruta.cotizacion.utilidad_valor|intcomma }}
                                     <small style="color: #4385F5"><em>{{ ruta.cotizacion.utilidad|porciento }}</em></small>
-                                </td>
+                                </td>{% endif %}
                                 <td class="derecha">{{ ruta.cotizacion.total|intcomma }}</td>
                             </tr>
-                    {% endfor %}
+{% endfor %}
                     </tbody><!-- /data -->
                 </table><!-- /tabladedatos -->
             </div><!-- /topcontainer -->
             {# fin de cotizaciones con este tramo #}
-
-
-
-    {% endif %}
-
+    {% endif %}{% if request.user.is_superuser %}
     <div class="form-group topcontainer">
         <form class="form">
             <div id="titulodetalle">Costo Kilometraje por Vehículo</div>
@@ -120,35 +143,50 @@
                    class="table-stroke ui-shadow table-stripe  ui-responsive">
                 <thead>
                 <tr>
-                    <th class="center">Vehículo</th>
-                    <th data-priority="2" class="derecha">Acciones</th>
+                    <th class="centrado">Vehículo</th>
                     <th data-priority="1" class="derecha">Costo Kms.</th>
                 </tr>
                 </thead>
                 <tbody>
-                {% for tramoenvehiculo in tramo.vehiculos.all %}
+{% for tramoenvehiculo in tramo.vehiculos.all %}
                 <tr>
-                    <td>{{ tramoenvehiculo.vehiculo }}</td>
-                        <td><div class="ui-alt-icon ui-nodisc-icon mininav3r">
-                            <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-action ui-btn-icon-notext ui-btncito"
-                               title="Ver Tramo {{ tramoenvehiculo.nombre }}" href="{{ tramoenvehiculo.get_absolute_url }}">goto</a>{% if request.user.is_superuser %}
-                            <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-edit ui-btn-icon-notext ui-btncito"
-                               title="Editar Tramo {{ tramoenvehiculo.nombre }}" href="{{ tramoenvehiculo.get_update_url }}"
-                               data-ajax="false" onclick="window.location.reload(false);">>edit</a>
-                            <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-delete ui-btn-icon-notext ui-btncito"
-                               title="Eliminar Tramo {{ tramoenvehiculo.nombre }}" href="{{ tramoenvehiculo.get_delete_url }}">delete</a>{% endif %}
-                        </div></td>
+                    <td>{{ tramoenvehiculo.vehiculo }}{% if request.user.is_superuser %}
+                        <span class="minipopuplink">
+                            <a href="#popup{{ tramoenvehiculo.slug }}" data-rel="popup">
+                                <i class="material-icons">more_horiz</i></a>
+                        </span>
+                        <div class="minipopup3" data-role="popup" id="popup{{ tramoenvehiculo.slug }}">
+                            <ul class="ui-listview">
+                                <li>
+                                    <a title="Seleccionar Tramo en {{ tramoenvehiculo.vehiculo }}" data-ajax="false"
+                                       onclick="window.location.reload(false);"
+                                       href="{{ tramoenvehiculo.get_absolute_url }}">
+                                        <i class="material-icons">arrow_forward</i> Seleccionar</a></li>
+                                <li>
+                                    <a title="Editar Tramo en {{ tramoenvehiculo.vehiculo }}"
+                                       href="{{ tramoenvehiculo.get_update_url }}">
+                                        <i class="material-icons">edit</i> Editar</a></li>
+                                <li>
+                                    <a title="Eliminar Tramo en {{ tramoenvehiculo.vehiculo }}"
+                                       href="{{ tramoenvehiculo.get_delete_url }}">
+                                        <i class="material-icons">delete</i> Borrar</a></li>
+                            </ul>
+                            <div class="ui-popup-arrow-container ui-popup-arrow-t">
+                                <div class="ui-popup-arrow ui-body-a ui-overlay-shadow"></div>
+                            </div>
+                        </div>
+                    {% endif %}</td>
                     <td class="derecha">{{ tramoenvehiculo.costo|intcomma }}</td>
                 </tr>
                 {% endfor %}
                 </tbody>
             </table>
         </form>
-    </div>
+    </div>{% endif %}
 {% endblock %}
 {% block footer %}{% if request.user.is_superuser %}
         <div class="fixed-action-btn">
-            <a class="btn-floating btn-large waves-effect waves-light red darken-2"
+            <a class="btn-floating btn-large waves-effect waves-light"
                href="{% url "transporte_tramoenvehiculo_create" tramo_id=tramo.pk %}"
                data-ajax="false" onclick="window.location.reload(false);">
                 <i class="material-icons">add</i></a>

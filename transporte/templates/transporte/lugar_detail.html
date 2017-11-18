@@ -5,15 +5,35 @@
 {% block thead %}
     <th colspan="2" class="izquierda"><a style="color: white;"
             title="Mapa" href="https://www.google.com/maps/place/{{ lugar }}" target="_blank"><i
-            class="material-icons text-lime">place</i> {{ lugar }}</a>{% if request.user.is_superuser %}
-        <div class="ui-nodisc-icon mininav3r">
-            <a class="ui-btn ui-btn-inline ui-btn-a ui-icon-edit ui-btn-icon-notext ui-btncito"
-               title="Editar Lugar {{ lugar }}" href="{{ lugar.get_update_url }}">edit</a>
-            <a class="ui-btn ui-btn-inline ui-btn-a ui-icon-plus ui-btn-icon-notext ui-btncito"
-               title="Agregar Nuevo Lugar"
-               href="{% url "transporte_lugar_create" %}">add</a>
-            <a class="ui-btn ui-btn-inline ui-btn-a ui-icon-delete ui-btn-icon-notext ui-btncito"
-               title="Borrar Lugar {{ lugar }}" href="{{ lugar.get_delete_url }}">delete</a></div>
+            class="material-icons">place</i>{{ lugar }}</a>{% if request.user.is_superuser %}
+        <span class="minipopuplink">
+            <a href="#popup{{ lugar.slug }}" data-rel="popup">
+                <i class="material-icons">more_horiz</i></a>
+        </span>
+        <div class="minipopup3" data-role="popup" id="popup{{ lugar.slug }}">
+            <ul class="ui-listview">
+                <li>
+                    <a title="Agregar Lugar Nuevo" data-ajax="false"
+                       onclick="window.location.reload(false);"
+                       href="{% url 'transporte_lugar_create' %}">
+                        <i class="material-icons">add</i> Agregar</a></li>
+                <li>
+                    <a title="Editar Lugar {{ lugar }}"
+                       href="{{ lugar.get_update_url }}">
+                        <i class="material-icons">edit</i> Editar</a></li>
+                <li>
+                    <a title="Eliminar Lugar {{ lugar }}"
+                       href="{{ lugar.get_delete_url }}">
+                        <i class="material-icons">delete</i> Borrar</a></li>
+                <li>
+                    <a title="Mapa de {{ lugar }}"
+                       href="https://www.google.com/maps/place/{{ lugar }}" target="_blank">
+                        <i class="material-icons">place</i> Ubicación</a></li>
+            </ul>
+            <div class="ui-popup-arrow-container ui-popup-arrow-t">
+                <div class="ui-popup-arrow ui-body-a ui-overlay-shadow"></div>
+            </div>
+        </div>
     {% endif %}</th>
 {% endblock %}
 {% block tbody %}
@@ -24,7 +44,7 @@
     <tr>
         <td class="derecha">País</td>
         <td><strong>{{ lugar.pais }}</strong></td>
-    </tr>
+    </tr>{% if request.user.is_superuser %}
     <tr>
         <td class="derecha">Creado</td>
         <td><em>{{ lugar.creado }}</em></td>
@@ -32,11 +52,10 @@
     <tr>
         <td class="derecha">Actualizado</td>
         <td><em>{{ lugar.actualizado }}</em></td>
-    </tr>
-{% endblock %}
+    </tr>{% endif %}{% endblock %}
 {% block footer %}{% if request.user.is_superuser %}
         <div class="fixed-action-btn">
-            <a class="btn-floating btn-large waves-effect waves-light red darken-2"
+            <a class="btn-floating btn-large waves-effect waves-light"
                href="{{ lugar.get_update_url }}">
                 <i class="material-icons">edit</i></a>
         </div>{% endif %}{% endblock %}

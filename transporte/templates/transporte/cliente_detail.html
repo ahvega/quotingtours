@@ -3,18 +3,31 @@
 {% load bootstrap3 %}
 {% block title %}Cliente{% endblock %}
 {% block page-title %}Cliente{% endblock %}{% block thead %}<tr>
-    <th colspan="2" class="izquierda"><i class="material-icons text-lime">recent_actors</i>&nbsp;  {{ cliente }}{% if request.user.is_superuser %}
-        <div class="ui-nodisc-icon mininav3r">
-            <a class="ui-btn ui-btn-inline ui-btn-a ui-icon-edit ui-btn-icon-notext ui-btncito"
-               title="Editar Cliente {{ cliente }}" href="{{ cliente.get_update_url }}"
-               data-ajax="false" onclick="window.location.reload(false);">edit</a>
-            <a class="ui-btn ui-btn-inline ui-btn-a ui-icon-plus ui-btn-icon-notext ui-btncito"
-               title="Agregar Nuevo Cliente"
-               href="{% url "transporte_cliente_create" %}"
-               data-ajax="false" onclick="window.location.reload(false);">add</a>
-            <a class="ui-btn ui-btn-inline ui-btn-a ui-icon-delete ui-btn-icon-notext ui-btncito"
-               title="Borrar Cliente {{ cliente }}" href="{{ cliente.get_delete_url }}">delete</a></div>
-    {% endif %}</th></tr>{% endblock %}{% block tbody %}
+    <th colspan="2" class="izquierda">
+        <i class="material-icons">recent_actors</i>{{ cliente }}{% if request.user.is_superuser %}
+        <span class="minipopuplink"><a href="#popup{{ cliente.codigo }}" data-rel="popup"><i
+                class="material-icons">more_horiz</i></a>
+            </span>
+        <div class="minipopup3" data-role="popup" id="popup{{ cliente.codigo }}">
+            <ul class="ui-listview">
+                <li>
+                    <a title="Agregar Cliente Nuevo"
+                       href="{% url "transporte_cliente_create" %}">
+                        <i class="material-icons">add</i> Agregar</a></li>
+                <li>
+                    <a title="Editar Cliente {{ cliente }}"
+                       href="{{ cliente.get_update_url }}">
+                        <i class="material-icons">edit</i> Editar</a></li>
+                <li>
+                    <a title="Eliminar Cliente {{ cliente }}"
+                       href="{{ cliente.get_delete_url }}">
+                        <i class="material-icons">delete</i> Borrar</a></li>
+            </ul>
+            <div class="ui-popup-arrow-container ui-popup-arrow-t">
+                <div class="ui-popup-arrow ui-body-a ui-overlay-shadow"></div>
+            </div>
+        </div>{% endif %}
+    </th></tr>{% endblock %}{% block tbody %}
     <tr>
         <td class="derecha">Contacto</td>
         <td><strong>{{ cliente.contacto }}</strong></td>
@@ -23,19 +36,19 @@
         <td class="derecha">Tel</td>
         <td>
             <a title="Llamar a {{ cliente.contacto }}" style="text-decoration: none;" href="tel:{{ cliente.tel }}"><i
-                    class='material-icons text-purple md-18'>contact_phone</i> {{ cliente.tel }}</a>
+                    class='material-icons'>contact_phone</i> {{ cliente.tel }}</a>
         </td>
     </tr>
     <tr>
         <td class="derecha">Email</td>
         <td><a title="Enviar email a {{ cliente.contacto }} <{{ cliente.email }}>" style="text-decoration: none;" href="mailto:{{ cliente.contacto }} <{{ cliente.email }}>"><i
-                class='material-icons text-purple md-18'>contact_mail</i> {{ cliente.email }}</a>
+                class='material-icons'>contact_mail</i> {{ cliente.email }}</a>
         </td>
     </tr>
     <tr>
         <td class="derecha">RTN</td>
         <td>{{ cliente.rtn }}</td>
-    </tr>
+    </tr>{% if request.user.is_superuser %}
     <tr>
         <td class="derecha">Nivel de Precio</td>
         <td><strong>{{ cliente.nivel_de_precio }}</strong></td>
@@ -51,7 +64,7 @@
         <tr>
             <td class="derecha">Actualizado</td>
             <td><em>{{ cliente.actualizado|date:'D d/M/Y' }}</em></td>
-        </tr>{% endblock %}
+        </tr>{% endif %}{% endblock %}
 {% block detalle %}
     <div class="topcontainer">
         <table id="tabladedatos" data-role="table" data-mode="columntoggle"
@@ -59,12 +72,11 @@
             <thead>
             <tr>
                 <th class="izquierda">Itinerario</th>
-                <th data-priority="5" class="derecha">Acciones</th>
                 <th data-priority="1" class="centrado">Inicia</th>
-                <th data-priority="2" class="centrado">Termina</th>
-                <th data-priority="4" class="derecha">Subtotal Cotizado</th>
+                <th data-priority="2" class="centrado">Termina</th>{% if request.user.is_superuser %}
+                <th data-priority="4" class="derecha">Costo Cotizado</th>
                 <th data-priority="4" class="derecha">Utilidad Cotizada</th>
-                <th data-priority="4" class="derecha">Total Cotizado</th>
+                <th data-priority="4" class="derecha">Total Cotizado</th>{% endif %}
                 <th data-priority="3" class="centrado">Estatus</th>
             </tr>
             </thead>
@@ -72,32 +84,46 @@
             {% for itinerario in cliente.itinerarios.all %}
                 <tr>
                     <td data-search="{{ itinerario }}">
-                        <a title="Ver Itinerario {{ itinerario.tipo.nombre }} {{ itinerario }}"
+                        <a title="Seleccionar Itinerario {{ itinerario.tipo.nombre }} {{ itinerario }}"
                            data-ajax="false" onclick="window.location.reload(false);"
-                           href="{{ itinerario.get_absolute_url }}">{{ itinerario }}</a></td>
-                    <td class="izquierda" width="1"><div class="ui-alt-icon ui-nodisc-icon mininav3r">
-                        <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-action ui-btn-icon-notext ui-btncito"
-                           data-ajax="false" onclick="window.location.reload(false);"
-                           title="Ir a Itinerario {{ itinerario }}" href="{{ itinerario.get_absolute_url }}">goto</a>{% if request.user.is_superuser %}
-                        <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-edit ui-btn-icon-notext ui-btncito"
-                           title="Editar Itinerario {{ itinerario }}" href="{{ itinerario.get_update_url }}"
-                           data-ajax="false">edit</a>
-                        <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-delete ui-btn-icon-notext ui-btncito"
-                           title="Eliminar Itinerario {{ itinerario.nombre }}" href="{{ itinerario.get_delete_url }}">delete</a>{% endif %}</div></td>
+                           href="{{ itinerario.get_absolute_url }}">{{ itinerario }}</a>{% if request.user.is_superuser %}
+                            <span class="minipopuplink"><a href="#popup{{ itinerario }}" data-rel="popup"><i
+                                    class="material-icons">more_horiz</i></a>
+                            </span>
+                            <div class="minipopup3" data-role="popup" id="popup{{ itinerario }}">
+                                <ul class="ui-listview">
+                                    <li>
+                                        <a title="Seleccionar Itinerario {{ itinerario }}" data-ajax="false"
+                                           onclick="window.location.reload(false);"
+                                           href="{{ itinerario.get_absolute_url }}">
+                                            <i class="material-icons">arrow_forward</i> Seleccionar</a></li>
+                                    <li>
+                                        <a title="Editar Itinerario {{ itinerario }}"
+                                           href="{{ itinerario.get_update_url }}">
+                                            <i class="material-icons">edit</i> Editar</a></li>
+                                    <li>
+                                        <a title="Eliminar Itinerario {{ itinerario }}"
+                                           href="{{ itinerario.get_delete_url }}">
+                                            <i class="material-icons">delete</i> Borrar</a></li>
+                                </ul>
+                                <div class="ui-popup-arrow-container ui-popup-arrow-t">
+                                    <div class="ui-popup-arrow ui-body-a ui-overlay-shadow"></div>
+                                </div>
+                            </div>
+                        {% endif %}</td>
                     <td class="centrado">{{ itinerario.fecha_desde|date:"D d/b" }}</td>
-                    <td class="centrado">{{ itinerario.fecha_hasta|date:"D d/b" }}</td>
+                    <td class="centrado">{{ itinerario.fecha_hasta|date:"D d/b" }}</td>{% if request.user.is_superuser %}
                     <td class="derecha">{{ itinerario.subtotal_cotizado|intcomma }}</td>
                     <td class="derecha">{{ itinerario.utilidad_cotizada_valor|intcomma }}&nbsp;<small
                             style="color: #4385F5"><em>{{ itinerario.utilidad_cotizada|porciento }}</em></small></td>
-                    <td class="derecha">{{ itinerario.total_cotizado|intcomma }}</td>
+                    <td class="derecha">{{ itinerario.total_cotizado|intcomma }}</td>{% endif %}
                     <td class="centrado">{{ itinerario.get_estatus_display }}</td>
                 </tr>
             {% endfor %}
-            </tbody>
+            </tbody>{% if request.user.is_superuser %}
             <tfoot>
             <tr>
-                <td>TOTALES</td>
-                <td></td>
+                <td>{% if request.user.is_superuser %}TOTALES{% endif %}</td>
                 <td></td>
                 <td></td>
                 <td class="derecha">{{ cliente.subtotal_cotizado|intcomma }}</td>
@@ -107,15 +133,15 @@
                 <td class="derecha">{{ cliente.total_cotizado|intcomma }}</td>
                 <td></td>
             </tr>
-            </tfoot>
+            </tfoot>{% endif %}
         </table>
     </div>
 {% endblock %}{% block footer %}
     {% if request.user.is_superuser %}
         <div class="fixed-action-btn">
-            <a class="btn-floating btn-large waves-effect waves-light red darken-2"
+            <a class="btn-floating btn-large waves-effect waves-light"
                href="{% url "transporte_itinerario_create" cliente_id=cliente.pk %}"
                data-ajax="false" onclick="window.location.reload(false);">
-                <i class="material-icons md-28">add</i></a>
+               <i class="material-icons md-28">add</i></a>
         </div>
     {% endif %}{% endblock %}

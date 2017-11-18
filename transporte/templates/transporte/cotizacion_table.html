@@ -5,28 +5,18 @@
 {% block page-title %}Cotizaciones{% endblock %}
 {% block theader %}
             <th class="centrado">Cotización</th>
-            <th></th>
             <th data-priority="6" class="izquierda">Cliente: Itinerario</th>
             <th data-priority="4" class="centrado">Fecha</th>
             <th data-priority="5" class="centrado">Vence</th>
             <th data-priority="2" class="derecha">Costo</th>
             <th data-priority="3" class="derecha">Utilidad</th>
-            <th data-priority="1" class="derecha">Total</th>{% endblock %}{% block tbody %}{% for cotizacion in cotizacion_list %}
+            <th data-priority="1" class="derecha">Total</th>
+            <th data-priority="7" class="centrado"><small>Acciones</small></th>{% endblock %}{% block tbody %}{% for cotizacion in cotizacion_list %}
                 <tr>
                     <td data-search="{{ cotizacion.descripcion }}">
-                        <a title="Ver Cotización {{ cotizacion.nombre }}"
+                        <a title="Seleccionar Cotización {{ cotizacion }}"
                            data-ajax="false" onclick="window.location.reload(false);"
-                           href="{{ cotizacion.get_absolute_url }}">{{ cotizacion.nombre }}</a>:<br/>{{ cotizacion.descripcion }}</td>
-                    <td><div class="ui-alt-icon ui-nodisc-icon mininav3r">
-                        <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-action ui-btn-icon-notext ui-btncito"
-                           data-ajax="false" onclick="window.location.reload(false);"
-                           title="Ver Cotización {{ cotizacion.nombre }}" href="{{ cotizacion.get_absolute_url }}">goto</a>{% if request.user.is_superuser %}
-                        <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-edit ui-btn-icon-notext ui-btncito"
-                           title="Editar Cotización {{ cotizacion.nombre }}" href="{{ cotizacion.get_update_url }}"
-                           data-ajax="false" onclick="window.location.reload(false);">edit</a>
-                        <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-delete ui-btn-icon-notext ui-btncito"
-                           title="Eliminar Cotización {{ cotizacion.nombre }}" href="{{ cotizacion.get_delete_url }}">delete</a>{% endif %}
-                    </div></td>
+                           href="{{ cotizacion.get_absolute_url }}">{{ cotizacion }}</a>:<br/>{{ cotizacion.descripcion }}</td>
                     <td class="izquierda"><strong>{{ cotizacion.itinerario.cliente.nombre }}</strong>:<br/> {{ cotizacion.itinerario }}</td>
                     <td class="centrado"><a href="#" title="{{ cotizacion.creado|date:"D d/b" }}">{{ cotizacion.creado|date:"Y/m/d" }}</a></td>
                     <td class="centrado">{{ cotizacion.fecha_vence|date:"D d/b" }}</td>
@@ -34,5 +24,18 @@
                     <td class="derecha">{{ cotizacion.utilidad_valor|intcomma }}
                         <small style="color: #4385F5"><em>{{ cotizacion.utilidad|porciento }}</em></small></td>
                     <td class="derecha">{{ cotizacion.total|intcomma }}</td>
+                    <td>
+                        <div class="mininav3r">
+                            <a
+                               data-ajax="false" onclick="window.location.reload(false);"
+                               title="Seleccionar Cotización {{ cotizacion }}" href="{{ cotizacion.get_absolute_url }}"><i class="material-icons">arrow_forward</i></a>
+                            {% if request.user.is_superuser %}
+                                <a
+                                   title="Editar Cotización {{ cotizacion }}" href="{{ cotizacion.get_update_url }}"
+                                   data-ajax="false" onclick="window.location.reload(false);"><i class="material-icons">edit</i></a>
+                                <a
+                                   title="Eliminar Cotización {{ cotizacion }}" href="{{ cotizacion.get_delete_url }}"><i class="material-icons">delete_forever</i></a>{% endif %}
+                        </div>
+                    </td>
                 </tr>
             {% endfor %}{% endblock %}

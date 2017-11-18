@@ -1,28 +1,27 @@
 {% extends "_detail.html" %}
 {% load humanize %}
 {% load misformatos %}
-{% block title %}Detalle de Item{% endblock %}
-{% block page-title %}Detalle de Item{% endblock %}
+{% block title %}Detalle de Ítem{% endblock %}
+{% block page-title %}Detalle de Ítem{% endblock %}
 {% block thead %}
-    <th colspan="2" class="izquierda"><a style="color:white;" title="Ver Cotización {{ item.nombre }}"
+    <th colspan="2" class="izquierda"><a style="color:white;" title="Seleccionar Cotización {{ item.nombre }}"
                                          href="{{ item.get_absolute_url }}" data-ajax="false"
                                          onclick="window.location.reload(false);">
         {{ item.nombre }}{% if request.user.is_superuser %}
-            <div class="ui-nodisc-icon mininav3r">
-                <a class="ui-btn ui-btn-inline ui-btn-a ui-icon-edit ui-btn-icon-notext ui-btncito"
-                   title="Editar Ítem {{ item.nombre }}" href="{{ item.get_update_url }}"
-                   data-ajax="false" onclick="window.location.reload(false);">edit</a>
-                <a class="ui-btn ui-btn-inline ui-btn-a ui-icon-plus ui-btn-icon-notext ui-btncito"
-                   title="Agregar Nuevo Ítem"
-                   href="{% url "transporte_item_create" %}"
-                   data-ajax="false" onclick="window.location.reload(false);">add</a>
-                <a class="ui-btn ui-btn-inline ui-btn-a ui-icon-delete ui-btn-icon-notext ui-btncito"
-                   title="Borrar Ítem {{ item.nombre }}" href="{{ item.get_delete_url }}">delete</a></div>
+            <div class="mininav3r">
+                <a title="Editar Ítem {{ item.nombre }}" href="{{ item.get_update_url }}"
+                   data-ajax="false" onclick="window.location.reload(false);">
+                    <i class="material-icons">edit</i></a>
+                <a title="Agregar Nuevo Ítem" href="{% url "transporte_item_create" %}"
+                   data-ajax="false" onclick="window.location.reload(false);">
+                    <i class="material-icons">add</i></a>
+                <a title="Borrar Ítem {{ item.nombre }}" href="{{ item.get_delete_url }}">
+                    <i class="material-icons">delete_forever</i></a></div>
         {% endif %}</th>
 {% endblock %}
 {% block tbody %}
     <tr>
-        <td class="derecha">Tipo Item</td>
+        <td class="derecha">Tipo Ítem</td>
         <td><strong>{{ item.get_tipo_item_display }}</strong></td>
     </tr>
     <tr>

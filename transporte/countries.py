@@ -2,7 +2,7 @@
 # -*- coding:  utf-8 -*-
 import requests
 
-def info_pais(parametro, pais):
+def info_pais(pais):
     headers = {
         "Accept":  "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
         "Accept-Encoding": "gzip, deflate, br",
@@ -13,7 +13,7 @@ def info_pais(parametro, pais):
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3055.0 Safari/537.36"
     }
 
-    request = requests.get('https://restcountries.eu/rest/v2/name/'+pais, headers=headers)
+    request = requests.get('http://restcountries.eu/rest/v2/name/'+pais, headers=headers)
 
     lospaises = request.json()
 
@@ -30,14 +30,16 @@ def info_pais(parametro, pais):
     codigo2 = lospaises[0][u'alpha2Code']
     codigo3 = lospaises[0][u'alpha3Code']
 
-    if parametro == 'codigo2':
-        return codigo2
+    return lospaises
 
-    if parametro == 'codigo3':
-        return codigo3
-
-    if parametro == 'nombre':
-        return nombre
+    # if parametro == 'codigo2':
+    #     return codigo2
+    #
+    # if parametro == 'codigo3':
+    #     return codigo3
+    #
+    # if parametro == 'nombre':
+    #     return nombre
 
 
 # print info_pais('nombre','Panama')

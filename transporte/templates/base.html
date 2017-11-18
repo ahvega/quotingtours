@@ -6,6 +6,12 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta name="apple-mobile-web-app-capable" content="yes"/>
         <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+        <meta name="viewport" content="width=device-width, minimal-ui">
+        <meta name="MobileOptimized" content="width">
+        <meta name="HandheldFriendly" content="true">
+        <meta name="viewport"
+              content="width=device-width initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+        <meta http-equiv="cleartype" content="on">
         <meta name="description" content="{% block description %}{% endblock %}">
         <meta name="author" content="Adalberto H. Vega">
         <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
@@ -36,68 +42,81 @@
             <div class="ui-header ui-bar-b" role="banner" data-role="header"
                  data-position="fixed" data-theme="b" data-tap-toggle="false"><!-- header -->
                 <h1>{% block page-title %}title{% endblock %}</h1>
-                <a href="#nav-panel" class="ui-nodisc-icon" data-icon="bars"
-                   data-iconpos="notext" style="top: 9px; left: 6px;">Menu</a>{% if request.user.is_authenticated %}
-                <a class="ui-btn ui-link ui-icon-lock ui-btn-icon-left ui-shadow ui-corner-all ui-nodisc-icon"
-                   href="{% url 'salir' %}">Salir</a>{% else %}
-                <a class="ui-btn ui-link ui-icon-user ui-btn-icon-left ui-shadow ui-corner-all"
-                   href="{% url 'iniciar' %}">Ingresar</a>{% endif %}
+                <a href="#nav-panel"><i class="material-icons">menu</i> </a>{% if request.user.is_authenticated %}
+                <a href="{% url 'salir' %}"><i class="material-icons">lock_outline</i></a>{% else %}
+                <a href="{% url 'iniciar' %}"><i class="material-icons">lock_open</i></a>{% endif %}
             </div><!-- /header -->
             <div data-role="content"><!-- content -->{% block content %}{% endblock %}
             </div><!-- /content -->
             <div data-role="panel" data-display="overlay" data-theme="b" id="nav-panel"><!-- panel -->
-{#                <img src="{% static "images/logo-LATTours.png" %}" alt="LAT Tours">#}
                 <ul data-role="listview" class="ui-nodisc-icon">
-{#                    <li data-icon="none"><a href="#" data-rel="close"><i#}
-{#                            class="material-icons menu-icons">close</i></a></li>#}
-                    <li data-icon="none"><a href="/"><i
-                            class="material-icons menu-icons">home</i>Home</a></li>
-                    <li data-icon="none"><a href="{% url 'transporte_parametro_list' %}" data-ajax="false"
-                                            onclick="window.location.reload(false);"><i
-                            class="material-icons menu-icons">settings</i>Parámetros</a></li>
-                    <li data-icon="none"><a href="{% url 'transporte_tipodevehiculo_list' %}" data-ajax="false"
-                                             onclick="window.location.reload(false);"><i
-                            class="material-icons menu-icons">directions_bus</i>Tipos de Vehículo</a></li>
-                    <li data-icon="none"><a href="{% url 'transporte_vehiculo_list' %}" data-ajax="false"
-                                                onclick="window.location.reload(false);"><i
-                            class="material-icons menu-icons">airport_shuttle</i>Vehículos</a></li>
-                    <li data-icon="none"><a href="{% url 'transporte_niveldeprecio_list' %}" data-ajax="false"
-                                               onclick="window.location.reload(false);"><i
-                            class="material-icons menu-icons">local_offer</i>Niveles de Precio</a></li>
-                    <li data-icon="none"><a href="{% url 'transporte_item_list' %}" data-ajax="false"
-                                            onclick="window.location.reload(false);"><i
-                            class="material-icons menu-icons">toc</i>Items</a></li>
-                    <li data-icon="none"><a href="{% url 'transporte_itemgrupo_list' %}" data-ajax="false"
-                                            onclick="window.location.reload(false);"><i
-                            class="material-icons menu-icons">apps</i>Grupos</a></li>
-                    <li data-icon="none"><a href="{% url 'transporte_cliente_list' %}" data-ajax="false"
-                                               onclick="window.location.reload(false);"><i
-                            class="material-icons menu-icons">recent_actors</i>Clientes</a></li>
-                    <li data-icon="none"><a href="{% url 'transporte_itinerario_list' %}" data-ajax="false"
-                                            onclick="window.location.reload(false);"><i
-                            class="material-icons menu-icons">date_range</i>Itinerarios</a></li>
-                    <li data-icon="none"><a href="{% url 'transporte_cotizacion_list' %}" data-ajax="false"
-                                           onclick="window.location.reload(false);"><i
-                            class="material-icons menu-icons">assignment_turned_in</i>Cotizaciones</a></li>
-                    <li data-icon="none"><a href="{% url 'transporte_tramo_list' %}" data-ajax="false"
-                                                  onclick="window.location.reload(false);"><i
-                            class="material-icons menu-icons">directions</i>Tramos</a></li>
-                    <li data-icon="none"><a href="{% url 'transporte_lugar_list' %}" data-ajax="false"
-                                                onclick="window.location.reload(false);"><i
-                            class="material-icons menu-icons">place</i>Lugares</a></li>
-                    <li data-icon="none"><a href="{% url 'transporte_conductor_list' %}" data-ajax="false"
-                                            onclick="window.location.reload(false);"><i
-                            class="material-icons menu-icons">group</i>Conductores</a></li>
+                    <li data-icon="none">
+                        <a target="_self" href="/">
+                            <i class="material-icons menu-icons">home</i>Home</a></li>{% if request.user.is_superuser %}
+                    <li data-icon="none">
+                        <a target="_self" href="{% url 'transporte_parametro_list' %}" data-ajax="false"
+                           onclick="window.location.reload(false);">
+                            <i class="material-icons menu-icons">settings</i>Parámetros</a></li>{% endif %}
+                    <li data-icon="none">
+                        <a target="_self" href="{% url 'transporte_tipodevehiculo_list' %}" data-ajax="false"
+                           onclick="window.location.reload(false);">
+                            <i class="material-icons menu-icons">directions_bus</i>Tipos de Vehículo</a></li>
+                    <li data-icon="none">
+                        <a target="_self" href="{% url 'transporte_vehiculo_list' %}" data-ajax="false"
+                           onclick="window.location.reload(false);">
+                            <i class="material-icons menu-icons">airport_shuttle</i>Vehículos</a></li>{% if request.user.is_superuser %}
+                    <li data-icon="none">
+                        <a target="_self" href="{% url 'transporte_niveldeprecio_list' %}" data-ajax="false"
+                           onclick="window.location.reload(false);">
+                            <i class="material-icons menu-icons">local_offer</i>Niveles de Precio</a></li>
+                    <li data-icon="none">
+                        <a target="_self" href="{% url 'transporte_item_list' %}" data-ajax="false"
+                           onclick="window.location.reload(false);">
+                            <i class="material-icons menu-icons">toc</i>Items</a></li>
+                    <li data-icon="none">
+                        <a target="_self" href="{% url 'transporte_itemgrupo_list' %}" data-ajax="false"
+                           onclick="window.location.reload(false);">
+                            <i class="material-icons menu-icons">apps</i>Grupos</a></li>{% endif %}
+                    <li data-icon="none">
+                        <a target="_self" href="{% url 'transporte_cliente_list' %}" data-ajax="false"
+                           onclick="window.location.reload(false);">
+                            <i class="material-icons menu-icons">recent_actors</i>Clientes</a></li>
+                    <li data-icon="none">
+                        <a target="_self" href="{% url 'transporte_itinerario_list' %}" data-ajax="false"
+                           onclick="window.location.reload(false);">
+                            <i class="material-icons menu-icons">date_range</i>Itinerarios</a></li>
+                    <li data-icon="none">
+                        <a target="_self" href="{% url 'transporte_cotizacion_list' %}" data-ajax="false"
+                           onclick="window.location.reload(false);">
+                            <i class="material-icons menu-icons">assignment_turned_in</i>Cotizaciones</a></li>
+                    <li data-icon="none">
+                        <a target="_self" href="{% url 'transporte_tramo_list' %}" data-ajax="false"
+                           onclick="window.location.reload(false);">
+                            <i class="material-icons menu-icons">directions</i>Tramos</a></li>
+                    <li data-icon="none">
+                        <a target="_self" href="{% url 'transporte_lugar_list' %}" data-ajax="false"
+                           onclick="window.location.reload(false);">
+                            <i class="material-icons menu-icons">place</i>Lugares</a></li>
+                    <li data-icon="none">
+                        <a target="_self" href="{% url 'transporte_conductor_list' %}" data-ajax="false"
+                           onclick="window.location.reload(false);">
+                            <i class="material-icons menu-icons">group</i>Conductores</a>
+                    </li>
                 </ul>
             </div><!-- /panel -->
             <div style="padding-left: 4px !important;" data-role="footer" data-position="fixed" data-theme="a"><!-- footer -->{% block footer %}
-                    <small style="float: right;color:#222;padding-right: 8px;font-weight:300;">&copy; Copyright 2016
+                    <small style="float: right;color:#333;padding-right: 8px;font-weight:300;">&copy; Copyright 2017
                         IntelDEVIGN
                     </small>{% endblock %}
             </div><!-- /footer -->
         </div><!-- /page -->
         <script src="{% static "rest_framework/js/jquery-1.12.4.min.js" %}"></script>
-        <script src="{% static "js/jquery.mobile-1.4.5.min.js" %}"></script>{% block extlibs %}{% endblock %}{% block scripts %}{% endblock %}
+        <script src="{% static "js/jquery.mobile-1.4.5.min.js" %}"></script>
+        <script>
+            window.onload = function () {
+                document.location.href = "#";
+            }
+        </script>{% block extlibs %}{% endblock %}{% block scripts %}{% endblock %}
         {% block scripts2 %}{% endblock %}
     </body>
 </html>

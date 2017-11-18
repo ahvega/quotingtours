@@ -439,6 +439,7 @@ class LugarAdminForm(forms.ModelForm):
 
 
 class LugarAdmin(admin.ModelAdmin):
+    actions = [regrabar]
     save_as = True
     form = LugarAdminForm
     list_display = ['codigo', 'nombre', 'pais', 'slug', 'creado', 'actualizado']

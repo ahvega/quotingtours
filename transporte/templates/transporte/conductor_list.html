@@ -11,7 +11,7 @@
     {% for conductor in conductor_list %}
         <tr>
             <td data-search="{{ conductor.nombre }}">
-                <a title="Ver Detalles" class="ui-btn ui-link boton"
+                <a title="Seleccionar Detalles" class="ui-btn ui-link boton"
                    href="{{ conductor.get_absolute_url }}">{{ conductor.nombre }}</a>
             </td>
             <td class="centrado">{{ conductor.empleado | yesno }}</td>
@@ -23,7 +23,7 @@
         </tr>{% endfor %}{% endblock %}{% block footer %}
     {% if request.user.is_superuser %}
         <div class="fixed-action-btn">
-            <a class="btn-floating btn-large waves-effect waves-light red darken-2"
+            <a class="btn-floating btn-large waves-effect waves-light"
                href="{% url "transporte_conductor_create" %}">
                 <i class="material-icons">add</i></a>
         </div>

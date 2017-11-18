@@ -6,32 +6,48 @@
 {% block theader %}
             <th data-priority="1" class="centrado" style="width: 100px;">Código</th>
             <th class="centrado">Lugar</th>
-            <th data-priority="3" class="derecha">Acciones</th>
-            <th data-priority="2" class="centrado">País</th>{% endblock %}
-{% block tbody %}{% for lugar in lugar_list %}
+            <th data-priority="2" class="centrado">País</th>{% endblock %}{% block tbody %}
+{% for lugar in lugar_list %}
                     <tr>
-                    <td class="centrado">
-                        <a title="Mapa de {{ lugar }}" target="_blank"
-                           href="https://www.google.com/maps/place/{{ lugar }}">{{ lugar.codigo|upper }} <i
-                                class="material-icons text-purple md-18" style="vertical-align: -4px;">place</i></a>
-                    </td>
+                    <td class="centrado">{{ lugar.codigo|upper }}</td>
                     <td data-search="{{ lugar }}">
-                        <a title="Ver Lugar {{ lugar }}"
-                           href="{{ lugar.get_absolute_url }}">{{ lugar.nombre }}</a></td>
-                    <td><div class="ui-alt-icon ui-nodisc-icon mininav3r">
-                        <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-action ui-btn-icon-notext ui-btncito"
-                           title="Ver Lugar {{ lugar }}" href="{{ lugar.get_absolute_url }}">goto</a>{% if request.user.is_superuser %}
-                        <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-edit ui-btn-icon-notext ui-btncito"
-                           title="Editar Lugar {{ lugar }}" href="{{ lugar.get_update_url }}">edit</a>
-                        <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-delete ui-btn-icon-notext ui-btncito"
-                           title="Eliminar Lugar {{ lugar }}" href="{{ lugar.get_delete_url }}">delete</a>{% endif %}
-                    </div></td>
+                        <a title="Seleccionar Lugar {{ lugar }}"
+                           href="{{ lugar.get_absolute_url }}">{{ lugar.nombre }}</a>{% if request.user.is_superuser %}
+                        <span class="minipopuplink">
+                            <a href="#popup{{ lugar.slug }}" data-rel="popup">
+                                <i class="material-icons">more_horiz</i></a>
+                        </span>
+                        <div class="minipopup3" data-role="popup" id="popup{{ lugar.slug }}">
+                            <ul class="ui-listview">
+                                <li>
+                                    <a title="Seleccionar Lugar {{ lugar }}" data-ajax="false"
+                                       onclick="window.location.reload(false);"
+                                       href="{{ lugar.get_absolute_url }}">
+                                        <i class="material-icons">arrow_forward</i> Seleccionar</a></li>
+                                <li>
+                                    <a title="Editar Lugar {{ lugar }}"
+                                       href="{{ lugar.get_update_url }}">
+                                        <i class="material-icons">edit</i> Editar</a></li>
+                                <li>
+                                    <a title="Eliminar Lugar {{ lugar }}"
+                                       href="{{ lugar.get_delete_url }}">
+                                        <i class="material-icons">delete</i> Borrar</a></li>
+                                <li>
+                                    <a title="Mapa de {{ lugar }}" target="_blank"
+                                       href="https://www.google.com/maps/place/{{ lugar }}"><i
+                                            class="material-icons">place</i> Ubicación</a></li>
+                            </ul>
+                            <div class="ui-popup-arrow-container ui-popup-arrow-t">
+                                <div class="ui-popup-arrow ui-body-a ui-overlay-shadow"></div>
+                            </div>
+                        </div>
+                    {% endif %}</td>
                     <td class="centrado">{{ lugar.pais }}</td>
                 </tr>
             {% endfor %}{% endblock %}{% block footer %}
     {% if request.user.is_superuser %}
         <div class="fixed-action-btn">
-            <a class="btn-floating btn-large waves-effect waves-light red darken-2"
+            <a class="btn-floating btn-large waves-effect waves-light"
                href="{% url "transporte_lugar_create" %}">
                 <i class="material-icons md-28">add</i></a>
         </div>

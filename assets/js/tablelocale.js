@@ -14,7 +14,7 @@ $(document).ready(function () {
                 processing:     "En proceso...",
                 search:         "<i class='material-icons md-28' style='vertical-align: -8px;color:#7b7b7b;'>search</i>",
                 lengthMenu:    "<i class='material-icons md-28' style='vertical-align: -8px;color: #7b7b7b;'>format_list_numbered</i> _MENU_",
-                info:           "Mostrando de _START_ a _END_ de _TOTAL_ elementos totales",
+                info:           "_START_ a _END_ de <strong>_TOTAL_</strong> en total",
                 infoEmpty:      "No hay elementos",
                 infoFiltered:   "(Filtrado de _MAX_ elementos en total)",
                 infoPostFix:    "",

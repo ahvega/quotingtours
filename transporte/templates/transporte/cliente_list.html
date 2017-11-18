@@ -1,45 +1,54 @@
 {% extends "_table.html" %}{% load humanize %}
 {% block title %}Clientes{% endblock %}
 {% block page-title %}Clientes{% endblock %}{% block theader %}
-                                <th data-priority="6" class="centrado" style="width: 100px; ">Código</th>
-                                <th class="centrado">Cliente</th>
-                                <th data-priority="99" class="derecha">Acciones</th>
-                                <th data-priority="5" class="derecha">Cotizado</th>
-                                <th data-priority="2" class="centrado">Contacto</th>
-                                <th data-priority="1" class="centrado">Tel</th>
-                                <th data-priority="4" class="centrado">RTN</th>{% endblock %}{% block tbody %}{% for cliente in cliente_list %}
-                            <tr>
-                                <td class="centrado">{{ cliente.codigo }}</td>
-                                <td class="izquierda" data-search="{{ cliente }}">
-                                    <a title="Ver Cliente {{ cliente }}" data-ajax="false" onclick="window.location.reload(false);"
-                                       href="{{ cliente.get_absolute_url }}">{{ cliente }}</a></td>
-                                <td class="izquierda" width="1">
-                                    <div class="ui-alt-icon ui-nodisc-icon mininav4r">
-                                        <a title="Enviar email a {{ cliente }} <{{ cliente.email }}>"
-                                           href="mailto:{{ cliente.email }}">
-                                            <i class='material-icons text-purple md-18'>contact_mail</i></a>
-                                        <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-action ui-btn-icon-notext ui-btncito"
-                                           title="Ver Cliente {{ cliente }}" data-ajax="false"
-                                           onclick="window.location.reload(false);"
-                                           href="{{ cliente.get_absolute_url }}">goto</a>{% if request.user.is_superuser %}
-                                        <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-edit ui-btn-icon-notext ui-btncito"
-                                           title="Editar Cliente {{ cliente }}"
-                                           href="{{ cliente.get_update_url }}">edit</a>
-                                        <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-delete ui-btn-icon-notext ui-btncito"
-                                           title="Eliminar Cliente {{ cliente }}"
-                                           href="{{ cliente.get_delete_url }}">delete</a>{% endif %}
-                                    </div>
-                                </td>
-                                <td class="derecha">{{ cliente.total_cotizado|intcomma }}</td>
-                                <td class="izquierda">{{ cliente.contacto }}</td>
-                                <td class="centrado">
-                                    <a title="Llamar a {{ cliente }}" href="tel:{{ cliente.tel }}"><i
-                                            class='material-icons text-purple md-18'>contact_phone</i>{{ cliente.tel }}</a>
-                                </td>
-                                <td class="centrado">{{ cliente.rtn }}</td>
-                            </tr>{% endfor %}{% endblock %}{% block footer %}{% if request.user.is_superuser %}
-                <div class="fixed-action-btn">
-                    <a class="btn-floating btn-large waves-effect waves-light red darken-2"
-                       title="Agregar Cliente" data-ajax="false" onclick="window.location.reload(false);"
-                       href="{% url "transporte_cliente_create" %}"><i class="material-icons md-28">add</i></a>
-                </div>{% endif %}{% endblock %}
+    <th data-priority="6" class="centrado" style="width: 100px; ">Código</th>
+    <th class="izquierda">Cliente</th>{% if request.user.is_superuser %}
+    <th data-priority="5" class="derecha">Cotizado</th>{% endif %}
+    <th data-priority="2" class="izquierda">Contacto</th>
+    <th data-priority="1" class="izquierda">Tel</th>
+    <th data-priority="4" class="centrado">RTN</th>{% endblock %}{% block tbody %}{% for cliente in cliente_list %}
+    <tr>
+        <td class="centrado">{{ cliente.codigo }}</td>
+        <td class="izquierda" data-search="{{ cliente }}">
+            <a title="Seleccionar Cliente {{ cliente }}" data-ajax="false" onclick="window.location.reload(false);"
+               href="{{ cliente.get_absolute_url }}">{{ cliente }}</a>{% if request.user.is_superuser %}
+            <span class="minipopuplink"><a href="#popup{{ cliente.codigo }}" data-rel="popup"><i
+                    class="material-icons">more_horiz</i></a>
+            </span>
+            <div class="minipopup3" data-role="popup" id="popup{{ cliente.codigo }}">
+            <ul class="ui-listview">
+                <li>
+                    <a title="Seleccionar Cliente {{ cliente }}" data-ajax="false"
+                       onclick="window.location.reload(false);"
+                       href="{{ cliente.get_absolute_url }}">
+                    <i class="material-icons">arrow_forward</i> Seleccionar</a></li>
+                <li>
+                    <a title="Editar Cliente {{ cliente }}"
+                       href="{{ cliente.get_update_url }}">
+                    <i class="material-icons">edit</i> Editar</a></li>
+                <li>
+                    <a title="Eliminar Cliente {{ cliente }}"
+                       href="{{ cliente.get_delete_url }}">
+                    <i class="material-icons">delete</i> Borrar</a></li>
+            </ul>
+                <div class="ui-popup-arrow-container ui-popup-arrow-t">
+                    <div class="ui-popup-arrow ui-body-a ui-overlay-shadow"></div>
+                </div>
+            </div>
+        {% endif %}
+        </td>{% if request.user.is_superuser %}
+        <td class="derecha">{{ cliente.total_cotizado|intcomma }}</td>{% endif %}
+        <td class="izquierda"><a title="Enviar email a {{ cliente.contacto }} - {{ cliente }} <{{ cliente.email }}>"
+                                 href="mailto:{{ cliente.email }}">
+            <i class='material-icons'>contact_mail</i>{{ cliente.contacto }}</a></td>
+        <td class="izquierda">
+            <a title="Llamar a {{ cliente }}" href="tel:{{ cliente.tel }}"><i
+                    class='material-icons'>contact_phone</i>{{ cliente.tel }}</a>
+        </td>
+        <td class="centrado">{{ cliente.rtn }}</td>
+    </tr>{% endfor %}{% endblock %}{% block footer %}{% if request.user.is_superuser %}
+    <div class="fixed-action-btn">
+        <a class="btn-floating btn-large waves-effect waves-light"
+           title="Agregar Cliente" data-ajax="false" onclick="window.location.reload(false);"
+           href="{% url "transporte_cliente_create" %}"><i class="material-icons md-28">add</i></a>
+    </div>{% endif %}{% endblock %}

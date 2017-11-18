@@ -4,27 +4,30 @@
 {% block page-title %}Itinerarios{% endblock %}
 {% block theader %}
             <th class="centrado">Itinerario</th>
-            <th></th>
             <th data-priority="1" class="centrado">Inicia</th>
             <th data-priority="2" class="centrado">Termina</th>
-            <th data-priority="3" class="centrado">Estatus</th>{% endblock %}
+            <th data-priority="3" class="centrado">Estatus</th>
+            <th>
+                <small>Acciones</small>
+            </th>{% endblock %}
 {% block tbody %}<!-- data  -->{% for itinerario in itinerario_list %}
             <tr>
-                <td data-search="{{ itinerario.nombre }}">
+                <td data-search="{{ itinerario }}">
                     <a style="text-decoration: none;color:#777;"
-                       title="Ver Itinerario {{ itinerario.nombre }}"
-                       href="{{ itinerario.get_absolute_url }}">{{ itinerario.nombre }}</a></td>
-                <td class="izquierda" width="1"><div class="ui-alt-icon ui-nodisc-icon mininav3r">
-                    <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-action ui-btn-icon-notext ui-btncito"
-                       title="Ver Itinerario {{ itinerario.nombre }}"
-                       href="{{ itinerario.get_absolute_url }}">goto</a>{% if request.user.is_superuser %}
-                    <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-edit ui-btn-icon-notext ui-btncito"
-                       title="Editar Itinerario {{ itinerario.nombre }}"
-                       href="{{ itinerario.get_update_url }}">edit</a>
-                    <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-delete ui-btn-icon-notext ui-btncito"
-                       title="Eliminar Itinerario {{ itinerario.nombre }}"
-                       href="{{ itinerario.get_delete_url }}">delete</a>{% endif %}</div></td>
+                       title="Seleccionar Itinerario {{ itinerario }}"
+                       href="{{ itinerario.get_absolute_url }}">{{ itinerario }}</a></td>
                 <td class="centrado">{{ itinerario.fecha_desde|date:"D d/b" }}</td>
                 <td class="centrado">{{ itinerario.fecha_hasta|date:"D d/b" }}</td>
-                <td class="centrado">{{ itinerario.get_estatus_display }}</td>
+                <td class="izquierda" width="1">
+                    <div class="mininav3r">
+                        <a title="Seleccionar Itinerario {{ itinerario }}"
+                           href="{{ itinerario.get_absolute_url }}">
+                            <i class="material-icons">arrow_forward</i></a>{% if request.user.is_superuser %}
+                        <a title="Editar Itinerario {{ itinerario }}"
+                           href="{{ itinerario.get_update_url }}">
+                            <i class="material-icons">edit</i></a>
+                        <a title="Eliminar Itinerario {{ itinerario }}"
+                           href="{{ itinerario.get_delete_url }}">
+                            <i class="material-icons">delete_forever</i></a>{% endif %}</div>
+                </td>                <td class="centrado">{{ itinerario.get_estatus_display }}</td>
             </tr>{% endfor %}{% endblock %}

@@ -6,49 +6,62 @@
 {% block theader %}
             <th class="centrado">Tramo</th>
             <th data-priority="5" class="centrado">Nombre</th>
-            <th data-priority="6" class="derecha">Acciones</th>
             <th data-priority="4" class="centrado">Desde</th>
             <th data-priority="3" class="centrado">Hacia</th>
-            <th data-priority="1" class="centrado">Kms</th>
-            <th data-priority="2" class="centrado">Hrs</th>{% endblock %}
+            <th data-priority="1" class="centrado"><small>Kms</small></th>
+            <th data-priority="2" class="centrado"><small>Hrs</small></th>{% endblock %}
 {% block tbody %}{% for tramo in tramo_list %}
                     <tr>
-                        <td class="centrado" data-search="{{ tramo.codigo }}">
-                            <a title="Mapa de {{ tramo }}" target="_blank"
-                               href="https://www.google.com/maps/dir/{{ tramo.desde_lugar }}/{{ tramo.hacia_lugar }}">{{ tramo.codigo }} <i
-                                    class="material-icons text-purple md-18"
-                                    style="vertical-align: -4px;">directions</i></a></td>
-                    <td class="izquierda">
-                        <a title="Ver Tramo {{ tramo }}"
-                           href="{{ tramo.get_absolute_url }}">{{ tramo }}</a></td>
-                    <td><div class="ui-alt-icon ui-nodisc-icon mininav3r">
-                        <a class="ui-btn ui-btn-inline ui-btn-c ui-btncito ui-btn-icon-notext ui-icon-action"
-                           title="Ver Tramo {{ tramo }}"
-                           href="{{ tramo.get_absolute_url }}">goto</a>{% if request.user.is_superuser %}
-                        <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-edit ui-btn-icon-notext ui-btncito"
-                           title="Editar Tramo {{ tramo.codigo|upper }}" href="{{ tramo.get_update_url }}"
-                           data-ajax="false" onclick="window.location.reload(false);">edit</a>
-                        <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-delete ui-btn-icon-notext ui-btncito"
-                           title="Eliminar Tramo {{ tramo }}" href="{{ tramo.get_delete_url }}">delete</a>{% endif %}
-                    </div></td>
-                    <td class="izquierda">
-                        <a title="Ver Mapa de {{ tramo.desde_lugar }}" target="_blank"
-                           href="https://www.google.com/maps/place/{{ tramo.desde_lugar }}"><i
-                                class="material-icons text-purple md-18"
-                                style="vertical-align: -4px;">place</i>{{ tramo.desde_lugar }}
-                        </a></td>
-                    <td class="izquierda">
-                        <a title="Ver Mapa de {{ tramo.hacia_lugar }}" target="_blank"
-                           href="https://www.google.com/maps/place/{{ tramo.hacia_lugar }}"><i
-                                class="material-icons text-purple md-18"
-                                style="vertical-align: -4px;">place</i>{{ tramo.hacia_lugar }}</a></td>
-                    <td class="centrado">{{ tramo.kms|intcomma }}</td>
-                    <td class="centrado">{{ tramo.hrs }}</td>
-                </tr>
+                        <td class="centrado" data-search="{{ tramo.codigo }}">{{ tramo.codigo }}</td>
+                        <td class="izquierda">
+                            <a title="Seleccionar Tramo {{ tramo }}"
+                               href="{{ tramo.get_absolute_url }}">{{ tramo }}</a>{% if request.user.is_superuser %}
+                            <span class="minipopuplink">
+                                <a href="#popup{{ tramo.slug }}" data-rel="popup">
+                                    <i class="material-icons">more_horiz</i></a>
+                            </span>
+                            <div class="minipopup3" data-role="popup" id="popup{{ tramo.slug }}">
+                                <ul class="ui-listview">
+                                    <li>
+                                        <a title="Seleccionar Tramo {{ tramo }}" data-ajax="false"
+                                           onclick="window.location.reload(false);"
+                                           href="{{ tramo.get_absolute_url }}">
+                                            <i class="material-icons">arrow_forward</i> Seleccionar</a></li>
+                                    <li>
+                                        <a title="Editar Tramo {{ tramo }}"
+                                           href="{{ tramo.get_update_url }}">
+                                            <i class="material-icons">edit</i> Editar</a></li>
+                                    <li>
+                                        <a title="Eliminar Tramo {{ tramo }}"
+                                           href="{{ tramo.get_delete_url }}">
+                                            <i class="material-icons">delete</i> Borrar</a></li>
+                                    <li>
+                                        <a title="Mapa de Ruta {{ tramo }}" target="_blank"
+                                           href="https://www.google.com/maps/dir/{{ tramo.desde_lugar }}/{{ tramo.hacia_lugar }}">
+                                            <i class="material-icons">directions</i> Direcciones</a></li>
+                                    <li>
+                                        <a title="Ubicación de {{ tramo.desde_lugar }}" target="_blank"
+                                           href="https://www.google.com/maps/place/{{ tramo.desde_lugar }}">
+                                            <i class="material-icons">place</i> Origen</a></li>
+                                    <li>
+                                        <a title="Ubicación de {{ tramo.hacia_lugar }}" target="_blank"
+                                           href="https://www.google.com/maps/place/{{ tramo.hacia_lugar }}">
+                                            <i class="material-icons">place</i> Destino</a></li>
+                                </ul>
+                                <div class="ui-popup-arrow-container ui-popup-arrow-t">
+                                    <div class="ui-popup-arrow ui-body-a ui-overlay-shadow"></div>
+                                </div>
+                            </div>
+                        {% endif %}</td>
+                        <td class="izquierda">{{ tramo.desde_lugar }}</td>
+                        <td class="izquierda">{{ tramo.hacia_lugar }}</td>
+                        <td class="centrado">{{ tramo.kms|intcomma }}</td>
+                        <td class="centrado">{{ tramo.hrs }}</td>
+                    </tr>
             {% endfor %}{% endblock %}{% block footer %}
     {% if request.user.is_superuser %}
         <div class="fixed-action-btn">
-            <a class="btn-floating btn-large waves-effect waves-light red darken-2"
+            <a class="btn-floating btn-large waves-effect waves-light"
                href="{% url "transporte_tramo_create" %}"
                data-ajax="false" onclick="window.location.reload(false);">
                 <i class="material-icons md-28">add</i></a>

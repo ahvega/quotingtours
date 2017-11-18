@@ -21,6 +21,7 @@ from django.db.models.functions import Coalesce
 
 from transporte import countries
 from .directions import distancia, duracion, verbage
+# from restcountries import RestCountryApi as rapi
 
 
 class TipoDeVehiculo(models.Model):
@@ -28,11 +29,11 @@ class TipoDeVehiculo(models.Model):
     nombre = CharField(max_length=20)
     slug = extension_fields.AutoSlugField(populate_from='nombre', blank=True)
     rendimiento = IntegerField()
-    costo_por_dia = DecimalField(max_digits=10, decimal_places=3)
-    costo_por_km = DecimalField(max_digits=10, decimal_places=3)
+    costo_por_dia = DecimalField(max_digits=10, decimal_places=2)
+    costo_por_km = DecimalField(max_digits=10, decimal_places=2)
     capacidad_nominal = IntegerField()
     capacidad_real = IntegerField()
-    galones_tanque = DecimalField(max_digits=6, decimal_places=3)
+    galones_tanque = DecimalField(max_digits=6, decimal_places=2)
     activo = BooleanField(default=True)
     creado = DateTimeField(auto_now_add=True, editable=False)
     actualizado = models.DateTimeField(auto_now=True, editable=False)
@@ -260,6 +261,7 @@ class ItemGrupoLinea(models.Model):
     utilidad = models.DecimalField(max_digits=6, decimal_places=4, default=0, editable=False)
     total = models.DecimalField(max_digits=10, decimal_places=2, default=0, editable=False)
     slug = extension_fields.AutoSlugField(populate_from='forslug', blank=True, overwrite=True)
+    # slug = models.CharField(max_length=255, null=True, blank=True, editable=False)
     creado = models.DateTimeField(auto_now_add=True, editable=False)
     actualizado = models.DateTimeField(auto_now=True, editable=False)
 
@@ -276,13 +278,14 @@ class ItemGrupoLinea(models.Model):
         verbose_name = _('Grupo Ítem')
         verbose_name_plural = _('Grupo Ítems')
 
+    @property
     def forslug(self):
-        return self.item_grupo.slug + '_' + self.nombre
+        return str(self.item_grupo.id) + '_' + self.item.slug
 
     def save(self, *args, **kwargs):
         nivel_default = NivelDePrecio.objects.get(nombre='Prepago 15%')
         elgrupo = ItemGrupo.objects.get(id=self.item_grupo.pk)
-
+        # self.slug = str(self.item_grupo.id)+'_'+self.item.slug
         self.nombre = self.item.nombre
         self.descripcion = self.item.descripcion_venta
         self.costo = self.item.costo
@@ -303,7 +306,7 @@ class ItemGrupoLinea(models.Model):
         return str(self.descripcion)
 
     def __unicode__(self):
-        return u'%s' % self.slug
+        return u'%s' % self.descripcion
 
     def get_absolute_url(self):
         return reverse('transporte_itemgrupolinea_detail', args=(self.slug,))
@@ -537,6 +540,13 @@ class Itinerario(models.Model):
         return reverse('transporte_itinerario_update', args=(self.slug,))
 
 
+def info_country(name):
+    # country_list = rapi.get_countries_by_name(name)
+    country_list = countries.info_pais(name)
+    country = country_list[0]
+    return country
+
+
 class Lugar(models.Model):
     class Zona(DjangoChoices):
         Uno = ChoiceItem('1')
@@ -563,12 +573,20 @@ class Lugar(models.Model):
         return u'%s' % self.nombre
 
     @property
+    def info_country(pais):
+        country = countries.info_pais(pais)
+        return country
+
+    @property
     def codigo_pais2(self):
-        return countries.info_pais('codigo2',self.pais)
+        country = info_country(self.pais)
+        return country['alpha2Code']
+        # return countries.info_pais('codigo2',self.pais)
 
     @property
     def nombre_pais(self):
-        return countries.info_pais('nombre', self.pais)
+        country = info_country(self.pais)
+        return country[u'translations'][u'es']
 
     def save(self, *args, **kwargs):
         self.codigo = self.codigo.upper()

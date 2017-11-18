@@ -5,25 +5,25 @@
 {% block page-title %}Ítem en Grupo{% endblock %}
 {% block thead %}
     <th colspan="2" class="izquierda">{{ itemgrupolinea.item }}{% if request.user.is_superuser %}
-        <div class="ui-nodisc-icon mininav3r">
-            <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-edit ui-btn-icon-notext ui-btncito"
-               title="Editar Ítem {{ itemgrupolinea.nombre }}" href="{{ itemgrupolinea.get_update_url }}">edit</a>
-            <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-plus ui-btn-icon-notext ui-btncito"
-               title="Agregar Nuevo Ítem"
-               href="{% url "transporte_itemgrupolinea_create" itemgrupo_id=itemgrupolinea.item_grupo.pk %}">add</a>
-            <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-delete ui-btn-icon-notext ui-btncito"
-               title="Borrar Ítem {{ itemgrupolinea.nombre }}"
-               href="{{ itemgrupolinea.get_delete_url }}">delete</a></div>
+        <div class="mininav3r">
+            <a title="Editar Ítem {{ itemgrupolinea.nombre }}" href="{{ itemgrupolinea.get_update_url }}">
+                <i class="material-icons">edit</i></a>
+            <a title="Agregar Nuevo Ítem"
+               href="{% url "transporte_itemgrupolinea_create" itemgrupo_id=itemgrupolinea.item_grupo.pk %}">
+                <i class="material-icons">add</i></a>
+            <a title="Borrar Ítem {{ itemgrupolinea.nombre }}"
+               href="{{ itemgrupolinea.get_delete_url }}">
+                <i class="material-icons">delete_forever</i></a></div>
     {% endif %}</th>
 {% endblock %}
 {% block tbody %}
     <tr>
         <td class="derecha"><strong>Grupo:</strong></td>
-        <td><a title="Ver Grupo: {{ itemgrupolinea.item_grupo }}"
+        <td><a title="Seleccionar Grupo: {{ itemgrupolinea.item_grupo }}"
                href="{{ itemgrupolinea.item_grupo.get_absolute_url }}"
                class="ui-btn ui-btn-a ui-btn-inline ui-icon-arrow-u-l ui-btncito ui-nodisc-icon ui-alt-icon ui-btn-icon-notext">call</a>
             <a href="{{ itemgrupolinea.item_grupo.get_absolute_url }}"
-               title="Ver Grupo: {{ itemgrupolinea.item_grupo }}"
+               title="Seleccionar Grupo: {{ itemgrupolinea.item_grupo }}"
                style="text-decoration: none;font-weight: bold;text-transform: uppercase;">{{ itemgrupolinea.item_grupo }}</a>
         </td>
     </tr>

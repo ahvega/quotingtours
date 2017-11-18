@@ -9,19 +9,19 @@
                                 <th data-priority="3" class="centrado">Estatus</th>{% endblock %}{% block tbody %}{% for itinerario in itinerario_list %}
                             <tr>
                                 <td data-search="{{ itinerario.nombre }}">
-                                    <a title="Ver Itinerario {{ itinerario.nombre }}"
+                                    <a title="Seleccionar Itinerario {{ itinerario.nombre }}"
                                        href="{{ itinerario.get_absolute_url }}">{{ itinerario.nombre }}</a></td>
                                 <td class="izquierda" width="1">
-                                    <div class="ui-alt-icon ui-nodisc-icon mininav3r">
-                                        <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-action ui-btn-icon-notext ui-btncito"
-                                           title="Ver Itinerario {{ itinerario.nombre }}"
-                                           href="{{ itinerario.get_absolute_url }}">goto</a>{% if request.user.is_superuser %}
-                                        <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-edit ui-btn-icon-notext ui-btncito"
+                                    <div class="mininav3r">
+                                        <a
+                                           title="Seleccionar Itinerario {{ itinerario.nombre }}"
+                                           href="{{ itinerario.get_absolute_url }}"><i class="material-icons">arrow_forward</i></a>{% if request.user.is_superuser %}
+                                        <a
                                            title="Editar Itinerario {{ itinerario.nombre }}"
-                                           href="{{ itinerario.get_update_url }}">edit</a>
-                                        <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-delete ui-btn-icon-notext ui-btncito"
+                                           href="{{ itinerario.get_update_url }}"><i class="material-icons">edit</i></a>
+                                        <a
                                            title="Eliminar Itinerario {{ itinerario.nombre }}"
-                                           href="{{ itinerario.get_delete_url }}">delete</a>{% endif %}
+                                           href="{{ itinerario.get_delete_url }}"><i class="material-icons">delete_forever</i></a>{% endif %}
                                     </div>
                                 </td>
                                 <td class="izquierda">{{ itinerario.cliente.nombre }}</td>

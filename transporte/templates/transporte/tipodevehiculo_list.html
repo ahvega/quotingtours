@@ -2,38 +2,49 @@
 {% block title %}Tipos de Vehículo{% endblock %}
 {% block page-title %}Tipos de Vehículo{% endblock %}
 {% block theader %}
-                                <th class="center">Tipo</th>
-                                <th data-priority="5" class="derecha">Acciones</th>
+                                <th class="center">Tipo</th>{% if request.user.is_superuser %}
                                 <th data-priority="1" class="derecha">Costo por Día</th>
-                                <th data-priority="2" class="derecha">Costo por Km</th>
+                                <th data-priority="2" class="derecha">Costo por Km</th>{% endif %}
                                 <th data-priority="3" class="derecha">Km/Gal</th>
                                 <th data-priority="4" class="derecha">Gals/Tanque</th>{% endblock %}{% block tbody %}{% for tipodevehiculo in tipodevehiculo_list %}
                             <tr>
-                                <td data-search="{{ tipodevehiculo.nombre }}">
-                                    <a title="Ver Tipo {{ tipodevehiculo.nombre }}"
-                                       href="{{ tipodevehiculo.get_absolute_url }}">{{ tipodevehiculo.nombre }}</a>
-                                </td>
-                                <td class="izquierda" width="1">
-                                    <div class="ui-alt-icon ui-nodisc-icon mininav3r">
-                                        <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-action ui-btn-icon-notext ui-btncito"
-                                           title="Ver Tipo {{ tipodevehiculo.nombre }}"
-                                           href="{{ tipodevehiculo.get_absolute_url }}">goto</a>{% if request.user.is_superuser %}
-                                        <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-edit ui-btn-icon-notext ui-btncito"
-                                           title="Editar Tipo {{ tipodevehiculo.nombre }}"
-                                           href="{{ tipodevehiculo.get_update_url }}"
-                                           data-ajax="false" onclick="window.location.reload(false);">edit</a>
-                                        <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-delete ui-btn-icon-notext ui-btncito"
-                                           title="Eliminar Tipo {{ tipodevehiculo.nombre }}"
-                                           href="{{ tipodevehiculo.get_delete_url }}">delete</a>{% endif %}
-                                    </div>
-                                </td>
+                                <td data-search="{{ tipodevehiculo }}">
+                                    <a title="Seleccionar Tipo {{ tipodevehiculo }}"
+                                       href="{{ tipodevehiculo.get_absolute_url }}">{{ tipodevehiculo }}</a>
+                                    {% if request.user.is_superuser %}
+                                        <span class="minipopuplink">
+                                            <a href="#popup{{ tipodevehiculo.slug }}" data-rel="popup">
+                                                <i class="material-icons">more_horiz</i></a>
+                                        </span>
+                                        <div class="minipopup3" data-role="popup" id="popup{{ tipodevehiculo.slug }}">
+                                            <ul class="ui-listview">
+                                                <li>
+                                                    <a title="Seleccionar Tipo {{ tipodevehiculo }}" data-ajax="false"
+                                                       onclick="window.location.reload(false);"
+                                                       href="{{ tipodevehiculo.get_absolute_url }}">
+                                                        <i class="material-icons">arrow_forward</i> Seleccionar</a></li>
+                                                <li>
+                                                    <a title="Editar Tipo {{ tipodevehiculo }}"
+                                                       href="{{ tipodevehiculo.get_update_url }}">
+                                                        <i class="material-icons">edit</i> Editar</a></li>
+                                                <li>
+                                                    <a title="Eliminar Tipo {{ tipodevehiculo }}"
+                                                       href="{{ tipodevehiculo.get_delete_url }}">
+                                                        <i class="material-icons">delete</i> Borrar</a></li>
+                                            </ul>
+                                            <div class="ui-popup-arrow-container ui-popup-arrow-t">
+                                                <div class="ui-popup-arrow ui-body-a ui-overlay-shadow"></div>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                </td>{% if request.user.is_superuser %}
                                 <td class="derecha">{{ tipodevehiculo.costo_por_dia|intcomma }}</td>
-                                <td class="derecha">{{ tipodevehiculo.costo_por_km|intcomma }}</td>
+                                <td class="derecha">{{ tipodevehiculo.costo_por_km|intcomma }}</td>{% endif %}
                                 <td class="derecha">{{ tipodevehiculo.rendimiento }}</td>
                                 <td class="derecha">{{ tipodevehiculo.galones_tanque }}</td>
                             </tr>{% endfor %}{% endblock %}{% block footer %}{% if request.user.is_superuser %}
                 <div class="fixed-action-btn">
-                    <a class="btn-floating btn-large waves-effect waves-light red darken-2"
+                    <a class="btn-floating btn-large waves-effect waves-light"
                        title="Agregar Tipo de Vehículo"
                        href="{% url "transporte_tipodevehiculo_create" %}"
                        data-ajax="false" onclick="window.location.reload(false);">

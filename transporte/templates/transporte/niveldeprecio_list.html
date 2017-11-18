@@ -2,37 +2,48 @@
 {% block title %}Niveles de Precio{% endblock %}
 {% block page-title %}Niveles de Precio{% endblock %}{% block theader %}
                                 <th class="centrado no-sort">Nivel de Precio</th>
-                                <th data-priority="5" class="derecha">Acciones</th>
                                 <th data-priority="1" class="centrado">Tipo</th>
                                 <th data-priority="2" class="centrado">Acción</th>
                                 <th data-priority="3" class="centrado">Valor</th>
-                                <th data-priority="4" class="centrado">Factor</th>{% endblock %}{% block tbody %}{% for niveldeprecio in niveldeprecio_list %}
+                                <th data-priority="4" class="centrado">Factor</th>{% endblock %}{% block tbody %}
+    {% for niveldeprecio in niveldeprecio_list %}
                             <tr>
-                                <td data-search="{{ niveldeprecio.nombre }}" class="no-sort">
-                                    <a title="Ver Nivel {{ niveldeprecio.nombre }}"
-                                       href="{{ niveldeprecio.get_absolute_url }}">{{ niveldeprecio.nombre }}</a></td>
-                                <td class="izquierda" width="1">
-                                    <div class="ui-alt-icon ui-nodisc-icon mininav3r">
-                                        <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-action ui-btn-icon-notext ui-btncito"
-                                           title="Ver {{ niveldeprecio.nombre }}"
-                                           href="{{ niveldeprecio.get_absolute_url }}">goto</a>{% if request.user.is_superuser %}
-                                        <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-edit ui-btn-icon-notext ui-btncito"
-                                           title="Editar {{ niveldeprecio.nombre }}"
-                                           href="{{ niveldeprecio.get_update_url }}"
-                                           data-ajax="false" onclick="window.location.reload(false);">edit</a>
-                                        <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-delete ui-btn-icon-notext ui-btncito"
-                                           title="Eliminar {{ niveldeprecio.nombre }}"
-                                           href="{{ niveldeprecio.get_delete_url }}">delete</a>{% endif %}
-                                    </div>
-                                </td>
+                                <td data-search="{{ niveldeprecio }}" class="no-sort">
+                                    <a title="Seleccionar Nivel {{ niveldeprecio }}"
+                                       href="{{ niveldeprecio.get_absolute_url }}">{{ niveldeprecio }}</a>{% if request.user.is_superuser %}
+                                        <span class="minipopuplink">
+                                            <a href="#popup{{ niveldeprecio.slug }}" data-rel="popup">
+                                                <i class="material-icons">more_horiz</i></a>
+                                        </span>
+                                        <div class="minipopup3" data-role="popup" id="popup{{ niveldeprecio.slug }}">
+                                            <ul class="ui-listview">
+                                                <li>
+                                                    <a title="Seleccionar Nivel {{ niveldeprecio }}" data-ajax="false"
+                                                       onclick="window.location.reload(false);"
+                                                       href="{{ niveldeprecio.get_absolute_url }}">
+                                                        <i class="material-icons">arrow_forward</i> Seleccionar</a></li>
+                                                <li>
+                                                    <a title="Editar Nivel {{ niveldeprecio }}"
+                                                       href="{{ niveldeprecio.get_update_url }}">
+                                                        <i class="material-icons">edit</i> Editar</a></li>
+                                                <li>
+                                                    <a title="Eliminar Nivel {{ niveldeprecio }}"
+                                                       href="{{ niveldeprecio.get_delete_url }}">
+                                                        <i class="material-icons">delete</i> Borrar</a></li>
+                                            </ul>
+                                            <div class="ui-popup-arrow-container ui-popup-arrow-t">
+                                                <div class="ui-popup-arrow ui-body-a ui-overlay-shadow"></div>
+                                            </div>
+                                        </div>
+                                    {% endif %}</td>
                                 <td class="centrado">{{ niveldeprecio.get_tipo_display }}</td>
                                 <td class="centrado">{{ niveldeprecio.get_accion_display }}</td>{% if niveldeprecio.tipo == "Porcentaje" %}
                                 <td class="centrado">{{ niveldeprecio.valor|porciento }}</td>{% else %}
                                 <td class="centrado">{{ niveldeprecio.valor }}</td>{% endif %}
-                                <td class="centrado">{{ niveldeprecio.factor|floatformat:6 }}</td>
+                                <td class="centrado">{{ niveldeprecio.factor|floatformat:4 }}</td>
                             </tr>{% endfor %}{% endblock %}{% block footer %}{% if request.user.is_superuser %}
                 <div class="fixed-action-btn">
-                    <a class="btn-floating btn-large waves-effect waves-light red darken-2"
+                    <a class="btn-floating btn-large waves-effect waves-light"
                        title="Agregar Nivel de Precio"
                        href="{% url "transporte_niveldeprecio_create" %}"
                        data-ajax="false" onclick="window.location.reload(false);">

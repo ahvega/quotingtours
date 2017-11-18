@@ -5,41 +5,41 @@
 {% block page-title %}Ítem en Cotización{% endblock %}
 {% block thead %}
     <th colspan="2" class="izquierda">
-        <a style="color: white;" href="{{ cotizaciondetalle.item.get_absolute_url }}" title="Ver Ítem {{ cotizaciondetalle.item }}">
-        <i class="material-icons text-lime">toc</i>{{ cotizaciondetalle.item }}</a>{% if request.user.is_superuser %}
-        <div class="ui-nodisc-icon mininav3r">
-            <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-edit ui-btn-icon-notext ui-btncito"
+        <a style="color: white;" href="{{ cotizaciondetalle.item.get_absolute_url }}" title="Seleccionar Ítem {{ cotizaciondetalle.item }}">
+        <i class="material-icons">toc</i>{{ cotizaciondetalle.item }}</a>{% if request.user.is_superuser %}
+        <div class="mininav3r">
+            <a
                data-ajax="false" onclick="window.location.reload(false);"
-               title="Editar Ítem {{ cotizaciondetalle }}" href="{{ cotizaciondetalle.get_update_url }}">edit</a>
+               title="Editar Ítem {{ cotizaciondetalle }}" href="{{ cotizaciondetalle.get_update_url }}"><i class="material-icons">edit</i></a>
             <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-plus ui-btn-icon-notext ui-btncito"
                title="Agregar Nuevo Ítem"
-               href="{% url "transporte_cotizaciondetalle_create" cotizacion_id=cotizaciondetalle.cotizacion.pk %}">add</a>
-            <a class="ui-btn ui-btn-inline ui-btn-c ui-icon-delete ui-btn-icon-notext ui-btncito"
-               title="Borrar Ítem {{ cotizaciondetalle }}" href="{{ cotizaciondetalle.get_delete_url }}">delete</a></div>
+               href="{% url "transporte_cotizaciondetalle_create" cotizacion_id=cotizaciondetalle.cotizacion.pk %}"><i class="material-icons">add</i></a>
+            <a
+               title="Borrar Ítem {{ cotizaciondetalle }}" href="{{ cotizaciondetalle.get_delete_url }}"><i class="material-icons">delete_forever</i></a></div>
     {% endif %}</th>
 {% endblock %}
 {% block tbody %}
     <tr>
         <td class="derecha"><strong>Cliente: </strong></td>
         <td><a href="{{ cotizaciondetalle.cotizacion.itinerario.cliente.get_absolute_url }}"
-               title="Ver Cliente: {{ cotizaciondetalle.cotizacion.itinerario.cliente }}">
-            <i class="material-icons text-green md-18">recent_actors</i>
+               title="Seleccionar Cliente: {{ cotizaciondetalle.cotizacion.itinerario.cliente }}">
+            <i class="material-icons">recent_actors</i>
             <strong>{{ cotizaciondetalle.cotizacion.itinerario.cliente }}</strong></a>
         </td>
     </tr>
     <tr>
         <td class="derecha"><strong>Itinerario:</strong></td>
         <td><a href="{{ cotizaciondetalle.cotizacion.itinerario.get_absolute_url }}"
-               title="Ver Itinerario: {{ cotizaciondetalle.cotizacion.itinerario }}">
-            <i class="material-icons text-green md-18">date_range</i>
+               title="Seleccionar Itinerario: {{ cotizaciondetalle.cotizacion.itinerario }}">
+            <i class="material-icons">date_range</i>
             <strong>{{ cotizaciondetalle.cotizacion.itinerario }}</strong></a>
         </td>
     </tr>
     <tr>
         <td class="derecha"><strong>Cotización:</strong></td>
-        <td><a title="Ver Cotización: {{ cotizaciondetalle.cotizacion }}" data-ajax="false"
+        <td><a title="Seleccionar Cotización: {{ cotizaciondetalle.cotizacion }}" data-ajax="false"
                href="{{ cotizaciondetalle.cotizacion.get_absolute_url }}" onclick="window.location.reload(false)">
-            <i class="material-icons text-green md-18">assignment_turned_in</i>
+            <i class="material-icons">assignment_turned_in</i>
             <strong>{{ cotizaciondetalle.cotizacion }}</strong></a></td>
     </tr>
     <tr>
@@ -82,7 +82,7 @@
 {% block footer %}
     {% if request.user.is_superuser %}
         <div class="fixed-action-btn">
-            <a class="btn-floating btn-large waves-effect waves-light red darken-2"
+            <a class="btn-floating btn-large waves-effect waves-light"
                title="Editar Ítem {{ cotizaciondetalle.descripcion }}"
                href="{{ cotizaciondetalle.get_update_url }}">
                 <i class="material-icons">edit</i></a>
