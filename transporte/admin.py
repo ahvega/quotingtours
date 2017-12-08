@@ -249,7 +249,7 @@ class ClienteAdminForm(forms.ModelForm):
 class ClienteAdmin(admin.ModelAdmin):
     form = ClienteAdminForm
     list_display = ['nombre', 'codigo', 'total_cotizado', 'contacto', 'email', 'tel', 'rtn', 'nivel_de_precio']
-    readonly_fields = ['slug', 'creado', 'actualizado',]
+    readonly_fields = ['slug', 'creado', 'actualizado', 'total_cotizado', 'utilidad_cotizada', 'subtotal_cotizado',]
     search_fields = ['nombre', 'contacto', 'email', 'tel']
 
 

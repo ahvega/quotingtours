@@ -339,7 +339,7 @@ class Cliente(models.Model):
     pais = models.CharField(max_length=50, default='Honduras')
     rtn = models.CharField(default='Consum. Final', max_length=16, verbose_name='RTN')
     subtotal_cotizado = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, default=0)
-    utilidad_cotizada = models.DecimalField(max_digits=6, decimal_places=4, null=True, blank=True, default=0)
+    utilidad_cotizada = models.DecimalField(max_digits=6, decimal_places=2, null=True, blank=True, default=0)
     total_cotizado = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, default=0)
     creado = models.DateTimeField(auto_now_add=True, editable=False)
     actualizado = models.DateTimeField(auto_now=True, editable=False)
@@ -573,11 +573,6 @@ class Lugar(models.Model):
         return u'%s' % self.nombre
 
     @property
-    def info_country(pais):
-        country = countries.info_pais(pais)
-        return country
-
-    @property
     def codigo_pais2(self):
         country = info_country(self.pais)
         return country['alpha2Code']
@@ -634,14 +629,14 @@ class Tramo(models.Model):
         self.zona_destino = self.hacia_lugar.zona
         self.desde_hacia = self.desde_lugar.nombre + ' - ' + self.hacia_lugar.nombre
         if self.desde_lugar == self.hacia_lugar:
-            minimoKms = param('2017-minimo-kms')
+            minimo_kms = param('2017-minimo-kms')
             if self.desde_lugar.pais != 'Honduras':
-                minimoKms = '100'
-            minimoHrs = param('2017-tiempo-minimo')
-            self.kms = minimoKms
-            self.hrs = minimoHrs
+                minimo_kms = '100'
+            minimo_hrs = param('2017-tiempo-minimo')
+            self.kms = minimo_kms
+            self.hrs = minimo_hrs
             self.desde_hacia = "Movimientos en " + self.desde_lugar.nombre
-            self.descripcion = self.desde_hacia + " " + minimoKms + " Kms // " + minimoHrs + " Hrs"
+            self.descripcion = self.desde_hacia + " " + minimo_kms + " Kms // " + minimo_hrs + " Hrs"
         else:
             self.kms = distancia(self.desde_lugar.nombre, self.hacia_lugar.nombre)
             self.hrs = duracion(self.desde_lugar.nombre, self.hacia_lugar.nombre)
