@@ -615,8 +615,8 @@ class Tramo(models.Model):
     creado = models.DateTimeField(auto_now_add=True, editable=False)
     actualizado = models.DateTimeField(auto_now=True, editable=False)
     # Relationship Fields
-    desde_lugar = models.ForeignKey(Lugar, verbose_name='origen', related_name='desde')
-    hacia_lugar = models.ForeignKey(Lugar, verbose_name='destino', related_name='hacia')
+    desde_lugar = models.ForeignKey(Lugar, verbose_name='origen', related_name='desde', null=True, blank=True)
+    hacia_lugar = models.ForeignKey(Lugar, verbose_name='destino', related_name='hacia', null=True, blank=True)
 
     class Meta:
         ordering = ('codigo',)
@@ -861,7 +861,7 @@ class CotizacionDetalle(models.Model):
 
     # Relationship Fields
     cotizacion = models.ForeignKey(Cotizacion, on_delete=CASCADE, verbose_name='cotizacion', related_name='lineas')
-    item = models.ForeignKey(Item, verbose_name='item', related_name='item')
+    item = models.ForeignKey(Item, verbose_name='item', related_name='item', null=True, blank=True)
     nivel_de_precio = models.ForeignKey(NivelDePrecio, verbose_name='nivel de precio',
                                         on_delete=models.PROTECT, null=True, blank=True)
 
